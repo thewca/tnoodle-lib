@@ -1,4 +1,3 @@
-import configurations.CompilerSettings.KOTLIN_JVM_TARGET
 import configurations.Languages.attachRepositories
 import configurations.Languages.configureJava
 import configurations.Frameworks.configureCheckstyle
@@ -6,7 +5,6 @@ import configurations.Frameworks.configureJUnit5
 import configurations.Publications.configureMavenPublication
 
 import dependencies.Libraries.GWTEXPORTER
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "A Java scrambling suite. Java applications can use this project as a library. A perfect example of this is the webscrambles package."
 
@@ -16,11 +14,12 @@ plugins {
     `java-library`
     checkstyle
     `maven-publish`
+    SHADOW
 }
 
 configureJava()
 configureCheckstyle()
-configureMavenPublication("tnoodle-scrambles")
+configureMavenPublication("lib-scrambles")
 
 dependencies {
     api(project(":svglite"))

@@ -15,4 +15,4 @@ plugins {
 
 configureJava()
 configureCheckstyle()
-configureMavenPublication("tnoodle-svglite")
+configureMavenPublication("lib-svglite")
