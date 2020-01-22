@@ -1,5 +1,6 @@
 import dependencies.Plugins.DEPENDENCY_VERSIONS_ACTUAL
 import dependencies.Plugins.GIT_VERSION_TAG_ACTUAL
+import dependencies.Plugins.JFROG_BINTRAY_ACTUAL
 import dependencies.Plugins.SHADOW_ACTUAL
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
@@ -18,3 +19,6 @@ inline val PluginDependenciesSpec.DEPENDENCY_VERSIONS: PluginDependencySpec
 
 inline val PluginDependenciesSpec.GIT_VERSION_TAG: PluginDependencySpec
     get() = GIT_VERSION_TAG_ACTUAL
+
+inline val PluginDependenciesSpec.JFROG_BINTRAY: PluginDependencySpec
+    get() = JFROG_BINTRAY_ACTUAL

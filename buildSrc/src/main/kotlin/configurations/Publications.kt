@@ -5,7 +5,11 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.delegateClosureOf
 import org.gradle.kotlin.dsl.get
+
+import com.jfrog.bintray.gradle.BintrayExtension
+import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
 
 object Publications {
     fun Project.configureMavenPublication(targetArtifactId: String? = null) {
@@ -22,21 +26,22 @@ object Publications {
         }
     }
 
-    fun Project.addBintrayTarget() {
-        val rootName = rootProject.name
-        val ownName = this.name
+    fun Project.configureBintrayTarget() {
+        configure<BintrayExtension> {
+            user = findProperty("bintray.user") as? String
+            key = findProperty("bintray.key") as? String
+            publish = false
 
-        configure<PublishingExtension> {
-            repositories {
-                maven {
-                    name = "JFrogBintray"
-                    url = uri("https://api.bintray.com/maven/thewca/$rootName/$ownName/;publish=0")
-                    credentials {
-                        username = project.findProperty("bintray.user") as? String
-                        password = project.findProperty("bintray.key") as? String
-                    }
-                }
-            }
+            setPublications(rootProject.name)
+
+            pkg(delegateClosureOf<PackageConfig> {
+                repo = rootProject.name
+                name = project.name
+                websiteUrl = "https://worldcubeassociation.org"
+                vcsUrl = "https://github.com/thewca/tnoodle-lib"
+                setLabels("java")
+                setLicenses("GPL-3.0")
+            })
         }
     }
 }
