@@ -21,4 +21,22 @@ object Publications {
             }
         }
     }
+
+    fun Project.addBintrayTarget() {
+        val rootName = rootProject.name
+        val ownName = this.name
+
+        configure<PublishingExtension> {
+            repositories {
+                maven {
+                    name = "JFrogBintray"
+                    url = uri("https://api.bintray.com/maven/thewca/$rootName/$ownName/;publish=0")
+                    credentials {
+                        username = project.findProperty("bintray.user") as? String
+                        password = project.findProperty("bintray.key") as? String
+                    }
+                }
+            }
+        }
+    }
 }
