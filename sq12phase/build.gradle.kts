@@ -1,4 +1,5 @@
 import configurations.Languages.configureJava
+import configurations.Publications.addBintrayTarget
 import configurations.Publications.configureMavenPublication
 
 description = "A copy of Chen Shuang's square 1 two phase solver."
@@ -10,3 +11,4 @@ plugins {
 
 configureJava()
 configureMavenPublication("scrambler-sq12phase")
+addBintrayTarget()
