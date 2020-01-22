@@ -1,5 +1,5 @@
 import configurations.Languages.configureJava
-import configurations.Publications.addBintrayTarget
+import configurations.Publications.configureBintrayTarget
 import configurations.Publications.configureMavenPublication
 
 description = "A copy of Chen Shuang's 4x4 scrambler."
@@ -7,11 +7,12 @@ description = "A copy of Chen Shuang's 4x4 scrambler."
 plugins {
     `java-library`
     `maven-publish`
+    JFROG_BINTRAY
 }
 
 configureJava()
 configureMavenPublication("scrambler-threephase")
-addBintrayTarget()
+configureBintrayTarget()
 
 dependencies {
     implementation(project(":min2phase"))

@@ -12,4 +12,7 @@ object Plugins {
 
     inline val PluginDependenciesSpec.GIT_VERSION_TAG_ACTUAL: PluginDependencySpec
         get() = id("com.palantir.git-version").version(Versions.Plugins.GIT_VERSION_TAG)
+
+    inline val PluginDependenciesSpec.JFROG_BINTRAY_ACTUAL: PluginDependencySpec
+        get() = id("com.jfrog.bintray")
 }
