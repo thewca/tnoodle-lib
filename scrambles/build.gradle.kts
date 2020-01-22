@@ -2,6 +2,7 @@ import configurations.Languages.attachRepositories
 import configurations.Languages.configureJava
 import configurations.Frameworks.configureCheckstyle
 import configurations.Frameworks.configureJUnit5
+import configurations.Publications.addBintrayTarget
 import configurations.Publications.configureMavenPublication
 
 import dependencies.Libraries.GWTEXPORTER
@@ -20,6 +21,7 @@ plugins {
 configureJava()
 configureCheckstyle()
 configureMavenPublication("lib-scrambles")
+addBintrayTarget()
 
 dependencies {
     api(project(":svglite"))
