@@ -1,10 +1,15 @@
-<img src="./server-ktor/src/main/resources/icons/tnoodle_logo_1024.png" alt="TNoodle Logo" height="128px"/>
+<img src="./tnoodle_logo_1024.png" alt="TNoodle Logo" height="128px"/>
 
-# TNoodle
+# TNoodle-LIB
 
 TNoodle is a software suite that contains the official WCA scramble program. It consists of the core scrambling code (primarily written in Java) as well as a UI and server to generate a fully autonomous JAR file
 
-[![Build Status](https://travis-ci.org/thewca/tnoodle.svg?branch=master)](https://travis-ci.org/thewca/tnoodle)
+You are looking at the core scrambling code portion.
+This repository hosts an independent build for the essential mechanics that generate Java `String`s representing twisty puzzle scrambles.
+
+If you are interested in the webserver part, look [here](https://github.com/thewca/tnoodle)
+
+[![Build Status](https://travis-ci.org/thewca/tnoodle-lib.svg?branch=master)](https://travis-ci.org/thewca/tnoodle-lib)
 
 ## WCA Scramble Program
 
@@ -16,7 +21,7 @@ Note that only the scramble program part of TNoodle is "official". Other TNoodle
 
 ### "Scramble Program" vs. "Scrambler"
 
-Officially, `TNoodle-WCA` is a [scramble program](https://www.worldcubeassociation.org/regulations/#4f), while a [scrambler](https://www.worldcubeassociation.org/regulations/#A2b) is a human. It is fine to refer to TNoodle as a "scrambler" colloquially, but please try to use the official convention wherever possible.
+Officially, `TNoodle-lib` is a [scramble program](https://www.worldcubeassociation.org/regulations/#4f), while a [scrambler](https://www.worldcubeassociation.org/regulations/#A2b) is a human. It is fine to refer to TNoodle as a "scrambler" colloquially, but please try to use the official convention wherever possible.
 
 ## Project Details
 
@@ -40,17 +45,23 @@ Gradle automagically handles all dependencies for you. You just need an Internet
 
 ### WCA Scramble Program
 
-When you're ready to develop, run the following and then visit <http://localhost:2014/scramble/>
+When you're ready to develop, just go ahead and code! There is no UI to this part of TNoodle.
+You can always execute the full integration and unit test suite via:
 
-    ./gradlew :webscrambles:runShadow
+    ./gradlew :scrambles:check
 
-To build a distributable/executable `.jar` file, run:
+To build a distributable `.jar` file, run:
 
-    ./gradlew :webscrambles:shadowJar
+    ./gradlew :scrambles:assemble
 
-You can run the `.jar` from the commandline using: (replace the `$VERSION` tag accordingly)
+You cannot run the resulting `.jar`, because it is conceived as a Maven artifact.
+We recommend using the online distribution [hosted at Bintray](https://bintray.com/thewca)
 
-    java -jar TNoodle-WCA-$VERSION.jar
+If you _really_ want to use a local build in your project, execute:
+
+    ./gradlew :scrambles:publishToMavenLocal
+
+and point whatever Maven-style build tool you're using to your local `.m2` repository.
 
 _Important note: You must never use a custom build for any official competitions._ [Contact the WCA Board and the WRC](https://www.worldcubeassociation.org/contact) if you have any questions about this.
 
