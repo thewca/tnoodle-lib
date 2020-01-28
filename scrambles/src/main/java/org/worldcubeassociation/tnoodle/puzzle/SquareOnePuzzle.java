@@ -22,19 +22,28 @@ import org.timepedia.exporter.client.Export;
 @Export
 public class SquareOnePuzzle extends Puzzle {
 
+    //public static final int SQ1_MAX_SCRAMBLE_LENGTH = 20;
+
     private static final int radius = 32;
 
+    private ThreadLocal<Search> twoPhaseSearcher;
+
     public SquareOnePuzzle() {
-        // TODO - we can't filter super aggresively until
-        // Chen Shuang's optimal solver is fixed.
-        //wcaMinScrambleDistance = 20;
         wcaMinScrambleDistance = 11;
+
+        twoPhaseSearcher = new ThreadLocal<Search>() {
+            protected Search initialValue() {
+                return new Search();
+            };
+        };
     }
 
     @Override
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
-        Search s = new Search();
-        String scramble = s.solution(FullCube.randomCube(r), Search.INVERSE_SOLUTION).trim();
+        FullCube randomState = FullCube.randomCube(r);
+
+        //String scramble = twoPhaseSearcher.get().solutionOpt(randomState, SQ1_MAX_SCRAMBLE_LENGTH, Search.INVERSE_SOLUTION).trim();
+        String scramble = twoPhaseSearcher.get().solution(randomState, Search.INVERSE_SOLUTION).trim();
         PuzzleState state;
         try {
             state = getSolvedState().applyAlgorithm(scramble);
@@ -196,17 +205,12 @@ public class SquareOnePuzzle extends Puzzle {
         return 40;
     }
 
-    /*
-    // TODO - we can't filter super aggresively until
-    // Chen Shuang's optimal solver is fixed.
     @Override
     protected String solveIn(PuzzleState ps, int n) {
         FullCube f = ((SquareOneState)ps).toFullCube();
-        Search s = new Search();
-        String scramble = s.solutionOpt(f, n);
+        String scramble = twoPhaseSearcher.get().solutionOpt(f, n);
         return scramble == null ? null : scramble.trim();
     }
-    */
 
     static HashMap<String, Integer> costsByMove = new HashMap<String, Integer>();
     static {
@@ -244,7 +248,7 @@ public class SquareOnePuzzle extends Puzzle {
         FullCube toFullCube() {
             int[] map1 = new int[]{3, 2, 1, 0, 7, 6, 5, 4, 0xa, 0xb, 8, 9, 0xe, 0xf, 0xc, 0xd};
             int[] map2 = new int[]{5,4,3,2,1,0,11,10,9,8,7,6,17,16,15,14,13,12,23,22,21,20,19,18};
-            FullCube f = FullCube.randomCube();
+            FullCube f = new FullCube();
             for (int i=0; i<24; i++) {
                 f.setPiece(map2[i], map1[pieces[i]]);
             }
