@@ -32,6 +32,7 @@ public class SearchTest {
                 }
                 shape = fc.getShapeIdx();
             }
+            s.verbose = 0;
             System.out.println("Scramble: " + s.move2string(scrambleLength));
             String sol = s.solutionOpt(fc, targetLength);
             System.out.println("Solution: " + sol);
@@ -46,7 +47,7 @@ public class SearchTest {
         Search s = new Search();
         java.util.Random gen = new java.util.Random(42L);
         for (int x = 0; x < 1000; x++) {
-            String sol = s.solution(FullCube.randomCube(gen));
+            String sol = s.solution(FullCube.randomCube(gen), Search.INVERSE_SOLUTION);
             System.out.println(sol);
             System.out.println(
                 String.format("%.2fms",
