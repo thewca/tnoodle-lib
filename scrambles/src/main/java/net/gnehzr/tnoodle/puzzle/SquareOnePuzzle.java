@@ -34,7 +34,7 @@ public class SquareOnePuzzle extends Puzzle {
     @Override
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
         Search s = new Search();
-        String scramble = s.solution(FullCube.randomCube(r)).trim();
+        String scramble = s.solution(FullCube.randomCube(r), Search.INVERSE_SOLUTION).trim();
         PuzzleState state;
         try {
             state = getSolvedState().applyAlgorithm(scramble);

@@ -2,6 +2,7 @@ package cs.sq12phase;
 
 
 public class Search {
+    public static final int INVERSE_SOLUTION = 0x2;
 
     static final int FACE_TURN_METRIC = 0;
     static final int WCA_TURN_METRIC = 1;
@@ -12,9 +13,11 @@ public class Search {
     int[] move = new int[100];
     FullCube c = null;
     FullCube d = new FullCube("");
+    Square sq = new Square();
     int length1;
     int movelen1;
     int maxlen2;
+    int verbose;
     String sol_string;
 
     static int getNParity(int idx, int n) {
@@ -31,21 +34,27 @@ public class Search {
         Square.init();
     }
 
-    public String solution(FullCube c) {
+    public String solution(FullCube c, int verbose) {
         this.c = c;
+        this.verbose = verbose;
         sol_string = null;
         int shape = c.getShapeIdx();
         for (length1 = Shape.ShapePrun[shape]; length1 < 100; length1++) {
             maxlen2 = Math.min(31 - length1, 17);
-            if (phase1(shape, Shape.ShapePrun[shape], length1, 0, -1)) {
+            if (idaPhase1(shape, Shape.ShapePrun[shape], length1, 0, -1)) {
                 break;
             }
         }
         return sol_string;
     }
 
-    public String solutionOpt(FullCube c, int maxl) {
+    public String solution(FullCube c) {
+        return solution(c, 0);
+    }
+
+    public String solutionOpt(FullCube c, int maxl, int verbose) {
         this.c = c;
+        this.verbose = verbose;
         sol_string = null;
         int shape = c.getShapeIdx();
         for (length1 = Shape.ShapePrunOpt[shape] * PRUN_INC; length1 <= maxl * PRUN_INC; length1 += PRUN_INC) {
@@ -54,6 +63,10 @@ public class Search {
             }
         }
         return sol_string;
+    }
+
+    public String solutionOpt(FullCube c, int maxl) {
+        return solutionOpt(c, maxl, 0);
     }
 
     static int count0xf(int val) {
@@ -139,10 +152,10 @@ public class Search {
         return false;
     }
 
-    boolean phase1(int shape, int prunvalue, int maxl, int depth, int lm) {
+    boolean idaPhase1(int shape, int prunvalue, int maxl, int depth, int lm) {
         if (prunvalue == 0 && maxl < 4) {
             movelen1 = depth;
-            return maxl == 0 && init2();
+            return maxl == 0 && initPhase2();
         }
 
         //try each possible move. First twist;
@@ -151,7 +164,7 @@ public class Search {
             int prun = Shape.ShapePrun[shapex];
             if (prun < maxl) {
                 move[depth] = 0;
-                if (phase1(shapex, prun, maxl - 1, depth + 1, 0)) {
+                if (idaPhase1(shapex, prun, maxl - 1, depth + 1, 0)) {
                     return true;
                 }
             }
@@ -172,7 +185,7 @@ public class Search {
                     break;
                 } else if (prun < maxl) {
                     move[depth] = m;
-                    if (phase1(shapex, prun, maxl - 1, depth + 1, 1)) {
+                    if (idaPhase1(shapex, prun, maxl - 1, depth + 1, 1)) {
                         return true;
                     }
                 }
@@ -195,7 +208,7 @@ public class Search {
                     break;
                 } else if (prun < maxl) {
                     move[depth] = -m;
-                    if (phase1(shapex, prun, maxl - 1, depth + 1, 2)) {
+                    if (idaPhase1(shapex, prun, maxl - 1, depth + 1, 2)) {
                         return true;
                     }
                 }
@@ -204,23 +217,19 @@ public class Search {
         return false;
     }
 
-    int count = 0;
-    Square sq = new Square();
-
     boolean isSolvedInPhase1() {
         d.copy(c);
         for (int i = 0; i < movelen1; i++) {
             d.doMove(move[i]);
         }
-
-        boolean isSolved = d.ul == 0x011233 && d.ur == 0x455677 && d.dl == 0x998bba && d.dr == 0xddcffe && d.ml == 0;
+        boolean isSolved = d.isSolved();
         if (isSolved) {
             sol_string = move2string(movelen1);
         }
         return isSolved;
     }
 
-    boolean init2() {
+    boolean initPhase2() {
         d.copy(c);
         for (int i = 0; i < movelen1; i++) {
             d.doMove(move[i]);
@@ -232,10 +241,11 @@ public class Search {
         int corner = sq.cornperm;
         int ml = sq.ml;
 
-        int prun = Math.max(Square.SquarePrun[sq.edgeperm << 1 | ml], Square.SquarePrun[sq.cornperm << 1 | ml]);
+        int prun = Math.max(Square.SquarePrun[sq.edgeperm << 1 | ml],
+                            Square.SquarePrun[sq.cornperm << 1 | ml]);
 
         for (int i = prun; i < maxlen2; i++) {
-            if (phase2(edge, corner, sq.topEdgeFirst, sq.botEdgeFirst, ml, i, movelen1, 0)) {
+            if (idaPhase2(edge, corner, sq.topEdgeFirst, sq.botEdgeFirst, ml, i, movelen1, 0)) {
                 sol_string = move2string(i + movelen1);
                 return true;
             }
@@ -244,20 +254,26 @@ public class Search {
         return false;
     }
 
-    int[] pruncomb = new int[100];
-
     String move2string(int len) {
-        //TODO whether to invert the solution or not should be set by params.
         StringBuffer s = new StringBuffer();
+        int[] outputMoves = new int[len];
+        if ((verbose & INVERSE_SOLUTION) != 0) {
+            for (int i = len - 1; i >= 0; i--) {
+                outputMoves[len - 1 - i] = move[i] > 0 ? (12 - move[i]) : move[i] < 0 ? (-12  - move[i]) : move[i];
+            }
+        } else {
+            for (int i = 0; i < len; i++) {
+                outputMoves[i] = move[i];
+            }
+        }
+
         int top = 0, bottom = 0;
-        for (int i = len - 1; i >= 0; i--) {
-            int val = move[i];
+        for (int i = 0; i < len; i++) {
+            int val = outputMoves[i];
             if (val > 0) {
-                val = 12 - val;
                 top = (val > 6) ? (val - 12) : val;
             } else if (val < 0) {
-                val = 12 + val;
-                bottom = (val > 6) ? (val - 12) : val;
+                bottom = (-val > 6) ? (-val - 12) : -val;
             } else {
                 if (top == 0 && bottom == 0) {
                     s.append(" / ");
@@ -268,14 +284,13 @@ public class Search {
                 bottom = 0;
             }
         }
-        if (top == 0 && bottom == 0) {
-        } else {
+        if (top != 0 || bottom != 0) {
             s.append('(').append(top).append(",").append(bottom).append(")");
         }
         return s.toString();
     }
 
-    boolean phase2(int edge, int corner, boolean topEdgeFirst, boolean botEdgeFirst, int ml, int maxl, int depth, int lm) {
+    boolean idaPhase2(int edge, int corner, boolean topEdgeFirst, boolean botEdgeFirst, int ml, int maxl, int depth, int lm) {
         if (maxl == 0 && !topEdgeFirst && botEdgeFirst) {
             assert edge == 0 && corner == 0 && ml == 0;
             return true;
@@ -288,7 +303,7 @@ public class Search {
 
             if (Square.SquarePrun[edgex << 1 | (1 - ml)] < maxl && Square.SquarePrun[cornerx << 1 | (1 - ml)] < maxl) {
                 move[depth] = 0;
-                if (phase2(edgex, cornerx, topEdgeFirst, botEdgeFirst, 1 - ml, maxl - 1, depth + 1, 0)) {
+                if (idaPhase2(edgex, cornerx, topEdgeFirst, botEdgeFirst, 1 - ml, maxl - 1, depth + 1, 0)) {
                     return true;
                 }
             }
@@ -305,7 +320,7 @@ public class Search {
             while (m < 12 && prun1 <= maxl && prun1 <= maxl) {
                 if (prun1 < maxl && prun2 < maxl) {
                     move[depth] = m;
-                    if (phase2(edgex, cornerx, topEdgeFirstx, botEdgeFirst, ml, maxl - 1, depth + 1, 1)) {
+                    if (idaPhase2(edgex, cornerx, topEdgeFirstx, botEdgeFirst, ml, maxl - 1, depth + 1, 1)) {
                         return true;
                     }
                 }
@@ -332,7 +347,7 @@ public class Search {
             while (m < (maxl > 6 ? 6 : 12) && prun1 <= maxl && prun1 <= maxl) {
                 if (prun1 < maxl && prun2 < maxl) {
                     move[depth] = -m;
-                    if (phase2(edgex, cornerx, topEdgeFirst, botEdgeFirstx, ml, maxl - 1, depth + 1, 2)) {
+                    if (idaPhase2(edgex, cornerx, topEdgeFirst, botEdgeFirstx, ml, maxl - 1, depth + 1, 2)) {
                         return true;
                     }
                 }
