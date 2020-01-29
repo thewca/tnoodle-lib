@@ -13,7 +13,13 @@ public class PuzzleIcon {
 
     public static final ByteArrayOutputStream loadPuzzleIconPng(String shortName) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try(InputStream in = PuzzleIcon.class.getResourceAsStream("/icon/" + shortName + ".png")) {
+        InputStream in = PuzzleIcon.class.getResourceAsStream("/icon/" + shortName + ".png");
+
+        if (in == null) {
+            return null;
+        }
+
+        try {
             final byte[] buffer = new byte[0x10000];
 
             for(;;) {
@@ -24,6 +30,7 @@ public class PuzzleIcon {
                 bytes.write(buffer, 0, read);
             }
 
+            in.close();
             return bytes;
         } catch (IOException e) {
             l.log(Level.INFO, "", e);

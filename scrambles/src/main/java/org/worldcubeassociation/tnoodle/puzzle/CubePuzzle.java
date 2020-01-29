@@ -511,7 +511,7 @@ public class CubePuzzle extends Puzzle {
 
         @Override
         public HashMap<? extends PuzzleState, String> getCanonicalMovesByState() {
-            HashMap<PuzzleState, String> reversed = new HashMap<>();
+            HashMap<PuzzleState, String> reversed = new HashMap<PuzzleState, String>();
 
             for (Map.Entry<String, ? extends PuzzleState> entry : getScrambleSuccessors().entrySet()) {
                 reversed.put(entry.getValue(), entry.getKey());
