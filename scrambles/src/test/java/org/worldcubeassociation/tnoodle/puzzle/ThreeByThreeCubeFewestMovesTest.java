@@ -13,7 +13,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreeByThreeCubeFewestMovesTest {
-    protected static final Map<String, String> OPPOSITE_FACES = new HashMap<>();
+    protected static final Map<String, String> OPPOSITE_FACES = new HashMap<String, String>();
 
     @BeforeAll
     public static void loadOppositeMoves() {
@@ -32,7 +32,7 @@ public class ThreeByThreeCubeFewestMovesTest {
 
         Collection<String> canonicalMoves = threeFm.getSolvedState().getCanonicalMovesByState().values();
 
-        List<String> desiredCanonicalMoves = new ArrayList<>();
+        List<String> desiredCanonicalMoves = new ArrayList<String>();
         List<String> modifiers = Arrays.asList("", "'", "2");
 
         for (char face : "RUFLDB".toCharArray()) {
@@ -41,7 +41,7 @@ public class ThreeByThreeCubeFewestMovesTest {
             }
         }
 
-        Assertions.assertEquals(new HashSet<>(canonicalMoves), new HashSet<>(desiredCanonicalMoves));
+        Assertions.assertEquals(new HashSet<String>(canonicalMoves), new HashSet<String>(desiredCanonicalMoves));
 
         Puzzle.PuzzleState solved = threeFm.getSolvedState();
 

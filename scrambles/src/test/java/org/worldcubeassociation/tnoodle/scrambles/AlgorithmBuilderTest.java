@@ -1,13 +1,10 @@
 package org.worldcubeassociation.tnoodle.scrambles;
 
-import org.worldcubeassociation.tnoodle.TestPuzzles;
 import org.worldcubeassociation.tnoodle.puzzle.CubePuzzle;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,11 +21,9 @@ public class AlgorithmBuilderTest {
         assertFalse(moves.contains("3Lw"));
         assertFalse(moves.contains("3Dw"));
 
-        Map<String, Supplier<Puzzle>> lazyScramblers = TestPuzzles.getTestablePuzzles();
-
-        for (Map.Entry<String, Supplier<Puzzle>> lazyEntry : lazyScramblers.entrySet()) {
+        for (PuzzleRegistry lazyEntry : PuzzleRegistry.values()) {
             String puzzle = lazyEntry.getKey();
-            Puzzle scrambler = lazyEntry.getValue().get();
+            Puzzle scrambler = lazyEntry.getScrambler();
 
             System.out.println("Testing redundant moves on " + puzzle);
 

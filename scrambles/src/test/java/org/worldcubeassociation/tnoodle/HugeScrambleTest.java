@@ -6,17 +6,9 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.SortedMap;
-import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import org.worldcubeassociation.tnoodle.TestPuzzles;
-import org.worldcubeassociation.tnoodle.scrambles.AlgorithmBuilder;
-import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
-import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
-import org.worldcubeassociation.tnoodle.scrambles.Puzzle;
-import org.worldcubeassociation.tnoodle.scrambles.ScrambleCacher;
-import org.worldcubeassociation.tnoodle.scrambles.ScrambleCacherListener;
+import org.worldcubeassociation.tnoodle.scrambles.*;
 import org.worldcubeassociation.tnoodle.puzzle.ClockPuzzle;
 import org.worldcubeassociation.tnoodle.puzzle.SquareOnePuzzle;
 import org.worldcubeassociation.tnoodle.puzzle.CubePuzzle;
@@ -79,10 +71,8 @@ public class HugeScrambleTest {
 
         int SCRAMBLE_COUNT = 10;
 
-        SortedMap<String, Supplier<Puzzle>> lazyScramblers = TestPuzzles.getTestablePuzzles();
-        for(String puzzle : lazyScramblers.keySet()) {
-            Supplier<Puzzle> lazyScrambler = lazyScramblers.get(puzzle);
-            final Puzzle scrambler = lazyScrambler.get();
+        for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            final Puzzle scrambler = lazyScrambler.getScrambler();
             for(int count = 0; count < SCRAMBLE_COUNT; count++){
                 Puzzle.PuzzleState state = scrambler.getSolvedState().applyAlgorithm(scrambler.generateWcaScramble(r));
                 assertSame(state.solveIn(scrambler.getWcaMinScrambleDistance() - 1), null);
@@ -95,11 +85,9 @@ public class HugeScrambleTest {
         int SCRAMBLE_COUNT = 10;
         int SCRAMBLE_LENGTH = 4;
 
-        SortedMap<String, Supplier<Puzzle>> lazyScramblers = TestPuzzles.getTestablePuzzles();
-
-        for(String puzzle : lazyScramblers.keySet()) {
-            Supplier<Puzzle> lazyScrambler = lazyScramblers.get(puzzle);
-            final Puzzle scrambler = lazyScrambler.get();
+        for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            final String puzzle = lazyScrambler.getKey();
+            final Puzzle scrambler = lazyScrambler.getScrambler();
 
             System.out.println("Testing " + puzzle);
 
@@ -133,11 +121,9 @@ public class HugeScrambleTest {
         int SCRAMBLE_COUNT = 10;
         boolean drawScramble = true;
 
-        SortedMap<String, Supplier<Puzzle>> lazyScramblers = TestPuzzles.getTestablePuzzles();
-
-        for(String puzzle : lazyScramblers.keySet()) {
-            Supplier<Puzzle> lazyScrambler = lazyScramblers.get(puzzle);
-            final Puzzle scrambler = lazyScrambler.get();
+        for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            final String puzzle = lazyScrambler.getKey();
+            final Puzzle scrambler = lazyScrambler.getScrambler();
 
             System.out.println("Testing " + puzzle);
 
@@ -161,12 +147,15 @@ public class HugeScrambleTest {
             System.out.println("Generating & drawing 2 sets of " + SCRAMBLE_COUNT + " scrambles simultaneously." +
                                 " This is meant to shake out threading problems in scramblers.");
             final Object[] o = new Object[0];
-            ScrambleCacherListener cacherStopper = src -> {
-                System.out.println(Thread.currentThread() + " " + src.getAvailableCount() + " / " + src.getCacheSize());
-                if(src.getAvailableCount() == src.getCacheSize()) {
-                    src.stop();
-                    synchronized(o) {
-                        o.notify();
+            ScrambleCacherListener cacherStopper = new ScrambleCacherListener() {
+                @Override
+                public void scrambleCacheUpdated(ScrambleCacher src) {
+                    System.out.println(Thread.currentThread() + " " + src.getAvailableCount() + " / " + src.getCacheSize());
+                    if(src.getAvailableCount() == src.getCacheSize()) {
+                        src.stop();
+                        synchronized(o) {
+                            o.notify();
+                        }
                     }
                 }
             };
@@ -189,13 +178,11 @@ public class HugeScrambleTest {
 
     @Test
     public void testNames() {
-        SortedMap<String, Supplier<Puzzle>> lazyScramblers = TestPuzzles.getTestablePuzzles();
-
         // Check that the names by which the scramblers refer to themselves
         // is the same as the names by which we refer to them in the plugin definitions file.
-        for(String shortName : lazyScramblers.keySet()) {
-            Supplier<Puzzle> lazyScrambler = lazyScramblers.get(shortName);
-            Puzzle scrambler = lazyScrambler.get();
+        for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            String shortName = lazyScrambler.getKey();
+            Puzzle scrambler = lazyScrambler.getScrambler();
 
             assertEquals(shortName, scrambler.getShortName());
 
@@ -415,11 +402,10 @@ public class HugeScrambleTest {
 
         // How long does it takes to test if a puzzle is solvable in <= 1 move?
         int SCRAMBLE_COUNT = 100;
-        SortedMap<String, Supplier<Puzzle>> lazyScramblers = TestPuzzles.getTestablePuzzles();
 
-        for(String puzzle : lazyScramblers.keySet()) {
-            Supplier<Puzzle> lazyScrambler = lazyScramblers.get(puzzle);
-            final Puzzle scrambler = lazyScrambler.get();
+        for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            final String puzzle = lazyScrambler.getKey();
+            final Puzzle scrambler = lazyScrambler.getScrambler();
 
             l.info("Are " + THREE_BY_THREE_SCRAMBLE_COUNT + " " + puzzle + " more than one move away from solved?");
             startMillis = System.currentTimeMillis();
