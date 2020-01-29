@@ -11,7 +11,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NoInspectionThreeByThreeTest {
-    protected static final Map<String, String> OPPOSITE_FACES = new HashMap<>();
+    protected static final Map<String, String> OPPOSITE_FACES = new HashMap<String, String>();
 
     @BeforeAll
     public static void loadOppositeMoves() {
@@ -29,7 +29,7 @@ public class NoInspectionThreeByThreeTest {
         Puzzle twos = new TwoByTwoCubePuzzle();
         Collection<String> canonicalMoves = twos.getSolvedState().getCanonicalMovesByState().values();
 
-        List<String> desiredCanonicalMoves = new ArrayList<>();
+        List<String> desiredCanonicalMoves = new ArrayList<String>();
         List<String> modifiers = Arrays.asList("", "'", "2");
 
         for (char face : "RUF".toCharArray()) {
@@ -38,7 +38,7 @@ public class NoInspectionThreeByThreeTest {
             }
         }
 
-        assertEquals(new HashSet<>(canonicalMoves), new HashSet<>(desiredCanonicalMoves));
+        assertEquals(new HashSet<String>(canonicalMoves), new HashSet<String>(desiredCanonicalMoves));
 
         NoInspectionThreeByThreeCubePuzzle threes = new NoInspectionThreeByThreeCubePuzzle();
         Puzzle.PuzzleState solved = threes.getSolvedState();
