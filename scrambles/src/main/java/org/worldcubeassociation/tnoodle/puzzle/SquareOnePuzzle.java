@@ -1,20 +1,15 @@
 package org.worldcubeassociation.tnoodle.puzzle;
 
+import org.worldcubeassociation.tnoodle.scrambles.*;
 import org.worldcubeassociation.tnoodle.svglite.Color;
 import org.worldcubeassociation.tnoodle.svglite.Dimension;
 import org.worldcubeassociation.tnoodle.svglite.Svg;
 import org.worldcubeassociation.tnoodle.svglite.Transform;
 import org.worldcubeassociation.tnoodle.svglite.Path;
 import org.worldcubeassociation.tnoodle.svglite.Rectangle;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Iterator;
-import java.util.Random;
 
-import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
-import org.worldcubeassociation.tnoodle.scrambles.Puzzle;
-import org.worldcubeassociation.tnoodle.scrambles.PuzzleStateAndGenerator;
+import java.util.*;
+
 import cs.sq12phase.FullCube;
 import cs.sq12phase.Search;
 import org.timepedia.exporter.client.Export;
@@ -207,12 +202,66 @@ public class SquareOnePuzzle extends Puzzle {
 
     @Override
     protected String solveIn(PuzzleState ps, int n) {
-        FullCube f = ((SquareOneState)ps).toFullCube();
+        SquareOneState sqState = (SquareOneState) ps;
+
+        // apparently sq12phase can neither represent nor solve "unslashable" squares
+        if (!sqState.canSlash()) {
+            HashMap<String, SquareOneState> slashableSuccessors = sqState.getScrambleSuccessors();
+
+            Map.Entry<String, SquareOneState> bestSlashable = null;
+            int currentMin = Integer.MAX_VALUE;
+
+            for (Map.Entry<String, SquareOneState> possState : slashableSuccessors.entrySet()) {
+                Integer moveCost = topBottomCostsByMove.get(possState.getKey());
+
+                if (moveCost != null && moveCost < currentMin) {
+                    currentMin = moveCost;
+                    bestSlashable = possState;
+                }
+            }
+
+            // absolutely no successor found to make it slashable
+            if (bestSlashable == null) {
+                return null;
+            }
+
+            AlgorithmBuilder ab = new AlgorithmBuilder(this, AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, sqState);
+
+            try {
+                ab.appendMove(bestSlashable.getKey());
+
+                String nextBestSolution = bestSlashable.getValue().solveIn(n);
+                // initially just hope that it cancels with the n-move optimal solution
+                ab.appendAlgorithm(nextBestSolution);
+
+                if (ab.getTotalCost() > n) {
+                    // didn't cancel, try and find optimal solution in n-1
+                    ab = new AlgorithmBuilder(this, AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, sqState);
+                    ab.appendMove(bestSlashable.getKey());
+
+                    String oneMoveLessSolution = bestSlashable.getValue().solveIn(n - 1);
+                    // no need for any further checks here.
+                    // the "worst" thing that can happen is the n-1 move solution happens to cancel
+                    // (for whatever reason), in which case we've kept the bounds anyways
+                    ab.appendAlgorithm(oneMoveLessSolution);
+                }
+
+                return ab.getStateAndGenerator().generator;
+            } catch (InvalidMoveException e) {
+                e.printStackTrace();
+            }
+
+            // some invalid move exception happened; normally we don't ever get here
+            return null;
+        }
+
+        FullCube f = sqState.toFullCube();
         String scramble = twoPhaseSearcher.get().solutionOpt(f, n);
         return scramble == null ? null : scramble.trim();
     }
 
     static HashMap<String, Integer> costsByMove = new HashMap<String, Integer>();
+    static HashMap<String, Integer> topBottomCostsByMove = new HashMap<String, Integer>();
     static {
         for(int top = -5; top <= 6; top++) {
             for(int bottom = -5; bottom <= 6; bottom++) {
@@ -220,12 +269,13 @@ public class SquareOnePuzzle extends Puzzle {
                     // No use doing nothing =)
                     continue;
                 }
-                //int topCost = top % 12 == 0 ? 0 : 1;
-                //int bottomCost = bottom % 12 == 0 ? 0 : 1;
-                //int cost = topCost + bottomCost;
+                int topCost = Math.abs(top);
+                int bottomCost = Math.abs(bottom);
+                int topBottomCost = topCost + bottomCost;
                 int cost = 1;
                 String turn = "(" + top + "," + bottom + ")";
                 costsByMove.put(turn, cost);
+                topBottomCostsByMove.put(turn, topBottomCost);
             }
         }
         costsByMove.put("/", 1);
