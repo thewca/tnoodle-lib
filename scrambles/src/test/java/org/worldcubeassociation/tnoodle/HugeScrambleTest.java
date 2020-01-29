@@ -10,6 +10,7 @@ import java.util.SortedMap;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
+import org.worldcubeassociation.tnoodle.TestPuzzles;
 import org.worldcubeassociation.tnoodle.scrambles.AlgorithmBuilder;
 import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
 import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
