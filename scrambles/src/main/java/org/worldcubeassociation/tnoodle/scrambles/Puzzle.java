@@ -729,7 +729,7 @@ public abstract class Puzzle implements Exportable {
          *         The move Strings may not contain spaces.
          */
         public HashMap<String, ? extends PuzzleState> getScrambleSuccessors() {
-            HashMap<String, PuzzleState> reversed = new HashMap<>();
+            HashMap<String, PuzzleState> reversed = new HashMap<String, PuzzleState>();
 
             for (Map.Entry<? extends PuzzleState, String> entry : getCanonicalMovesByState().entrySet()) {
                 reversed.put(entry.getValue(), entry.getKey());
