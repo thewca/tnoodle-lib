@@ -10,6 +10,12 @@ public class Search {
 
     private static final int PRUN_INC = METRIC == WCA_TURN_METRIC ? 2 : 1;
 
+    static final int FACE_TURN_METRIC = 0;
+    static final int WCA_TURN_METRIC = 1;
+    static final int METRIC = WCA_TURN_METRIC; // only available for optimal solver
+
+    private static final int PRUN_INC = METRIC == WCA_TURN_METRIC ? 2 : 1;
+
     int[] move = new int[100];
     FullCube c = null;
     FullCube d = new FullCube("");
