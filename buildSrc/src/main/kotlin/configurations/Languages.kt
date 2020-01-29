@@ -21,7 +21,7 @@ object Languages {
 
     fun Project.configureJava() {
         configure<JavaPluginConvention> {
-            sourceCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_1_6
         }
 
         configure<JavaPluginExtension> {
