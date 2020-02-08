@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.Random;
 
 public class Tools {
     private static Logger logger = LoggerFactory.getLogger(Tools.class);
@@ -34,6 +35,23 @@ public class Tools {
 				out.writeInt(arr[i][j]);
 			}
 		}
+	}
+
+	static Random r = new Random();
+
+	public static String randomCube() {
+		return randomCube(r);
+	}
+
+	public static String randomCube(Random r) {
+		FullCube c = new FullCube(r);
+		byte[] f = new byte[96];
+		c.toFacelet(f);
+		StringBuffer sb = new StringBuffer();
+		for (byte i: f) {
+			sb.append("URFDLB".charAt(i));
+		}
+		return sb.toString();
 	}
 
 	public synchronized static void initFrom(DataInput in) throws IOException {

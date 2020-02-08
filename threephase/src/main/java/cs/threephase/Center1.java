@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import static cs.threephase.Util.*;
 import static cs.threephase.Moves.*;
+
 import java.util.*;
 /*
 			0	1
@@ -122,7 +123,7 @@ final class Center1 {
 
 	Center1(CenterCube c, int urf) {
 		for (int i=0; i<24; i++) {
-			this.ct[i] = (byte) ((c.ct[i]/2 == urf) ? 1 : 0);
+			this.ct[i] = (byte) ((c.ct[i] % 3 == urf) ? 1 : 0);
 		}
 	}
 
@@ -302,7 +303,7 @@ final class Center1 {
 		for (int j=0; j<48; j++) {
 			boolean check = true;
 			for (int i=0; i<24; i++) {
-				if (c.ct[i] != i/4) {
+                if (c.ct[i] != FullCube.centerFacelet[i] / 16) {
 					check = false;
 					break;
 				}

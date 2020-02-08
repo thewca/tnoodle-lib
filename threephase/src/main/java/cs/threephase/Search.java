@@ -1,3 +1,16 @@
+/**
+ Copyright (C) 2014  Shuang Chen
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package cs.threephase;
 
 import org.slf4j.Logger;
@@ -15,7 +28,6 @@ import static cs.threephase.Center1.csprun;
 import static cs.threephase.Center1.symmove;
 
 import java.util.*;
-// import java.io.*;
 
 public class Search {
     private static Logger logger = LoggerFactory.getLogger(Search.class);
@@ -73,7 +85,7 @@ public class Search {
 		logger.info("Initialize Center1 Solver...");
 
 		Center1.initSym();
- 		Center1.raw2sym = new int[735471];
+		Center1.raw2sym = new int[735471];
 		Center1.initSym2Raw();
 		Center1.createMoveTable();
 		Center1.raw2sym = null;
@@ -118,6 +130,16 @@ public class Search {
 		return solution;
 	}
 
+	public String solution(String facelet) {
+		byte[] f = new byte[96];
+		for (int i=0; i<96; i++) {
+			f[i] = (byte) "URFDLB".indexOf(facelet.charAt(i));
+		}
+		c = new FullCube(f);
+		doSearch();
+		return solution;
+	}
+
 	public String solve(String scramble) {
 		int[] moveseq = tomove(scramble);
 		return solve(moveseq);
@@ -147,8 +169,8 @@ public class Search {
 
 		for (length1=Math.min(Math.min(udprun, fbprun), rlprun); length1<100; length1++) {
 			if (rlprun <= length1 && search1(rl>>>6, rl&0x3f, length1, -1, 0)
-					|| udprun <= length1 && search1(ud>>>6, ud&0x3f, length1, -1, 0)
-					|| fbprun <= length1 && search1(fb>>>6, fb&0x3f, length1, -1, 0)) {
+				|| udprun <= length1 && search1(ud>>>6, ud&0x3f, length1, -1, 0)
+				|| fbprun <= length1 && search1(fb>>>6, fb&0x3f, length1, -1, 0)) {
 				break;
 			}
 		}
@@ -182,7 +204,6 @@ public class Search {
 			}
 			MAX_LENGTH2++;
 		} while (length12 == 100);
-
 		Arrays.sort(arr2, 0, arr2idx);
 		int length123, index = 0;
 		int solcnt = 0;
@@ -206,13 +227,12 @@ public class Search {
 					int lm = 20;
 
 					if (prun <= length123 - arr2[i].length1 - arr2[i].length2
-							&& search3(edge, ct, prun, length123 - arr2[i].length1 - arr2[i].length2, lm, 0)) {
+						&& search3(edge, ct, prun, length123 - arr2[i].length1 - arr2[i].length2, lm, 0)) {
 						solcnt++;
-	//					System.out.println(length123 + " " + solcnt);
-	//					if (solcnt == 5) {
-							index = i;
-							break OUT2;
-	//					}
+						//					if (solcnt == 5) {
+						index = i;
+						break OUT2;
+						//					}
 					}
 				}
 			}
@@ -229,13 +249,12 @@ public class Search {
 		}
 
 		String facelet = solcube.to333Facelet();
-		String sol = search333.solution(facelet, 20, 100, 50, 0);
-		if (sol.startsWith("Error 8")) {
-			sol = search333.solution(facelet, 21, 1000000, 30, 0);
-		}
-		int len333 = sol.length() / 3;
+		String sol = search333.solution(facelet, 21, 1000000, 500, 0);
+		int len333 = search333.length();
 		if (sol.startsWith("Error")) {
 			System.out.println(sol);
+			System.out.println(solcube);
+			System.out.println(facelet);
 			throw new RuntimeException();
 		}
 		int[] sol333 = tomove(sol);
@@ -243,10 +262,7 @@ public class Search {
 			solcube.move(sol333[i]);
 		}
 
-		StringBuffer str = new StringBuffer();
-		str.append(solcube.getMoveString(inverse_solution, with_rotation));
-
-		solution = str.toString();
+		solution = solcube.getMoveString(inverse_solution, with_rotation);
 
 		totlen = length1 + length2 + length + len333;
 	}
@@ -257,7 +273,7 @@ public class Search {
 	}
 
 	boolean search1(int ct, int sym, int maxl, int lm, int depth) {
-		if (ct==0) {
+		if (ct==0 && maxl < 5) {
 			return maxl == 0 && init2(sym, lm);
 		}
 		for (int axis=0; axis<27; axis+=3) {
@@ -292,25 +308,25 @@ public class Search {
 		}
 
 		switch (Center1.finish[sym]) {
-		case 0 :
-			c1.move(fx1);
-			c1.move(bx3);
-			move1[length1] = fx1;
-			move1[length1+1] = bx3;
-			add1 = true;
-			sym = 19;
-			break;
-		case 12869 :
-			c1.move(ux1);
-			c1.move(dx3);
-			move1[length1] = ux1;
-			move1[length1+1] = dx3;
-			add1 = true;
-			sym = 34;
-			break;
-		case 735470 :
-			add1 = false;
-			sym = 0;
+			case 0 :
+				c1.move(fx1);
+				c1.move(bx3);
+				move1[length1] = fx1;
+				move1[length1+1] = bx3;
+				add1 = true;
+				sym = 19;
+				break;
+			case 12869 :
+				c1.move(ux1);
+				c1.move(dx3);
+				move1[length1] = ux1;
+				move1[length1+1] = dx3;
+				add1 = true;
+				sym = 34;
+				break;
+			case 735470 :
+				add1 = false;
+				sym = 0;
 		}
 		ct2.set(c1.getCenter(), c1.getEdge().getParity());
 		int s2ct = ct2.getct();
@@ -338,7 +354,7 @@ public class Search {
 	}
 
 	boolean search2(int ct, int rl, int maxl, int lm, int depth) {
-		if (ct==0 && ctprun[rl] == 0) {
+		if (ct==0 && ctprun[rl] == 0 && maxl == 0) {
 			return maxl == 0 && init3();
 		}
 		for (int m=0; m<23; m++) {

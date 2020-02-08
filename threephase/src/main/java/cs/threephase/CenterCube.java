@@ -10,14 +10,14 @@ class CenterCube {
 
 	CenterCube() {
 		for (int i=0; i<24; i++) {
-			ct[i] = (byte) (i / 4);
+            ct[i] = (byte) (FullCube.centerFacelet[i] / 16);
 		}
 	}
 
 	CenterCube(CenterCube c) {
 		copy(c);
 	}
-	
+
 	CenterCube(Random r) {
 		this();
 		for (int i=0; i<23; i++) {
@@ -29,20 +29,20 @@ class CenterCube {
 			}
 		}
 	}
-	
+
 	CenterCube(int[] moveseq) {
 		this();
 		for (int m=0; m<moveseq.length; m++) {
 			move(m);
 		}
 	}
-	
+
 	void copy(CenterCube c) {
 		for (int i=0; i<24; i++) {
 			this.ct[i] = c.ct[i];
 		}
 	}
-	
+
 	void print() {
 		for (int i=0; i<24; i++) {
 			System.out.print(ct[i]);
@@ -50,9 +50,9 @@ class CenterCube {
 		}
 		System.out.println();
 	}
-	
+
 	static int[] center333Map = {0, 4, 2, 1, 5, 3};
-	
+
 	void fill333Facelet(char[] facelet) {
 		int firstIdx = 4, inc = 9;
 		for (int i=0; i<6; i++) {
@@ -60,7 +60,7 @@ class CenterCube {
 			if (ct[idx] != ct[idx+1] || ct[idx+1] != ct[idx+2] || ct[idx+2] != ct[idx+3]) {
 				throw new RuntimeException("Unsolved Center");
 			}
-			facelet[firstIdx + i * inc] = Util.colorMap4to3[ct[idx]];
+            facelet[firstIdx + i * inc] = "URFDLB".charAt(ct[idx]);
 		}
 	}
 
@@ -115,7 +115,7 @@ class CenterCube {
 			swap(ct, 12, 13, 14, 15, key);
 			swap(ct, 1, 20, 7, 18, key);
 			swap(ct, 0, 23, 6, 17, key);
-			break;		
+			break;
 		}
 	}
 }
