@@ -29,9 +29,13 @@ public class Search {
         return p & 1;
     }
 
-    static {
+    static void init() {
         Shape.init();
         Square.init();
+    }
+
+    static {
+        init();
     }
 
     public String solution(FullCube c, int verbose) {
