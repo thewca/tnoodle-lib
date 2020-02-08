@@ -26,6 +26,10 @@ public class FullCube implements Comparable<FullCube> {
         return ml - f.ml;
     }
 
+    static {
+        Search.init();
+    }
+
     FullCube(String s) {
         //TODO
     }
