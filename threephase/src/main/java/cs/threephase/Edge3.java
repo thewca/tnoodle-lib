@@ -24,7 +24,7 @@ import static cs.threephase.Util.*;
 public class Edge3 {
     private static Logger logger = LoggerFactory.getLogger(Edge3.class);
 
-	static final boolean IS_64BIT_PLATFORM = false;
+    static final boolean IS_64BIT_PLATFORM = true;
 
 	static final int N_SYM = 1538;
 	static final int N_RAW = 20160;
@@ -346,23 +346,53 @@ public class Edge3 {
 	}
 
 	void set(int idx) {
-		long val = 0xba9876543210L;
-		int parity = 0;
-		for (int i=0; i<11; i++) {
-			int p = factX[11-i];
-			int v = idx / p;
-			idx = idx % p;
-			parity ^= v;
-			v <<= 2;
-			edge[i] = (int) ((val >> v) & 0xf);
-			long m = (1L << v) - 1;
-			val = (val & m) + ((val >> 4) & ~m);
-		}
-		if ((parity & 1) == 0) {
-			edge[11] = (int)val;
+		if (IS_64BIT_PLATFORM) {
+			long val = 0xba9876543210L;
+			int parity = 0;
+			for (int i=0; i<11; i++) {
+				int p = factX[11-i];
+				int v = idx / p;
+				idx = idx % p;
+				parity ^= v;
+				v <<= 2;
+				edge[i] = (int) ((val >> v) & 0xf);
+				long m = (1L << v) - 1;
+				val = (val & m) + ((val >> 4) & ~m);
+			}
+			if ((parity & 1) == 0) {
+				edge[11] = (int) val;
+			} else {
+				edge[11] = edge[10];
+				edge[10] = (int) val;
+			}
 		} else {
-			edge[11] = edge[10];
-			edge[10] = (int)val;
+			int vall = 0x76543210;
+			int valh = 0xba98;
+			int parity = 0;
+			for (int i=0; i<11; i++) {
+				int p = factX[11-i];
+				int v = idx / p;
+				idx = idx % p;
+				parity ^= v;
+				v <<= 2;
+				if (v >= 32) {
+					v = v - 32;
+					edge[i] = valh >> v & 0xf;
+					int m = (1 << v) - 1;
+					valh = (valh & m) + ((valh >> 4) & ~m);
+				} else {
+					edge[i] = vall >> v & 0xf;
+					int m = (1 << v) - 1;
+					vall = (vall & m) + ((vall >>> 4) & ~m) + (valh << 28);
+					valh = valh >> 4;
+				}
+			}
+			if ((parity & 1) == 0) {
+				edge[11] = vall;
+			} else {
+				edge[11] = edge[10];
+				edge[10] = vall;
+			}
 		}
 		for (int i=0; i<12; i++) {
 			edgeo[i] = i;
