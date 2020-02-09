@@ -3,13 +3,13 @@ package org.worldcubeassociation.tnoodle.scrambles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-class LazyPuzzleSupplier<T extends Puzzle> {
+class LazySupplier<T> {
     private T instance;
 
     public Class<T> supplyingClass;
     protected Object[] ctorArgs;
 
-    public LazyPuzzleSupplier(Class<T> supplyingClass, Object... ctorArgs) {
+    public LazySupplier(Class<T> supplyingClass, Object... ctorArgs) {
         this.supplyingClass = supplyingClass;
         this.ctorArgs = ctorArgs;
     }

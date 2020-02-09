@@ -21,23 +21,25 @@ public enum PuzzleRegistry {
     CLOCK(ClockPuzzle.class),
     SKEWB(SkewbPuzzle.class);
 
-    private LazyPuzzleSupplier<? extends Puzzle> puzzleSupplier;
+    private LazySupplier<? extends Puzzle> puzzleSupplier;
 
     <T extends Puzzle> PuzzleRegistry(Class<T> suppliyingClass, Object... ctorArgs) {
-        this.puzzleSupplier = new LazyPuzzleSupplier<T>(suppliyingClass, ctorArgs);
+        this.puzzleSupplier = new LazySupplier<T>(suppliyingClass, ctorArgs);
     }
 
     public Puzzle getScrambler() {
         return this.puzzleSupplier.getInstance();
     }
 
+    // WORD OF ADVICE: The puzzles that use local scrambling mechanisms
+    // should not take long to boot anyways because their computation-heavy
+    // code is wrapped in ThreadLocal objects that are only executed on-demand
+
     public String getKey() {
-        // FIXME call without having to instantiate?
         return this.getScrambler().getShortName();
     }
 
     public String getDescription() {
-        // FIXME call without having to instantiate?
         return this.getScrambler().getLongName();
     }
 }
