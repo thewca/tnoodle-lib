@@ -15,7 +15,7 @@ object Publications {
     fun Project.configureMavenPublication(targetArtifactId: String? = null) {
         configure<PublishingExtension> {
             publications {
-                create<MavenPublication>("tnoodle-lib") {
+                create<MavenPublication>(rootProject.name) {
                     targetArtifactId?.let {
                         artifactId = it
                     }
@@ -37,7 +37,7 @@ object Publications {
             pkg(delegateClosureOf<PackageConfig> {
                 repo = rootProject.name
                 name = project.name
-                websiteUrl = "https://worldcubeassociation.org"
+                websiteUrl = "https://www.worldcubeassociation.org/regulations/scrambles/"
                 vcsUrl = "https://github.com/thewca/tnoodle-lib"
                 setLabels("java")
                 setLicenses("GPL-3.0")
