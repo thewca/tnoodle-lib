@@ -1,5 +1,8 @@
 package cs.threephase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static cs.threephase.Moves.*;
 import static cs.threephase.Util.*;
 import static cs.threephase.Center2.rlmv;
@@ -15,6 +18,8 @@ import java.util.*;
 // import java.io.*;
 
 public class Search {
+    private static Logger logger = LoggerFactory.getLogger(Search.class);
+
 	static final int PHASE1_SOLUTIONS = 10000;
 	static final int PHASE2_ATTEMPTS = 500;
 	static final int PHASE2_SOLUTIONS = 100;
@@ -31,7 +36,7 @@ public class Search {
 	int[] move3 = new int[20];
 	int length1 = 0;
 	int length2 = 0;
-	int maxlength2;	
+	int maxlength2;
 	boolean add1 = false;
 	public FullCube c;
 	FullCube c1 = new FullCube();
@@ -48,10 +53,10 @@ public class Search {
 
 	int p1SolsCnt = 0;
 	FullCube[] arr2 = new FullCube[PHASE2_SOLUTIONS];
-	int arr2idx = 0;	
+	int arr2idx = 0;
 
 	public boolean inverse_solution = true;
-	public boolean with_rotation = false;	
+	public boolean with_rotation = false;
 
 	public Search() {
 		for (int i=0; i<20; i++) {
@@ -65,7 +70,7 @@ public class Search {
 		}
 		cs.min2phase.Search.init();
 
-		System.out.println("Initialize Center1 Solver...");
+		logger.info("Initialize Center1 Solver...");
 
 		Center1.initSym();
  		Center1.raw2sym = new int[735471];
@@ -74,23 +79,23 @@ public class Search {
 		Center1.raw2sym = null;
 		Center1.createPrun();
 
-		System.out.println("Initialize Center2 Solver...");
+		logger.info("Initialize Center2 Solver...");
 
 		Center2.init();
 
-		System.out.println("Initialize Center3 Solver...");
+		logger.info("Initialize Center3 Solver...");
 
 		Center3.init();
 
-		System.out.println("Initialize Edge3 Solver...");
+		logger.info("Initialize Edge3 Solver...");
 
 		Edge3.initMvrot();
 		Edge3.initRaw2Sym();
 		Edge3.createPrun();
 
-		System.out.println("OK");		
+		logger.info("OK");
 
-		inited = true;	
+		inited = true;
 	}
 
 	public String randomMove(Random r) {
@@ -121,7 +126,7 @@ public class Search {
 	public String solve(int[] moveseq) {
 		c = new FullCube(moveseq);
 		doSearch();
-		return solution;	
+		return solution;
 	}
 
 	int totlen = 0;
@@ -141,7 +146,7 @@ public class Search {
 		p1sols.clear();
 
 		for (length1=Math.min(Math.min(udprun, fbprun), rlprun); length1<100; length1++) {
-			if (rlprun <= length1 && search1(rl>>>6, rl&0x3f, length1, -1, 0) 
+			if (rlprun <= length1 && search1(rl>>>6, rl&0x3f, length1, -1, 0)
 					|| udprun <= length1 && search1(ud>>>6, ud&0x3f, length1, -1, 0)
 					|| fbprun <= length1 && search1(fb>>>6, fb&0x3f, length1, -1, 0)) {
 				break;
@@ -200,7 +205,7 @@ public class Search {
 					int prun = Edge3.getprun(e12.getsym());
 					int lm = 20;
 
-					if (prun <= length123 - arr2[i].length1 - arr2[i].length2 
+					if (prun <= length123 - arr2[i].length1 - arr2[i].length2
 							&& search3(edge, ct, prun, length123 - arr2[i].length1 - arr2[i].length2, lm, 0)) {
 						solcnt++;
 	//					System.out.println(length123 + " " + solcnt);
@@ -303,7 +308,7 @@ public class Search {
 			add1 = true;
 			sym = 34;
 			break;
-		case 735470 : 
+		case 735470 :
 			add1 = false;
 			sym = 0;
 		}

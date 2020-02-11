@@ -1,8 +1,12 @@
 package cs.threephase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 public class Tools {
+    private static Logger logger = LoggerFactory.getLogger(Tools.class);
 
 	private static void read(int[] arr, DataInput in) throws IOException {
 		for (int i=0, len=arr.length; i<len; i++) {
@@ -21,7 +25,7 @@ public class Tools {
 			for (int j=0, len=arr[i].length; j<len; j++) {
 				arr[i][j] = in.readInt();
 			}
-		}	
+		}
 	}
 
 	private static void write(int[][] arr, DataOutput out) throws IOException {
@@ -29,7 +33,7 @@ public class Tools {
 			for (int j=0, len=arr[i].length; j<len; j++) {
 				out.writeInt(arr[i][j]);
 			}
-		}	
+		}
 	}
 
 	public synchronized static void initFrom(DataInput in) throws IOException {
@@ -37,28 +41,28 @@ public class Tools {
 			return;
 		}
 
-		System.out.println("Initialize Center1 Solver...");
+		logger.info("Initialize Center1 Solver...");
 
 		Center1.initSym();
 		Center1.initSym2Raw();
 		read(Center1.ctsmv, in);
 		Center1.createPrun();
 
-		System.out.println("Initialize Center2 Solver...");
+		logger.info("Initialize Center2 Solver...");
 
 		Center2.init();
 
-		System.out.println("Initialize Center3 Solver...");
+		logger.info("Initialize Center3 Solver...");
 
 		Center3.init();
 
-		System.out.println("Initialize Edge3 Solver...");
+		logger.info("Initialize Edge3 Solver...");
 
 		Edge3.initMvrot();
 		Edge3.initRaw2Sym();
 		read(Edge3.eprun, in);
 
-		System.out.println("OK");		
+		logger.info("OK");
 
 		Search.inited = true;
 	}

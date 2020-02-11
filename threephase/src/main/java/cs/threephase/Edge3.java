@@ -1,24 +1,29 @@
 package cs.threephase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import static cs.threephase.Util.*;
 
 /*
- 					13	1	
-				4			17 
-				16			5 
-					0	12	
-	4	16			0	12			5	17			1	13	
-9			20	20			11	11			22	22			9 
-21			8	8			23	23			10	10			21 
-	19	7			15	3			18	6			14	2	
-					15	3	
-				7			18 
-				19			6 
-					2	14	
+ 					13	1
+				4			17
+				16			5
+					0	12
+	4	16			0	12			5	17			1	13
+9			20	20			11	11			22	22			9
+21			8	8			23	23			10	10			21
+	19	7			15	3			18	6			14	2
+					15	3
+				7			18
+				19			6
+					2	14
  */
 
 public class Edge3 {
+    private static Logger logger = LoggerFactory.getLogger(Edge3.class);
+
 	static final boolean IS_64BIT_PLATFORM = false;
 
 	static final int N_SYM = 1538;
@@ -27,7 +32,7 @@ public class Edge3 {
 	static final int MAX_DEPTH = 10;
 
 	static final int[] prunValues = {1, 4, 16, 55, 324, 1922, 12275, 77640, 485359, 2778197, 11742425, 27492416, 31002941, 31006080};
-	
+
 	static int[] eprun = new int[N_EPRUN / 16];
 
 	static int[] sym2raw = new int[N_SYM];
@@ -43,7 +48,7 @@ public class Edge3 {
 
 	static int[][] mvrot = new int[20*8][12];
 	static int[][] mvroto = new int[20*8][12];
-	
+
 	static int[] factX = {1, 1, 2/2, 6/2, 24/2, 120/2, 720/2, 5040/2, 40320/2, 362880/2, 3628800/2, 39916800/2, 479001600/2};
 
 	static int done = 0;
@@ -71,7 +76,7 @@ public class Edge3 {
 	}
 
 	static void initRaw2Sym() {
-		Edge3 e = new Edge3();		
+		Edge3 e = new Edge3();
 		byte[] occ = new byte[11880/8];
 		int count = 0;
 		for (int i=0; i<11880; i++) {
@@ -95,7 +100,7 @@ public class Edge3 {
 		}
 		assert count == 1538;
 	}
-	
+
 	static void setPruning(int[] table, int index, int value) {
 		table[index >> 4] ^= (0x3 ^ value) << ((index & 0xf) << 1);
 	}
@@ -146,7 +151,7 @@ public class Edge3 {
 			}
 		}
 		return depth;
-	}	
+	}
 
 	static void createPrun() {
 		Edge3 e = new Edge3();
@@ -227,7 +232,7 @@ public class Edge3 {
 				}
 			}
 			depth++;
-			System.out.println(depth + "\t" + done);
+			logger.debug(depth + "\t" + done);
 		}
 	}
 
@@ -306,7 +311,7 @@ public class Edge3 {
 				}
 			}
 		}
-		return idx;	
+		return idx;
 
 	}
 
@@ -321,7 +326,7 @@ public class Edge3 {
 		for (int i=0; i<12; i++) {
 			edge[i] = temp[edge[i]];
 			edgeo[i] = i;
-		}		
+		}
 		isStd = true;
 	}
 
@@ -337,7 +342,7 @@ public class Edge3 {
 			idx += (val >> v) & 0xf;
 			val -= 0x111111111110L << v;
 		}
-		return idx;		
+		return idx;
 	}
 
 	void set(int idx) {
@@ -459,7 +464,7 @@ public class Edge3 {
 			swap(edgeo, 1, 9, 2, 10);
 			swap(edge, 4, 6);
 			swap(edgeo, 5, 7);
-			break;		
+			break;
 		}
 	}
 
@@ -472,10 +477,10 @@ public class Edge3 {
 			break;
 		case 1:
 			circlex(11, 5, 10, 6);//r
-			circlex(5, 10, 6, 11);				
+			circlex(5, 10, 6, 11);
 			circlex(1, 2, 3, 0);
 			circlex(4, 9, 7, 8);//l'
-			circlex(8, 4, 9, 7);				
+			circlex(8, 4, 9, 7);
 			circlex(0, 1, 2, 3);
 			break;
 		case 2:
@@ -486,7 +491,7 @@ public class Edge3 {
 			swapx(1, 1); swapx(0, 0);
 			swapx(3, 3); swapx(2, 2);
 			break;
-		}	
+		}
 	}
 
 	void rotate(int r) {
