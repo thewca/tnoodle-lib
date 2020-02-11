@@ -5,6 +5,7 @@ object Versions {
     val JUNIT_JUPITER = "5.4.2"
 
     val GWTEXPORTER = GWT
+    val LOGBACK_CLASSIC = "1.2.3"
     val JUNIT_JUPITER_API = JUNIT_JUPITER
     val JUNIT_JUPITER_ENGINE = JUNIT_JUPITER
 
