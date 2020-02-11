@@ -1,6 +1,11 @@
 package cs.sq12phase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class Square {
+    private static Logger logger = LoggerFactory.getLogger(Square.class);
+
     int edgeperm;       //number encoding the edge permutation 0-40319
     int cornperm;       //number encoding the corner permutation 0-40319
     boolean topEdgeFirst;   //true if top layer starts with edge left of seam
@@ -138,7 +143,7 @@ class Square {
                     }
                 }
             }
-            System.out.println(String.format("%2d%6d", depth, done));
+            logger.debug(String.format("%2d%6d", depth, done));
         }
         inited = true;
     }
