@@ -61,6 +61,7 @@ public class Tools {
 		Edge3.initMvrot();
 		Edge3.initRaw2Sym();
 		read(Edge3.eprun, in);
+		Edge3.done = Edge3.N_EPRUN;
 
 		logger.info("OK");
 
