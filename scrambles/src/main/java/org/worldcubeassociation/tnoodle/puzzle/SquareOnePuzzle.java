@@ -252,11 +252,8 @@ public class SquareOnePuzzle extends Puzzle {
 
                 return ab.getStateAndGenerator().generator;
             } catch (InvalidMoveException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
-
-            // some invalid move exception happened; normally we don't ever get here
-            return null;
         }
 
         FullCube f = sqState.toFullCube();
