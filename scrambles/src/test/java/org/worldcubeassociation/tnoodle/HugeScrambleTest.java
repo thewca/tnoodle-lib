@@ -72,9 +72,15 @@ public class HugeScrambleTest {
         int SCRAMBLE_COUNT = 10;
 
         for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            System.out.println("Testing " + lazyScrambler.getDescription());
+
             final Puzzle scrambler = lazyScrambler.getScrambler();
             for(int count = 0; count < SCRAMBLE_COUNT; count++){
-                Puzzle.PuzzleState state = scrambler.getSolvedState().applyAlgorithm(scrambler.generateWcaScramble(r));
+                String scramble = scrambler.generateWcaScramble(r);
+                System.out.println("Filtering for scramble " + scramble);
+
+                Puzzle.PuzzleState state = scrambler.getSolvedState().applyAlgorithm(scramble);
+
                 assertSame(state.solveIn(scrambler.getWcaMinScrambleDistance() - 1), null);
             }
         }
