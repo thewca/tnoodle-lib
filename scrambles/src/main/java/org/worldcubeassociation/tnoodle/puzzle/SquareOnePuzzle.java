@@ -212,7 +212,11 @@ public class SquareOnePuzzle extends Puzzle {
             int currentMin = Integer.MAX_VALUE;
 
             for (Map.Entry<String, SquareOneState> possState : slashableSuccessors.entrySet()) {
-                Integer moveCost = topBottomCostsByMove.get(possState.getKey());
+                // we're not interested in the standard uniform WCA cost distribution here.
+                // instead, we aim to find the "minimum invasive" move to achieve slashability.
+                // in other words, for a sq1 with scramble (-1, 0) we want to prefer (1, 0) over (4, 0) or (5, 0)
+                // despite all of those moves technically achieving a slashable state
+                Integer moveCost = slashabilityCostsByMove.get(possState.getKey());
 
                 if (moveCost != null && moveCost < currentMin) {
                     currentMin = moveCost;
@@ -260,8 +264,8 @@ public class SquareOnePuzzle extends Puzzle {
         return scramble == null ? null : scramble.trim();
     }
 
-    static HashMap<String, Integer> costsByMove = new HashMap<String, Integer>();
-    static HashMap<String, Integer> topBottomCostsByMove = new HashMap<String, Integer>();
+    static HashMap<String, Integer> wcaCostsByMove = new HashMap<String, Integer>();
+    static HashMap<String, Integer> slashabilityCostsByMove = new HashMap<String, Integer>();
     static {
         for(int top = -5; top <= 6; top++) {
             for(int bottom = -5; bottom <= 6; bottom++) {
@@ -269,16 +273,19 @@ public class SquareOnePuzzle extends Puzzle {
                     // No use doing nothing =)
                     continue;
                 }
+                String turn = "(" + top + "," + bottom + ")";
+
+                int wcaCost = 1; // https://www.worldcubeassociation.org/regulations/#12c4
+                wcaCostsByMove.put(turn, wcaCost);
+
                 int topCost = Math.abs(top);
                 int bottomCost = Math.abs(bottom);
                 int topBottomCost = topCost + bottomCost;
-                int cost = 1;
-                String turn = "(" + top + "," + bottom + ")";
-                costsByMove.put(turn, cost);
-                topBottomCostsByMove.put(turn, topBottomCost);
+                slashabilityCostsByMove.put(turn, topBottomCost);
             }
         }
-        costsByMove.put("/", 1);
+        // https://www.worldcubeassociation.org/regulations/#12c4
+        wcaCostsByMove.put("/", 1);
     }
 
     public class SquareOneState extends PuzzleState {
@@ -368,7 +375,7 @@ public class SquareOnePuzzle extends Puzzle {
             // api to return move costs as part of the object returned by
             // getScrambleSuccessors(), then subclasses wouldn't have to do
             // weird stuff like this for speed.
-            return costsByMove.get(move);
+            return wcaCostsByMove.get(move);
         }
 
         @Override
