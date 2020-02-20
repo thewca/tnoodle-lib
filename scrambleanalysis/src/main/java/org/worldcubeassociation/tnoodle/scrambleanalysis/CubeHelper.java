@@ -1,9 +1,9 @@
 package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
-import static org.worldcubeassociation.tnoodle.scrambleanalysis.utils.StringUtils.stringCompareIgnoringOrder;
+import org.worldcubeassociation.tnoodle.puzzle.CubePuzzle;
+import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
 
-import net.gnehzr.tnoodle.puzzle.CubePuzzle.CubeState;
-import net.gnehzr.tnoodle.scrambles.InvalidMoveException;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.utils.StringUtils.stringCompareIgnoringOrder;
 
 public class CubeHelper {
 	// For 3x3 only.
@@ -67,7 +67,7 @@ public class CubeHelper {
 		return result;
 	}
 
-	public static int countMisorientedEdges(CubeState cubeState) throws RepresentationException {
+	public static int countMisorientedEdges(CubePuzzle.CubeState cubeState) throws RepresentationException {
 		String representation = cubeState.toFaceCube();
 		return countMisorientedEdges(representation);
 	}

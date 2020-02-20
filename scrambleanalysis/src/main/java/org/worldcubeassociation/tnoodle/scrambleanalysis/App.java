@@ -1,9 +1,9 @@
 package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
-import java.util.ArrayList;
+import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
+import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
 
-import net.gnehzr.tnoodle.scrambles.InvalidMoveException;
-import net.gnehzr.tnoodle.scrambles.InvalidScrambleException;
+import java.util.ArrayList;
 
 public class App {
 

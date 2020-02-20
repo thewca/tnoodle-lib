@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import org.apache.commons.math3.stat.inference.AlternativeHypothesis;
 import org.apache.commons.math3.stat.inference.BinomialTest;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
+import org.worldcubeassociation.tnoodle.puzzle.CubePuzzle;
+import org.worldcubeassociation.tnoodle.puzzle.ThreeByThreeCubePuzzle;
 import org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution;
-
-import net.gnehzr.tnoodle.puzzle.CubePuzzle.CubeState;
-import net.gnehzr.tnoodle.puzzle.ThreeByThreeCubePuzzle;
-import net.gnehzr.tnoodle.scrambles.InvalidMoveException;
-import net.gnehzr.tnoodle.scrambles.InvalidScrambleException;
+import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
+import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
 
 public class CubeTest {
 
@@ -51,8 +50,8 @@ public class CubeTest {
 
 			String scramble = scrambles.get(i);
 
-			CubeState solved = cube.getSolvedState();
-			CubeState cubeState = (CubeState) solved.applyAlgorithm(scramble);
+			CubePuzzle.CubeState solved = cube.getSolvedState();
+			CubePuzzle.CubeState cubeState = (CubePuzzle.CubeState) solved.applyAlgorithm(scramble);
 			String representation = cubeState.toFaceCube();
 
 			int misorientedEdges = countMisorientedEdges(representation);
