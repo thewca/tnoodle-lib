@@ -1,4 +1,4 @@
-package org.thewca.scrambleanalysis;
+package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
 import java.io.File;
 import java.io.IOException;

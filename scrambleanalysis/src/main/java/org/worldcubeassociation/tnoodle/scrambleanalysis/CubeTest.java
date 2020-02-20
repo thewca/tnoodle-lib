@@ -1,21 +1,21 @@
-package org.thewca.scrambleanalysis;
+package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
-import static org.thewca.scrambleanalysis.CubeHelper.cornerOrientationSum;
-import static org.thewca.scrambleanalysis.CubeHelper.countMisorientedEdges;
-import static org.thewca.scrambleanalysis.CubeHelper.getFinalPositionOfCorner;
-import static org.thewca.scrambleanalysis.CubeHelper.getFinalPositionOfEdge;
-import static org.thewca.scrambleanalysis.CubeHelper.hasParity;
-import static org.thewca.scrambleanalysis.statistics.Distribution.expectedCornersFinalPosition;
-import static org.thewca.scrambleanalysis.statistics.Distribution.expectedCornersOrientationProbability;
-import static org.thewca.scrambleanalysis.statistics.Distribution.expectedEdgesFinalPosition;
-import static org.thewca.scrambleanalysis.statistics.Distribution.expectedEdgesOrientationProbability;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.CubeHelper.cornerOrientationSum;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.CubeHelper.countMisorientedEdges;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.CubeHelper.getFinalPositionOfCorner;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.CubeHelper.getFinalPositionOfEdge;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.CubeHelper.hasParity;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution.expectedCornersFinalPosition;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution.expectedCornersOrientationProbability;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution.expectedEdgesFinalPosition;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution.expectedEdgesOrientationProbability;
 
 import java.util.ArrayList;
 
 import org.apache.commons.math3.stat.inference.AlternativeHypothesis;
 import org.apache.commons.math3.stat.inference.BinomialTest;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
-import org.thewca.scrambleanalysis.statistics.Distribution;
+import org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution;
 
 import net.gnehzr.tnoodle.puzzle.CubePuzzle.CubeState;
 import net.gnehzr.tnoodle.puzzle.ThreeByThreeCubePuzzle;

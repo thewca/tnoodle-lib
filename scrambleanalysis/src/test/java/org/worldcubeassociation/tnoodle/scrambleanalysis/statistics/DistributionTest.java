@@ -1,4 +1,4 @@
-package org.thewca.scrambleanalysis.statistics;
+package org.worldcubeassociation.tnoodle.scrambleanalysis.statistics;
 
 import static org.junit.jupiter.api.Assertions.*;
 

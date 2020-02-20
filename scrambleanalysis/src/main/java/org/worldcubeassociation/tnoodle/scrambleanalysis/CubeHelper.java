@@ -1,6 +1,6 @@
-package org.thewca.scrambleanalysis;
+package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
-import static org.thewca.scrambleanalysis.utils.StringUtils.stringCompareIgnoringOrder;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.utils.StringUtils.stringCompareIgnoringOrder;
 
 import net.gnehzr.tnoodle.puzzle.CubePuzzle.CubeState;
 import net.gnehzr.tnoodle.scrambles.InvalidMoveException;
@@ -50,7 +50,7 @@ public class CubeHelper {
 
 	/**
 	 * Count misoriented edges considering the FB axis.
-	 * 
+	 *
 	 * @param cubeState
 	 * @return the number of misoriented edges in a cube.
 	 * @throws RepresentationException
@@ -105,7 +105,7 @@ public class CubeHelper {
 	/**
 	 * Given a representation, returns a number that represents the orientation of a
 	 * corner at index cornerIndex
-	 * 
+	 *
 	 * @param representation: a representation of a cube.
 	 * @param cornerIndex:    0 <= cornerIndex < 8
 	 * @return: 0 if the corner is oriented. 1 if the corner is oriented clockwise.
@@ -138,7 +138,7 @@ public class CubeHelper {
 	/**
 	 * Sum of corner orientation. 0 for oriented, 1 for clockwise, 2 for counter
 	 * clock wise.
-	 * 
+	 *
 	 * @param representation
 	 * @return The sum of it.
 	 * @throws RepresentationException
@@ -212,10 +212,10 @@ public class CubeHelper {
 	 * the 3rd edge in a representation (solved).
 	 * getFinalLocationOfEdgeSticker(repr, 0) returns 2, which is 3rd sticker (0
 	 * based).
-	 * 
+	 *
 	 * UF is initially the 4th edge, so index 3. When an F is applied it goes to RF,
 	 * which is the 6th edge on the toFaceCube representation, so this returns 5.
-	 * 
+	 *
 	 * @param representation: the final representation of a cube.
 	 * @param i:              the index, when solved, of a edge (0 for UB or BU, 1
 	 *                        for UL or LU, 3 for UR...

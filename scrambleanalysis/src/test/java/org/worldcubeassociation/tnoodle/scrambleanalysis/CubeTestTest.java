@@ -1,11 +1,9 @@
-package org.thewca.scrambleanalysis;
+package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import org.junit.jupiter.api.Test;
 
 public class CubeTestTest {
 

@@ -1,6 +1,6 @@
-package org.thewca.scrambleanalysis.statistics;
+package org.worldcubeassociation.tnoodle.scrambleanalysis.statistics;
 
-import static org.thewca.scrambleanalysis.utils.MathUtils.nCp;
+import static org.worldcubeassociation.tnoodle.scrambleanalysis.utils.MathUtils.nCp;
 
 public class Distribution {
 
@@ -10,7 +10,7 @@ public class Distribution {
 	/**
 	 * This is the expected probability distribution for edge orientation
 	 * considering random state.
-	 * 
+	 *
 	 * @return An array whose size is 7. On the index 0, the chance of 0 pairs
 	 *         oriented; on the index 1, the probability for 1 misoriented pair; on
 	 *         the index 2, the probability for 2 misoriented pairs;
@@ -52,7 +52,7 @@ public class Distribution {
 	 * considering random state. We assign 0 for oriented corner, 1 for corners
 	 * twisted clockwise, 2 for counter clockwise. In a valid cube, the sum of the
 	 * orientation is a multiple of 3.
-	 * 
+	 *
 	 * @return An array whose size is 6. On the index 0, the probability of sum 0 in
 	 *         corner orientation. On the index 1, the probability of sum 3 = 3 * 1.
 	 *         On the index 2, the probability of sum 6 = 3 * 2.
@@ -102,7 +102,7 @@ public class Distribution {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The minimum sample size for our tests.
 	 */
 	public static long minimumSampleSize() {

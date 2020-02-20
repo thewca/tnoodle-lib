@@ -1,4 +1,4 @@
-package org.thewca.scrambleanalysis;
+package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
