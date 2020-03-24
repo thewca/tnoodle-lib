@@ -17,8 +17,6 @@ import org.timepedia.exporter.client.Export;
 @Export
 public class SquareOnePuzzle extends Puzzle {
 
-    //public static final int SQ1_MAX_SCRAMBLE_LENGTH = 20;
-
     private static final int radius = 32;
 
     private ThreadLocal<Search> twoPhaseSearcher;
@@ -37,7 +35,6 @@ public class SquareOnePuzzle extends Puzzle {
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
         FullCube randomState = FullCube.randomCube(r);
 
-        //String scramble = twoPhaseSearcher.get().solutionOpt(randomState, SQ1_MAX_SCRAMBLE_LENGTH, Search.INVERSE_SOLUTION).trim();
         String scramble = twoPhaseSearcher.get().solution(randomState, Search.INVERSE_SOLUTION).trim();
         PuzzleState state;
         try {
