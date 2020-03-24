@@ -197,67 +197,6 @@ public class SquareOnePuzzle extends Puzzle {
         return 40;
     }
 
-    @Override
-    protected String solveIn(PuzzleState ps, int n) {
-        SquareOneState sqState = (SquareOneState) ps;
-
-        // apparently sq12phase can neither represent nor solve "unslashable" squares
-        if (!sqState.canSlash()) {
-            HashMap<String, SquareOneState> slashableSuccessors = sqState.getScrambleSuccessors();
-
-            Map.Entry<String, SquareOneState> bestSlashable = null;
-            int currentMin = Integer.MAX_VALUE;
-
-            for (Map.Entry<String, SquareOneState> possState : slashableSuccessors.entrySet()) {
-                // we're not interested in the standard uniform WCA cost distribution here.
-                // instead, we aim to find the "minimum invasive" move to achieve slashability.
-                // in other words, for a sq1 with scramble (-1, 0) we want to prefer (1, 0) over (4, 0) or (5, 0)
-                // despite all of those moves technically achieving a slashable state
-                Integer moveCost = slashabilityCostsByMove.get(possState.getKey());
-
-                if (moveCost != null && moveCost < currentMin) {
-                    currentMin = moveCost;
-                    bestSlashable = possState;
-                }
-            }
-
-            // absolutely no successor found to make it slashable
-            if (bestSlashable == null) {
-                return null;
-            }
-
-            AlgorithmBuilder ab = new AlgorithmBuilder(this, AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, sqState);
-
-            try {
-                ab.appendMove(bestSlashable.getKey());
-
-                String nextBestSolution = bestSlashable.getValue().solveIn(n);
-                // initially just hope that it cancels with the n-move optimal solution
-                ab.appendAlgorithm(nextBestSolution);
-
-                if (ab.getTotalCost() > n) {
-                    // didn't cancel, try and find optimal solution in n-1
-                    ab = new AlgorithmBuilder(this, AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, sqState);
-                    ab.appendMove(bestSlashable.getKey());
-
-                    String oneMoveLessSolution = bestSlashable.getValue().solveIn(n - 1);
-                    // no need for any further checks here.
-                    // the "worst" thing that can happen is the n-1 move solution happens to cancel
-                    // (for whatever reason), in which case we've kept the bounds anyways
-                    ab.appendAlgorithm(oneMoveLessSolution);
-                }
-
-                return ab.getStateAndGenerator().generator;
-            } catch (InvalidMoveException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        FullCube f = sqState.toFullCube();
-        String scramble = twoPhaseSearcher.get().solutionOpt(f, n);
-        return scramble == null ? null : scramble.trim();
-    }
-
     static HashMap<String, Integer> wcaCostsByMove = new HashMap<String, Integer>();
     static HashMap<String, Integer> slashabilityCostsByMove = new HashMap<String, Integer>();
     static {
@@ -404,6 +343,84 @@ public class SquareOnePuzzle extends Puzzle {
                 successors.put("/", new SquareOneState(!sliceSolved, doSlash()));
             }
             return successors;
+        }
+
+        @Override
+        public String solveIn(int n) {
+            // apparently sq12phase can neither represent nor solve "unslashable" squares
+            if (!this.canSlash()) {
+                // getScrambleSuccessors automatically filters for slashability
+                HashMap<String, SquareOneState> slashableSuccessors = this.getScrambleSuccessors();
+
+                Map.Entry<String, SquareOneState> bestSlashable = null;
+                int currentMin = Integer.MAX_VALUE;
+
+                for (Map.Entry<String, SquareOneState> possState : slashableSuccessors.entrySet()) {
+                    // we're not interested in the standard uniform WCA cost distribution here.
+                    // instead, we aim to find the "minimum invasive" move to achieve slashability.
+                    // in other words, for a sq1 with scramble (-1, 0) we want to prefer (1, 0) over (4, 0) or (5, 0)
+                    // despite all of those moves technically achieving a slashable state
+                    Integer moveCost = slashabilityCostsByMove.get(possState.getKey());
+
+                    if (moveCost != null && moveCost < currentMin) {
+                        currentMin = moveCost;
+                        bestSlashable = possState;
+                    }
+                }
+
+                // absolutely no successor found to make it slashable
+                if (bestSlashable == null) {
+                    return null;
+                }
+
+                try {
+                    String slashabilitySetupMove = bestSlashable.getKey();
+                    SquareOneState slashableState = bestSlashable.getValue();
+
+                    return slashableState.solveSlashableIn(slashabilitySetupMove, n, n - 1);
+                } catch (InvalidMoveException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            FullCube f = this.toFullCube();
+            String scramble = twoPhaseSearcher.get().solutionOpt(f, n);
+            return scramble == null ? null : scramble.trim();
+        }
+
+        private String solveSlashableIn(String slashabilityMove, int n, int lowerThreshold) throws InvalidMoveException {
+            if (!this.canSlash()) {
+                // nice try.
+                return null;
+            }
+
+            if (n < lowerThreshold) {
+                // we do not want to dig any deeper
+                return null;
+            }
+
+            // despite already having "wasted" one move for slashability, we do NOT search for n-1 here
+            // because doing so would remove one degree of freedom that could potentially cancel into our setup move
+            String nextBestSolution = this.solveIn(n);
+
+            if (nextBestSolution == null) {
+                // we cannot even solve the slashable state in n moves, give up
+                return null;
+            }
+
+            AlgorithmBuilder ab = new AlgorithmBuilder(this.getPuzzle(), AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, this);
+
+            // initially just hope that slashability cancels with the n-move optimal solution
+            ab.appendMove(slashabilityMove);
+            ab.appendAlgorithm(nextBestSolution);
+
+            if (ab.getTotalCost() > n) {
+                // slashability move did not cancel with the n-move solution, try shorter solution
+                return this.solveSlashableIn(slashabilityMove, n - 1, lowerThreshold);
+            }
+
+            // if we reach here, the total cost is implicitly <= n
+            return ab.getStateAndGenerator().generator;
         }
 
         @Override
