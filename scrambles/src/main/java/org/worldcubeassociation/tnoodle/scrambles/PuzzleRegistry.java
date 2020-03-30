@@ -16,7 +16,6 @@ public enum PuzzleRegistry {
     THREE_FM(ThreeByThreeCubeFewestMovesPuzzle.class),
     PYRA(PyraminxPuzzle.class),
     SQ1(SquareOnePuzzle.class),
-    SQ1_FAST(SquareOneUnfilteredPuzzle.class),
     MEGA(MegaminxPuzzle.class),
     CLOCK(ClockPuzzle.class),
     SKEWB(SkewbPuzzle.class);
