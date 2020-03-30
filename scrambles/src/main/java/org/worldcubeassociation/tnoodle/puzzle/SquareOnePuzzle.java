@@ -377,7 +377,7 @@ public class SquareOnePuzzle extends Puzzle {
                     String slashabilitySetupMove = bestSlashable.getKey();
                     SquareOneState slashableState = bestSlashable.getValue();
 
-                    return slashableState.solveSlashableIn(slashabilitySetupMove, n, n - 1);
+                    return slashableState.solveWithSlashabilityIn(n, slashabilitySetupMove, this, n - 1);
                 } catch (InvalidMoveException e) {
                     throw new RuntimeException(e);
                 }
@@ -388,7 +388,7 @@ public class SquareOnePuzzle extends Puzzle {
             return scramble == null ? null : scramble.trim();
         }
 
-        private String solveSlashableIn(String slashabilityMove, int n, int lowerThreshold) throws InvalidMoveException {
+        private String solveWithSlashabilityIn(int n, String slashabilityMove, SquareOneState preSlashabilityState, int lowerThreshold) throws InvalidMoveException {
             if (!this.canSlash()) {
                 // nice try.
                 return null;
@@ -408,7 +408,7 @@ public class SquareOnePuzzle extends Puzzle {
                 return null;
             }
 
-            AlgorithmBuilder ab = new AlgorithmBuilder(this.getPuzzle(), AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, this);
+            AlgorithmBuilder ab = new AlgorithmBuilder(this.getPuzzle(), AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, preSlashabilityState);
 
             // initially just hope that slashability cancels with the n-move optimal solution
             ab.appendMove(slashabilityMove);
@@ -416,7 +416,7 @@ public class SquareOnePuzzle extends Puzzle {
 
             if (ab.getTotalCost() > n) {
                 // slashability move did not cancel with the n-move solution, try shorter solution
-                return this.solveSlashableIn(slashabilityMove, n - 1, lowerThreshold);
+                return this.solveWithSlashabilityIn(n - 1, slashabilityMove, preSlashabilityState, lowerThreshold);
             }
 
             // if we reach here, the total cost is implicitly <= n
