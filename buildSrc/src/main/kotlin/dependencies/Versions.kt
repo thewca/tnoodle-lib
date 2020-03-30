@@ -2,7 +2,7 @@ package dependencies
 
 object Versions {
     val GWT = "2.5.1"
-    val JUNIT_JUPITER = "5.4.2"
+    val JUNIT_JUPITER = "5.5.2"
 
     val GWTEXPORTER = GWT
     val LOGBACK_CLASSIC = "1.2.3"
@@ -11,7 +11,7 @@ object Versions {
 
     object Plugins {
         val SHADOW = "5.2.0"
-        val DEPENDENCY_VERSIONS = "0.27.0"
+        val DEPENDENCY_VERSIONS = "0.28.0"
         val GIT_VERSION_TAG = "0.12.2"
     }
 }
