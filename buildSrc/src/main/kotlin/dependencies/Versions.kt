@@ -10,8 +10,8 @@ object Versions {
     val JUNIT_JUPITER_ENGINE = JUNIT_JUPITER
 
     object Plugins {
-        val SHADOW = "5.2.0"
-        val DEPENDENCY_VERSIONS = "0.28.0"
+        val SHADOW = "6.0.0"
+        val DEPENDENCY_VERSIONS = "0.29.0"
         val GIT_VERSION_TAG = "0.12.2"
     }
 }
