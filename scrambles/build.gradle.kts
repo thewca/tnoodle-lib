@@ -2,7 +2,6 @@ import configurations.Languages.attachRepositories
 import configurations.Languages.configureJava
 import configurations.Frameworks.configureCheckstyle
 import configurations.Frameworks.configureJUnit5
-import configurations.Publications.configureBintrayTarget
 import configurations.Publications.configureMavenPublication
 
 import dependencies.Libraries.GWTEXPORTER
@@ -16,13 +15,11 @@ plugins {
     checkstyle
     `maven-publish`
     SHADOW
-    JFROG_BINTRAY
 }
 
 configureJava()
 configureCheckstyle()
 configureMavenPublication("lib-scrambles")
-configureBintrayTarget()
 
 dependencies {
     api(project(":svglite"))

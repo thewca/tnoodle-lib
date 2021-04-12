@@ -5,11 +5,9 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.delegateClosureOf
 import org.gradle.kotlin.dsl.get
 
-import com.jfrog.bintray.gradle.BintrayExtension
-import com.jfrog.bintray.gradle.BintrayExtension.PackageConfig
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
 
 object Publications {
     fun Project.configureMavenPublication(targetArtifactId: String? = null) {
@@ -26,22 +24,14 @@ object Publications {
         }
     }
 
-    fun Project.configureBintrayTarget() {
-        configure<BintrayExtension> {
-            user = findProperty("bintray.user") as? String
-            key = findProperty("bintray.key") as? String
-            publish = false
-
-            setPublications(rootProject.name)
-
-            pkg(delegateClosureOf<PackageConfig> {
-                repo = rootProject.name
-                name = project.name
-                websiteUrl = "https://www.worldcubeassociation.org/regulations/scrambles/"
-                vcsUrl = "https://github.com/thewca/tnoodle-lib"
-                setLabels("java")
-                setLicenses("GPL-3.0")
-            })
+    fun Project.configureSonatypeNexus() {
+        configure<NexusPublishExtension> {
+            repositories {
+                sonatype {
+                    nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+                    snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+                }
+            }
         }
     }
 }
