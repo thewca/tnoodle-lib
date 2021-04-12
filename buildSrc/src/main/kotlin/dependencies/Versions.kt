@@ -12,5 +12,6 @@ object Versions {
     object Plugins {
         val SHADOW = "6.1.0"
         val DEPENDENCY_VERSIONS = "0.36.0"
+        val NEXUS_PUBLISH = "1.0.0"
     }
 }

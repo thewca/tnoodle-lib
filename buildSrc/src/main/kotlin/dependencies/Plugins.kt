@@ -11,5 +11,5 @@ object Plugins {
         get() = id("com.github.ben-manes.versions").version(Versions.Plugins.DEPENDENCY_VERSIONS)
 
     inline val PluginDependenciesSpec.NEXUS_PUBLISH_ACTUAL: PluginDependencySpec
-        get() = id("io.github.gradle-nexus.publish-plugin")
+        get() = id("io.github.gradle-nexus.publish-plugin").version(Versions.Plugins.NEXUS_PUBLISH)
 }
