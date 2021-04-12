@@ -7,8 +7,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 
-import io.github.gradlenexus.publishplugin.NexusPublishExtension
-
 object Publications {
     fun Project.configureMavenPublication(targetArtifactId: String? = null) {
         configure<PublishingExtension> {
@@ -19,17 +17,6 @@ object Publications {
                     }
 
                     from(components["java"])
-                }
-            }
-        }
-    }
-
-    fun Project.configureSonatypeNexus() {
-        configure<NexusPublishExtension> {
-            repositories {
-                sonatype {
-                    nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-                    snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
                 }
             }
         }

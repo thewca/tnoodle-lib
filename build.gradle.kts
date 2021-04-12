@@ -1,5 +1,3 @@
-import configurations.Publications.configureSonatypeNexus
-
 allprojects {
     group = "org.worldcubeassociation.tnoodle"
     version = "0.18.0"
@@ -10,7 +8,14 @@ plugins {
     NEXUS_PUBLISH
 }
 
-configureSonatypeNexus()
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
 
 tasks.create("generateDebugRelease") {
     dependsOn(":scrambles:shadowJar")
