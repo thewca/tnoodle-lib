@@ -1,7 +1,6 @@
 import dependencies.Plugins.DEPENDENCY_VERSIONS_ACTUAL
-import dependencies.Plugins.GIT_VERSION_TAG_ACTUAL
-import dependencies.Plugins.JFROG_BINTRAY_ACTUAL
 import dependencies.Plugins.SHADOW_ACTUAL
+import dependencies.Plugins.NEXUS_PUBLISH_ACTUAL
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -17,8 +16,5 @@ inline val PluginDependenciesSpec.SHADOW: PluginDependencySpec
 inline val PluginDependenciesSpec.DEPENDENCY_VERSIONS: PluginDependencySpec
     get() = DEPENDENCY_VERSIONS_ACTUAL
 
-inline val PluginDependenciesSpec.GIT_VERSION_TAG: PluginDependencySpec
-    get() = GIT_VERSION_TAG_ACTUAL
-
-inline val PluginDependenciesSpec.JFROG_BINTRAY: PluginDependencySpec
-    get() = JFROG_BINTRAY_ACTUAL
+inline val PluginDependenciesSpec.NEXUS_PUBLISH: PluginDependencySpec
+    get() = NEXUS_PUBLISH_ACTUAL

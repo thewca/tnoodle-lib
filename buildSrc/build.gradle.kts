@@ -4,9 +4,9 @@ plugins {
 
 repositories {
     mavenCentral()
-    jcenter()
+    gradlePluginPortal()
 }
 
 dependencies {
-    implementation("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
+    implementation("io.github.gradle-nexus:publish-plugin:1.0.0")
 }
