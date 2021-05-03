@@ -16,7 +16,7 @@ public class AlgorithmBuilder {
     private ArrayList<PuzzleState> states = new ArrayList<PuzzleState>();
     /**
      * If we are in CANONICALIZE_MOVES MergingMode, then something like
-     * Uw Dw' on a 4x4x4 will become Uw2. This means the state we end
+     * Uw Dw on a 4x4x4 will become Uw2. This means the state we end
      * up in is actually different than the state we would have ended up in
      * if we had just naively appended moves (NO_MERGING).
      * unNormalizedState keeps track of the state we would have been in
