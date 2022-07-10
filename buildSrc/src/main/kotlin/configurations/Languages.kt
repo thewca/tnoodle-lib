@@ -15,16 +15,10 @@ object Languages {
         }
     }
 
-    fun Project.attachRepositories() {
-        attachRemoteRepositories()
-    }
-
     fun Project.configureJava() {
-        configure<JavaPluginConvention> {
-            sourceCompatibility = JavaVersion.VERSION_1_6
-        }
-
         configure<JavaPluginExtension> {
+            sourceCompatibility = JavaVersion.VERSION_1_6
+
             withJavadocJar()
             withSourcesJar()
         }

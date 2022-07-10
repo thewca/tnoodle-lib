@@ -4,8 +4,8 @@ allprojects {
 }
 
 plugins {
-    DEPENDENCY_VERSIONS
-    NEXUS_PUBLISH
+    alias(libs.plugins.dependency.versions)
+    alias(libs.plugins.nexus.publish)
 }
 
 nexusPublishing {
