@@ -15,11 +15,11 @@ configureJava()
 
 dependencies {
     implementation(project(":scrambles"))
-    implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation(libs.apache.commons.math3)
 }
 
 configureJUnit5()
 
 application {
-    mainClassName = "org.thewca.scrambleanalysis.App"
+    mainClass.set("org.thewca.scrambleanalysis.App")
 }
