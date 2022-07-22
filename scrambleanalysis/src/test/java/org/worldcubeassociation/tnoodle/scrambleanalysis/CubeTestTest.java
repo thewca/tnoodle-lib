@@ -18,7 +18,7 @@ public class CubeTestTest {
         // may "accidentally" be as good as random state scrambles, making this test fail.
         // When this happens, we should pause and ponder about the qualities of our
         // random state solver, rather than simply ignoring a false-positive test.
-        int N = 6600;
+        int N = 20000;
 
         List<String> scrambles = randomMovesScrambles(N);
         List<CubePuzzle.CubeState> representations = ScrambleProvider.convertToCubeStates(scrambles);
