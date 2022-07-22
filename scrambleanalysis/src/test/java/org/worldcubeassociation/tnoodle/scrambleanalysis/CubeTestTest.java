@@ -19,8 +19,11 @@ public class CubeTestTest {
         // When this happens, we should pause and ponder about the qualities of our
         // random state solver, rather than simply ignoring a false-positive test.
         int N = 6600;
+
         List<String> scrambles = randomMovesScrambles(N);
-        assertFalse(CubeTest.testScrambles(scrambles));
+        List<CubePuzzle.CubeState> representations = ScrambleProvider.convertToCubeStates(scrambles);
+
+        assertFalse(CubeTest.testScrambles(representations));
     }
 
     private List<String> randomMovesScrambles(int N) {

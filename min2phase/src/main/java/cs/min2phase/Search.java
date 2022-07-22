@@ -60,7 +60,7 @@ public class Search {
 	protected int verbose;
 	protected int valid1;
 	protected boolean allowShorter = false;
-	protected CubieCube cc = new CubieCube();
+	public CubieCube cc = new CubieCube();
 	protected CubieCube[] urfCubieCube = new CubieCube[6];
 	protected CoordCube[] urfCoordCube = new CoordCube[6];
 	protected CubieCube[] phase1Cubie = new CubieCube[21];
@@ -240,7 +240,7 @@ public class Search {
 		}
 	}
 
-	int verify(String facelets) {
+	public int verify(String facelets) {
 		int count = 0x000000;
 		byte[] f = new byte[54];
 		try {

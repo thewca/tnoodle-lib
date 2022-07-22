@@ -15,6 +15,7 @@ configureJava()
 
 dependencies {
     implementation(project(":scrambles"))
+    implementation(project(":min2phase"))
     implementation(libs.apache.commons.math3)
 }
 

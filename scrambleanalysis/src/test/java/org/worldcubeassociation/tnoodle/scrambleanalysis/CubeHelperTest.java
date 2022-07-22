@@ -17,7 +17,7 @@ public class CubeHelperTest {
 	Logger logger = Logger.getLogger(CubeHelperTest.class.getName());
 
 	@Test
-	public void orientationTest() throws InvalidScrambleException, RepresentationException, InvalidMoveException {
+	public void orientationTest() throws InvalidScrambleException, RepresentationException {
 		int n = 1;
 
 		// The number of misoriented edge must be even, corner orientation sum must be a
@@ -33,7 +33,7 @@ public class CubeHelperTest {
 			logger.info("Scramble: " + scramble);
 			logger.info("Misoriented edges: " + misorientedEdges);
 			logger.info("Corner sum: " + cornerSum);
-			logger.info("Parity: " + CubeHelper.hasParity(scramble));
+			logger.info("Parity: " + CubeHelper.hasParity(representation));
 
 			assertEquals(misorientedEdges % 2, 0);
 			assertEquals(cornerSum % 3, 0);
@@ -41,21 +41,21 @@ public class CubeHelperTest {
 	}
 
 	@Test
-	public void hasParityTest() throws InvalidMoveException {
+	public void hasParityTest() throws InvalidScrambleException {
 		String scramble = "U";
-		Assertions.assertTrue(CubeHelper.hasParity(scramble));
+		Assertions.assertTrue(CubeHelper.hasParity(getRepresentation(scramble)));
 
 		scramble = "U'";
-		Assertions.assertTrue(CubeHelper.hasParity(scramble));
+		Assertions.assertTrue(CubeHelper.hasParity(getRepresentation(scramble)));
 
 		scramble = "U2";
-		Assertions.assertFalse(CubeHelper.hasParity(scramble));
+		Assertions.assertFalse(CubeHelper.hasParity(getRepresentation(scramble)));
 
 		String yPerm = "F R U' R' U' R U R' F' R U R' U' R' F R F'";
-		Assertions.assertTrue(CubeHelper.hasParity(yPerm));
+		Assertions.assertTrue(CubeHelper.hasParity(getRepresentation(yPerm)));
 
 		String uPerm = "R2 U' R' U' R U R U R U' R";
-		Assertions.assertFalse(CubeHelper.hasParity(uPerm));
+		Assertions.assertFalse(CubeHelper.hasParity(getRepresentation(uPerm)));
 	}
 
 	@Test

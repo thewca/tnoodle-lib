@@ -16,18 +16,15 @@ import org.apache.commons.math3.stat.inference.AlternativeHypothesis;
 import org.apache.commons.math3.stat.inference.BinomialTest;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.worldcubeassociation.tnoodle.puzzle.CubePuzzle;
-import org.worldcubeassociation.tnoodle.puzzle.ThreeByThreeCubePuzzle;
 import org.worldcubeassociation.tnoodle.scrambleanalysis.statistics.Distribution;
-import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
-import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
 
 public class CubeTest {
 
     private static final int edges = 12;
     private static final int corners = 8;
 
-    public static boolean testScrambles(List<String> scrambles)
-        throws InvalidScrambleException, RepresentationException, InvalidMoveException {
+    public static boolean testScrambles(List<CubePuzzle.CubeState> scrambles)
+        throws RepresentationException {
 
         int N = scrambles.size();
 
@@ -35,8 +32,6 @@ public class CubeTest {
         if (N < Distribution.minimumSampleSize()) {
             throw new IllegalArgumentException("Minimum sample size is " + minimumSampleSize);
         }
-
-        ThreeByThreeCubePuzzle cube = new ThreeByThreeCubePuzzle();
 
         long[] misorientedEdgesList = new long[7];
         long[][] finalEdgesPosition = new long[edges][edges];
@@ -46,12 +41,7 @@ public class CubeTest {
 
         int parity = 0;
 
-        for (int i = 0; i < N; i++) {
-
-            String scramble = scrambles.get(i);
-
-            CubePuzzle.CubeState solved = cube.getSolvedState();
-            CubePuzzle.CubeState cubeState = (CubePuzzle.CubeState) solved.applyAlgorithm(scramble);
+        for (CubePuzzle.CubeState cubeState : scrambles) {
             String representation = cubeState.toFaceCube();
 
             int misorientedEdges = countMisorientedEdges(representation);
@@ -70,7 +60,7 @@ public class CubeTest {
                 finalCornersPosition[j][finalPosition]++;
             }
 
-            if (hasParity(scramble)) {
+            if (hasParity(representation)) {
                 parity++;
             }
         }

@@ -1,14 +1,13 @@
 package org.worldcubeassociation.tnoodle.scrambleanalysis;
 
+import cs.min2phase.Search;
+import cs.min2phase.SearchWCA;
 import org.worldcubeassociation.tnoodle.puzzle.CubePuzzle;
-import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
 
 import static org.worldcubeassociation.tnoodle.scrambleanalysis.utils.StringUtils.stringCompareIgnoringOrder;
 
 public class CubeHelper {
     // For 3x3 only.
-
-    private static char[] ALLOWED = {'U', 'R', 'F', 'D', 'L', 'B'};
 
     private static final int edges = 12;
     private static final int central = 4; // Index 4 represents the central sticker;
@@ -108,9 +107,9 @@ public class CubeHelper {
      *
      * @param representation a representation of a cube.
      * @param cornerIndex    0 &le; cornerIndex &lt; 8
-     * @throws RepresentationException
      * @return 0 if the corner is oriented. 1 if the corner is oriented clockwise.
      * 2 if the corner is oriented counter clockwise.
+     * @throws RepresentationException
      */
     public static int getCornerOrientationNumber(String representation, int cornerIndex)
         throws RepresentationException {
@@ -155,42 +154,20 @@ public class CubeHelper {
         return result;
     }
 
-    private static boolean isAllowedFace(char move) {
-        for (char item : ALLOWED) {
-            if (item == move) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // Parity is the oddness of the number of two-swaps.
+    // Right now, we don't consider cases where corner and edge parity are uneven.
+    public static boolean hasParity(String faceletRepresentation) {
+        Search search = new SearchWCA();
+        int errors = search.verify(faceletRepresentation);
 
-    // U changes the parity, U2 keeps it. Thus, the parity is the oddness of the sum
-    // of moves in QTM.
-    public static boolean hasParity(String scramble) throws InvalidMoveException {
-        int sum = 0;
-
-        for (String move : scramble.split(" ")) {
-            char face = move.charAt(0);
-            int size = move.length();
-
-            if (!isAllowedFace(face) || size > 2) {
-                throw new InvalidMoveException(move);
-            }
-
-            if (size == 1) {
-                sum++;
-            } else { // This is the same as else if (size == 2)
-                char direction = move.charAt(1);
-                if (direction == '\'') {
-                    sum++;
-                } else if (direction != '2') {
-                    // We allow the '2' direction, but nothing has to be done.
-                    throw new InvalidMoveException(move);
-                }
-            }
+        if (errors != 0) {
+            throw new RuntimeException("min2phase cannot handle the cube: Error " + errors);
         }
 
-        return sum % 2 == 1;
+        int edgeParity = search.cc.getEdgeParityBit();
+        int cornerParity = search.cc.getCornerParityBit();
+
+        return edgeParity == 1 || cornerParity == 1;
     }
 
     // Actually, these next 2 methods did not need to be public, but it's for
@@ -219,12 +196,12 @@ public class CubeHelper {
      * @param representation: the final representation of a cube.
      * @param i:              the index, when solved, of a edge (0 for UB or BU, 1
      *                        for UL or LU, 3 for UR...
-     * @throws RepresentationException
      * @return If the final position of a sticker is in UB (either U or B), it
      * returns 0 (which is the index of UB in edgesIndex or
      * attachedEdgesIndex). If the final position of a sticker is in UL
      * (either U or L), it returns 1 (which is the index of UL in
      * edgesIndex). etc.
+     * @throws RepresentationException
      */
     public static int getFinalPositionOfEdge(String representation, int i) throws RepresentationException {
         // Here, we are reusing the position of edges mentioned above.
