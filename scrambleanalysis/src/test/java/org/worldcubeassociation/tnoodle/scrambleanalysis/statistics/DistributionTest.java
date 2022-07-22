@@ -5,10 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class DistributionTest {
-
-	@Test
-	public void minimumSampleSizeTest() {
-		assertNotNull(Distribution.minimumSampleSize());
-	}
-
+    @Test
+    public void minimumSampleSizeTest() {
+        assertTrue(Distribution.minimumSampleSize() > 0);
+        assertEquals(Distribution.minimumSampleSize(), 6144);
+    }
 }
