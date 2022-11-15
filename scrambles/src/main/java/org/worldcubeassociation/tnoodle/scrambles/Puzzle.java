@@ -37,7 +37,7 @@ import static java.lang.Math.ceil;
  */
 @ExportClosure
 public abstract class Puzzle implements Exportable {
-    private static final Logger l = Logger.getLogger(Puzzle.class.getName());
+    protected static final Logger l = Logger.getLogger(Puzzle.class.getName());
     protected int wcaMinScrambleDistance = 2;
 
     /**
