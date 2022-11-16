@@ -7,10 +7,8 @@ import org.worldcubeassociation.tnoodle.svglite.PathIterator;
 import org.worldcubeassociation.tnoodle.svglite.Path;
 import org.worldcubeassociation.tnoodle.svglite.Point2D;
 import org.worldcubeassociation.tnoodle.svglite.Text;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+
+import java.util.*;
 
 import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
 import org.worldcubeassociation.tnoodle.scrambles.Puzzle;
@@ -192,22 +190,24 @@ public class MegaminxPuzzle extends Puzzle {
         swapCenters(image, f1, f2, f3, f4, f5);
     }
 
+    private static final Map<String, Color> defaultColorScheme = new HashMap<>();
+    static {
+        defaultColorScheme.put("U", new Color(0xffffff));
+        defaultColorScheme.put("BL", new Color(0xffcc00));
+        defaultColorScheme.put("BR", new Color(0x0000b3));
+        defaultColorScheme.put("R", new Color(0xdd0000));
+        defaultColorScheme.put("F", new Color(0x006600));
+        defaultColorScheme.put("L", new Color(0x8a1aff));
+        defaultColorScheme.put("D", new Color(0x999999));
+        defaultColorScheme.put("DR", new Color(0xffffb3));
+        defaultColorScheme.put("DBR", new Color(0xff99ff));
+        defaultColorScheme.put("B", new Color(0x71e600));
+        defaultColorScheme.put("DBL", new Color(0xff8433));
+        defaultColorScheme.put("DL", new Color(0x88ddff));
+    }
     @Override
-    public HashMap<String, Color> getDefaultColorScheme() {
-        HashMap<String, Color> colors = new HashMap<>();
-        colors.put("U", new Color(0xffffff));
-        colors.put("BL", new Color(0xffcc00));
-        colors.put("BR", new Color(0x0000b3));
-        colors.put("R", new Color(0xdd0000));
-        colors.put("F", new Color(0x006600));
-        colors.put("L", new Color(0x8a1aff));
-        colors.put("D", new Color(0x999999));
-        colors.put("DR", new Color(0xffffb3));
-        colors.put("DBR", new Color(0xff99ff));
-        colors.put("B", new Color(0x71e600));
-        colors.put("DBL", new Color(0xff8433));
-        colors.put("DL", new Color(0x88ddff));
-        return colors;
+    public Map<String, Color> getDefaultColorScheme() {
+        return new HashMap<>(defaultColorScheme);
     }
 
     private static Dimension getImageSize(int gap, int minxRad, String variation) {
@@ -280,7 +280,7 @@ public class MegaminxPuzzle extends Puzzle {
     double magicShiftNumber = d*0.6+minxRad*(f+gg);
     double shift = leftCenterX+magicShiftNumber;
 
-    public HashMap<Face, Path> getFaceBoundaries() {
+    public Map<Face, Path> getFaceBoundaries() {
         HashMap<Face, Path> faces = new HashMap<>();
         faces.put(Face.U,   getPentagon(leftCenterX  , leftCenterY  , true , minxRad));
         faces.put(Face.BL,  getPentagon(leftCenterX-c, leftCenterY-e, false, minxRad));
@@ -324,7 +324,7 @@ public class MegaminxPuzzle extends Puzzle {
                 }
                 char side = (j % 2 == 0) ? 'R' : 'D';
                 dir = r.nextInt(2);
-                scramble.append(side + ((dir == 0) ? "++" : "--"));
+                scramble.append(side).append((dir == 0) ? "++" : "--");
             }
             scramble.append(" U");
             if(dir != 0) {
@@ -343,7 +343,7 @@ public class MegaminxPuzzle extends Puzzle {
         return new PuzzleStateAndGenerator(state, scrambleStr);
     }
 
-    private int centerIndex = 10;
+    private final int centerIndex = 10;
     private boolean isNormalized(int[][] image) {
         return image[Face.U.ordinal()][centerIndex] == Face.U.ordinal() && image[Face.F.ordinal()][centerIndex] == Face.F.ordinal();
     }
@@ -452,7 +452,7 @@ public class MegaminxPuzzle extends Puzzle {
         public PuzzleState getNormalized() {
             if(normalizedState == null) {
                 int[][] normalizedImage = normalize(image);
-                normalizedState = new MegaminxState(normalize(image));
+                normalizedState = new MegaminxState(normalizedImage);
             }
             return normalizedState;
         }
@@ -462,8 +462,8 @@ public class MegaminxPuzzle extends Puzzle {
         }
 
         @Override
-        public LinkedHashMap<String, MegaminxState> getSuccessorsByName() {
-            LinkedHashMap<String, MegaminxState> successors = new LinkedHashMap<>();
+        public Map<String, MegaminxState> getSuccessorsByName() {
+            Map<String, MegaminxState> successors = new LinkedHashMap<>();
 
             String[] prettyDir = new String[] { null, "", "2", "2'", "'" };
             for(Face face : Face.values()) {
@@ -478,7 +478,7 @@ public class MegaminxPuzzle extends Puzzle {
                 }
             }
 
-            HashMap<String, Face> pochmannFaceNames = new HashMap<>();
+            Map<String, Face> pochmannFaceNames = new HashMap<>();
             pochmannFaceNames.put("R", Face.DBR);
             pochmannFaceNames.put("D", Face.D);
             String[] prettyPochmannDir = new String[] { null, "+", "++", "--" , "-"};
@@ -496,9 +496,9 @@ public class MegaminxPuzzle extends Puzzle {
         }
 
         @Override
-        public HashMap<String, MegaminxState> getScrambleSuccessors() {
-            HashMap<String, MegaminxState> successors = getSuccessorsByName();
-            HashMap<String, MegaminxState> scrambleSuccessors = new HashMap<>();
+        public Map<String, MegaminxState> getScrambleSuccessors() {
+            Map<String, MegaminxState> successors = getSuccessorsByName();
+            Map<String, MegaminxState> scrambleSuccessors = new HashMap<>();
             for(String turn : new String[] { "R++", "R--", "D++", "D--", "U", "U2", "U2'", "U'" }) {
                 scrambleSuccessors.put(turn, successors.get(turn));
             }
@@ -517,14 +517,14 @@ public class MegaminxPuzzle extends Puzzle {
         }
 
         @Override
-        protected Svg drawScramble(HashMap<String, Color> colorScheme) {
+        protected Svg drawScramble(Map<String, Color> colorScheme) {
             Svg svg = new Svg(getPreferredSize());
             drawMinx(svg, gap, minxRad, colorScheme);
             return svg;
         }
 
-        private void drawMinx(Svg g, int gap, int minxRad, HashMap<String, Color> colorScheme) {
-            HashMap<Face, Path> pentagons = getFaceBoundaries();
+        private void drawMinx(Svg g, int gap, int minxRad, Map<String, Color> colorScheme) {
+            Map<Face, Path> pentagons = getFaceBoundaries();
             for(Face face : pentagons.keySet()) {
                 int f = face.ordinal();
                 int rotateCounterClockwise;
@@ -546,7 +546,7 @@ public class MegaminxPuzzle extends Puzzle {
             }
         }
 
-        private void drawPentagon(Svg g, Path p, int[] state, int rotateCounterClockwise, String label, HashMap<String, Color> colorScheme) {
+        private void drawPentagon(Svg g, Path p, int[] state, int rotateCounterClockwise, String label, Map<String, Color> colorScheme) {
             double[] xpoints = new double[5];
             double[] ypoints = new double[5];
             PathIterator iter = p.getPathIterator();

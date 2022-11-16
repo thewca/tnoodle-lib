@@ -23,7 +23,7 @@ public class CubePuzzle extends Puzzle {
     }
 
     private static final String[] DIR_TO_STR = new String[] { null, "", "2", "'" };
-    private static HashMap<Face, String> faceRotationsByName = new HashMap<>();
+    private static final Map<Face, String> faceRotationsByName = new HashMap<>();
     static {
         faceRotationsByName.put(Face.R, "x");
         faceRotationsByName.put(Face.U, "y");
@@ -96,7 +96,7 @@ public class CubePuzzle extends Puzzle {
         int i = 0;
         for(CubeMove randomUFaceMove : randomUFaceMoves) {
             for(CubeMove randomFFaceMove : randomFFaceMoves) {
-                ArrayList<CubeMove> moves = new ArrayList<>();
+                List<CubeMove> moves = new ArrayList<>();
                 if(randomUFaceMove != null) {
                     moves.add(randomUFaceMove);
                 }
@@ -219,7 +219,7 @@ public class CubePuzzle extends Puzzle {
         }
     }
 
-    private static HashMap<String, Color> defaultColorScheme = new HashMap<>();
+    private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("B", Color.BLUE);
         defaultColorScheme.put("D", Color.YELLOW);
@@ -229,7 +229,7 @@ public class CubePuzzle extends Puzzle {
         defaultColorScheme.put("U", Color.WHITE);
     }
     @Override
-    public HashMap<String, Color> getDefaultColorScheme() {
+    public Map<String, Color> getDefaultColorScheme() {
         return new HashMap<>(defaultColorScheme);
     }
 
@@ -249,7 +249,7 @@ public class CubePuzzle extends Puzzle {
         return new Dimension(getCubeViewWidth(unitSize, gap, size), getCubeViewHeight(unitSize, gap, size));
     }
 
-    private void drawCube(Svg g, int[][][] state, int gap, int cubieSize, HashMap<String, Color> colorScheme) {
+    private void drawCube(Svg g, int[][][] state, int gap, int cubieSize, Map<String, Color> colorScheme) {
         paintCubeFace(g, gap, 2*gap+size*cubieSize, size, cubieSize, state[Face.L.ordinal()], colorScheme);
         paintCubeFace(g, 2*gap+size*cubieSize, 3*gap+2*size*cubieSize, size, cubieSize, state[Face.D.ordinal()], colorScheme);
         paintCubeFace(g, 4*gap+3*size*cubieSize, 2*gap+size*cubieSize, size, cubieSize, state[Face.B.ordinal()], colorScheme);
@@ -258,7 +258,7 @@ public class CubePuzzle extends Puzzle {
         paintCubeFace(g, 2*gap+size*cubieSize, 2*gap+size*cubieSize, size, cubieSize, state[Face.F.ordinal()], colorScheme);
     }
 
-    private void paintCubeFace(Svg g, int x, int y, int size, int cubieSize, int[][] faceColors, HashMap<String, Color> colorScheme) {
+    private void paintCubeFace(Svg g, int x, int y, int size, int cubieSize, int[][] faceColors, Map<String, Color> colorScheme) {
         for(int row = 0; row < size; row++) {
             for(int col = 0; col < size; col++) {
                 int tempx = x + col*cubieSize;
@@ -495,32 +495,32 @@ public class CubePuzzle extends Puzzle {
          */
         public String toFaceCube() {
             assert size == 3;
-            String state = "";
+            StringBuilder state = new StringBuilder();
             for(char f : "URFDLB".toCharArray()) {
                 Face face = Face.valueOf("" + f);
                 int[][] faceArr = image[face.ordinal()];
-                for(int i = 0; i < faceArr.length; i++) {
-                    for(int j = 0; j < faceArr[i].length; j++) {
-                        state += Face.values()[faceArr[i][j]].toString();
+                for (int[] faceState : faceArr) {
+                    for (int piece : faceState) {
+                        state.append(Face.values()[piece].toString());
                     }
                 }
             }
-            return state;
+            return state.toString();
         }
 
         @Override
-        public LinkedHashMap<String, CubeState> getSuccessorsByName() {
+        public Map<String, CubeState> getSuccessorsByName() {
             return getSuccessorsWithinSlice(size - 1, true);
         }
 
         @Override
-        public HashMap<String, CubeState> getScrambleSuccessors() {
+        public Map<String, CubeState> getScrambleSuccessors() {
             return getSuccessorsWithinSlice((size / 2) - 1, false);
         }
 
         @Override
-        public HashMap<? extends PuzzleState, String> getCanonicalMovesByState() {
-            HashMap<PuzzleState, String> reversed = new HashMap<>();
+        public Map<? extends PuzzleState, String> getCanonicalMovesByState() {
+            Map<PuzzleState, String> reversed = new HashMap<>();
 
             for (Map.Entry<String, ? extends PuzzleState> entry : getScrambleSuccessors().entrySet()) {
                 reversed.put(entry.getValue(), entry.getKey());
@@ -529,8 +529,8 @@ public class CubePuzzle extends Puzzle {
             return reversed;
         }
 
-        private LinkedHashMap<String, CubeState> getSuccessorsWithinSlice(int maxSlice, boolean includeRedundant) {
-            LinkedHashMap<String, CubeState> successors = new LinkedHashMap<>();
+        private Map<String, CubeState> getSuccessorsWithinSlice(int maxSlice, boolean includeRedundant) {
+            Map<String, CubeState> successors = new LinkedHashMap<>();
             for(int innerSlice = 0; innerSlice <= maxSlice; innerSlice++) {
                 for(Face face : Face.values()) {
                     boolean halfOfEvenCube = size % 2 == 0 && (innerSlice == (size / 2) - 1);
@@ -569,7 +569,7 @@ public class CubePuzzle extends Puzzle {
             return Arrays.deepHashCode(image);
         }
 
-        protected Svg drawScramble(HashMap<String, Color> colorScheme) {
+        protected Svg drawScramble(Map<String, Color> colorScheme) {
             Svg svg = new Svg(getPreferredSize());
             drawCube(svg, image, gap, cubieSize, colorScheme);
             return svg;

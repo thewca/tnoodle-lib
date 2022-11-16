@@ -38,7 +38,6 @@ public class TwoByTwoCubePuzzle extends CubePuzzle {
 
     protected String solveIn(PuzzleState ps, int n) {
         CubeState cs = (CubeState) ps;
-        String solution = twoSolver.solveIn(cs.toTwoByTwoState(), n);
-        return solution;
+        return twoSolver.solveIn(cs.toTwoByTwoState(), n);
     }
 }

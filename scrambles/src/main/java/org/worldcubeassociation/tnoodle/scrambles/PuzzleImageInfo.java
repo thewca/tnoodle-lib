@@ -3,9 +3,10 @@ package org.worldcubeassociation.tnoodle.scrambles;
 import org.worldcubeassociation.tnoodle.svglite.Color;
 import org.worldcubeassociation.tnoodle.svglite.Dimension;
 import java.util.HashMap;
+import java.util.Map;
 
 public class PuzzleImageInfo {
-    public HashMap<String, Color> colorScheme;
+    public Map<String, Color> colorScheme;
     public Dimension size;
 
     public PuzzleImageInfo() {}
@@ -14,14 +15,14 @@ public class PuzzleImageInfo {
         size = p.getPreferredSize();
     }
 
-    public HashMap<String, Object> toJsonable() {
-        HashMap<String, Object> jsonable = new HashMap<>();
-        HashMap<String, Integer> dim = new HashMap<>();
+    public Map<String, Object> toJsonable() {
+        Map<String, Object> jsonable = new HashMap<>();
+        Map<String, Integer> dim = new HashMap<>();
         dim.put("width", size.width);
         dim.put("height", size.height);
         jsonable.put("size", dim);
 
-        HashMap<String, String> jsonColorScheme = new HashMap<>();
+        Map<String, String> jsonColorScheme = new HashMap<>();
         for(String key : this.colorScheme.keySet()) {
             jsonColorScheme.put(key, this.colorScheme.get(key).toHex());
         }

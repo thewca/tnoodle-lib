@@ -2,6 +2,7 @@ package org.worldcubeassociation.tnoodle.scrambles;
 
 import java.security.SecureRandom;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ public class ScrambleCacher {
      */
     private static final Random r = new SecureRandom();
 
-    private String[] scrambles;
+    private final String[] scrambles;
     private volatile int startBuf = 0;
     private volatile int available = 0;
 
@@ -62,7 +63,7 @@ public class ScrambleCacher {
                     while(running && available == scrambles.length) {
                         try {
                             scrambles.wait();
-                        } catch(InterruptedException e) {}
+                        } catch(InterruptedException ignored) {}
                     }
                     if(!running) {
                         return;
@@ -99,7 +100,7 @@ public class ScrambleCacher {
         return running;
     }
 
-    private LinkedList<ScrambleCacherListener> ls = new LinkedList<>();
+    private final List<ScrambleCacherListener> ls = new LinkedList<>();
     /**
      * This method will notify all listeners that the cache size has changed.
      * NOTE: Do NOT call this method while holding any monitors!
@@ -132,7 +133,7 @@ public class ScrambleCacher {
             while(available == 0) {
                 try {
                     scrambles.wait();
-                } catch(InterruptedException e) {}
+                } catch(InterruptedException ignored) {}
 
                 if(exception != null) {
                     throw new RuntimeException(exception);

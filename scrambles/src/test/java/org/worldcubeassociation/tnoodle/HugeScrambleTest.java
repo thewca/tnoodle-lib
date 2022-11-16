@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -105,7 +105,7 @@ public class HugeScrambleTest {
                 System.out.print("Scramble ["+(count+1)+"/"+SCRAMBLE_COUNT+"]: ");
                 Puzzle.PuzzleState state = scrambler.getSolvedState();
                 for(int i = 0; i < SCRAMBLE_LENGTH; i++){
-                    HashMap<String, ? extends Puzzle.PuzzleState> successors = state.getSuccessorsByName();
+                    Map<String, ? extends Puzzle.PuzzleState> successors = state.getSuccessorsByName();
                     String move = Puzzle.choose(r, successors.keySet());
                     System.out.print(" "+move);
                     state = successors.get(move);

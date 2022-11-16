@@ -257,7 +257,7 @@ public class SkewbSolver {
      *     In another word, "F R" is converted to "B U". The correctness can be easily verified and the procedure is recursable.
      */
     private String getSolution(int[] sol, int solutionLength) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String[] move2str = { "L", "R", "B", "U" };//RLDB (in jaap's notation) rotated by z2
         for (int i = 0; i < solutionLength; i++) {
             int axis = sol[i] >> 1;
@@ -270,11 +270,10 @@ public class SkewbSolver {
                     move2str[3] = temp;
                 }
             }
-            sb.append(move2str[axis] + ((pow == 1) ? "'" : ""));
+            sb.append(move2str[axis]).append((pow == 1) ? "'" : "");
             sb.append(" ");
         }
-        String scrambleSequence = sb.toString().trim();
-        return scrambleSequence;
+        return sb.toString().trim();
     }
 }
 

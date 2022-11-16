@@ -41,7 +41,7 @@ public class SquareOnePuzzle extends Puzzle {
         return new PuzzleStateAndGenerator(state, scramble);
     }
 
-    private static HashMap<String, Color> defaultColorScheme = new HashMap<>();
+    private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("B", new Color(255, 128, 0)); //orange heraldic tincture
         defaultColorScheme.put("D", Color.WHITE);
@@ -51,7 +51,7 @@ public class SquareOnePuzzle extends Puzzle {
         defaultColorScheme.put("U", Color.YELLOW);
     }
     @Override
-    public HashMap<String, Color> getDefaultColorScheme() {
+    public Map<String, Color> getDefaultColorScheme() {
         return new HashMap<>(defaultColorScheme);
     }
 
@@ -193,8 +193,8 @@ public class SquareOnePuzzle extends Puzzle {
         return 40;
     }
 
-    static HashMap<String, Integer> wcaCostsByMove = new HashMap<>();
-    static HashMap<String, Integer> slashabilityCostsByMove = new HashMap<>();
+    static Map<String, Integer> wcaCostsByMove = new HashMap<>();
+    static Map<String, Integer> slashabilityCostsByMove = new HashMap<>();
     static {
         for(int top = -5; top <= 6; top++) {
             for(int bottom = -5; bottom <= 6; bottom++) {
@@ -278,18 +278,14 @@ public class SquareOnePuzzle extends Puzzle {
             top = ((-top % 12) + 12) % 12;
             int[] newPieces = cloneArr(pieces);
             int[] t = new int[12];
-            for(int i = 0; i < 12; i++) {
-                t[i] = newPieces[i];
-            }
+            System.arraycopy(newPieces, 0, t, 0, 12);
             for(int i = 0; i < 12; i++) {
                 newPieces[i] = t[(top + i) % 12];
             }
 
             bottom = ((-bottom % 12) + 12) % 12;
 
-            for(int i = 0; i < 12; i++) {
-                t[i] = newPieces[i+12];
-            }
+            System.arraycopy(newPieces, 12, t, 0, 12);
             for(int i = 0; i < 12; i++) {
                 newPieces[i+12] = t[(bottom + i) % 12];
             }
@@ -308,8 +304,8 @@ public class SquareOnePuzzle extends Puzzle {
         }
 
         @Override
-        public HashMap<String, SquareOneState> getScrambleSuccessors() {
-            HashMap<String, SquareOneState> successors = getSuccessorsByName();
+        public Map<String, SquareOneState> getScrambleSuccessors() {
+            Map<String, SquareOneState> successors = getSuccessorsByName();
             Iterator<String> iter = successors.keySet().iterator();
             while(iter.hasNext()) {
                 String key = iter.next();
@@ -322,8 +318,8 @@ public class SquareOnePuzzle extends Puzzle {
         }
 
         @Override
-        public LinkedHashMap<String, SquareOneState> getSuccessorsByName() {
-            LinkedHashMap<String, SquareOneState> successors = new LinkedHashMap<>();
+        public Map<String, SquareOneState> getSuccessorsByName() {
+            Map<String, SquareOneState> successors = new LinkedHashMap<>();
             for(int top = -5; top <= 6; top++) {
                 for(int bottom = -5; bottom <= 6; bottom++) {
                     if(top == 0 && bottom == 0) {
@@ -346,7 +342,7 @@ public class SquareOnePuzzle extends Puzzle {
             // apparently sq12phase can neither represent nor solve "unslashable" squares
             if (!this.canSlash()) {
                 // getScrambleSuccessors automatically filters for slashability
-                HashMap<String, SquareOneState> slashableSuccessors = this.getScrambleSuccessors();
+                Map<String, SquareOneState> slashableSuccessors = this.getScrambleSuccessors();
 
                 Map.Entry<String, SquareOneState> bestSlashable = null;
                 int currentMin = Integer.MAX_VALUE;
@@ -404,7 +400,7 @@ public class SquareOnePuzzle extends Puzzle {
                 return null;
             }
 
-            AlgorithmBuilder ab = new AlgorithmBuilder(this.getPuzzle(), AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, preSlashabilityState);
+            AlgorithmBuilder ab = new AlgorithmBuilder(AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES, preSlashabilityState);
 
             // initially just hope that slashability cancels with the n-move optimal solution
             ab.appendMove(slashabilityMove);
@@ -431,7 +427,7 @@ public class SquareOnePuzzle extends Puzzle {
         }
 
         @Override
-        protected Svg drawScramble(HashMap<String, Color> colorSchemeMap) {
+        protected Svg drawScramble(Map<String, Color> colorSchemeMap) {
             Svg g = new Svg(getPreferredSize());
             g.setStroke(2, 10, "round");
 

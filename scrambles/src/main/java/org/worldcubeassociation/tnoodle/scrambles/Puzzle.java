@@ -98,7 +98,7 @@ public abstract class Puzzle implements Exportable {
     /**
      * @return A *new* HashMap mapping face names to Colors.
      */
-    public abstract HashMap<String, Color> getDefaultColorScheme();
+    public abstract Map<String, Color> getDefaultColorScheme();
 
     private String[] generateScrambles(Random r, int count) {
         String[] scrambles = new String[count];
@@ -147,7 +147,7 @@ public abstract class Puzzle implements Exportable {
         return generateSeededScrambles(seed.getBytes(), count);
     }
 
-    private final String generateSeededScramble(byte[] seed) {
+    private String generateSeededScramble(byte[] seed) {
         // We must create our own Random because
         // other threads can access the static one.
         // Also, setSeed supplements an existing seed,
@@ -159,7 +159,7 @@ public abstract class Puzzle implements Exportable {
         r.setSeed(seed);
         return generateWcaScramble(r);
     }
-    private final String[] generateSeededScrambles(byte[] seed, int count) {
+    private String[] generateSeededScrambles(byte[] seed, int count) {
         // We must create our own Random because
         // other threads can access the static one.
         // Also, setSeed supplements an existing seed,
@@ -183,9 +183,9 @@ public abstract class Puzzle implements Exportable {
      */
     @Export
     public String[] getFaceNames() {
-        ArrayList<String> faces = new ArrayList<>(getDefaultColorScheme().keySet());
-        Collections.sort(faces);
-        return faces.toArray(new String[faces.size()]);
+        return getDefaultColorScheme().keySet().stream()
+            .sorted()
+            .toArray(String[]::new);
     }
 
     /**
@@ -193,8 +193,8 @@ public abstract class Puzzle implements Exportable {
      * @param scheme TODO, see above
      * @return TODO, see above
      */
-    public HashMap<String, Color> parseColorScheme(String scheme) {
-        HashMap<String, Color> colorScheme = getDefaultColorScheme();
+    public Map<String, Color> parseColorScheme(String scheme) {
+        Map<String, Color> colorScheme = getDefaultColorScheme();
         if(scheme != null && !scheme.isEmpty()) {
             String[] faces = getFaceNames();
             String[] colors;
@@ -235,11 +235,11 @@ public abstract class Puzzle implements Exportable {
      * @return An SVG object representing the drawn scramble.
      * @throws InvalidScrambleException If scramble is invalid.
      */
-    public Svg drawScramble(String scramble, HashMap<String, Color> colorScheme) throws InvalidScrambleException {
+    public Svg drawScramble(String scramble, Map<String, Color> colorScheme) throws InvalidScrambleException {
         if(scramble == null) {
             scramble = "";
         }
-        HashMap<String, Color> colorSchemeCopy = colorScheme;
+        Map<String, Color> colorSchemeCopy = colorScheme;
         colorScheme = getDefaultColorScheme();
         if(colorSchemeCopy != null) {
             colorScheme.putAll(colorSchemeCopy);
@@ -253,7 +253,7 @@ public abstract class Puzzle implements Exportable {
         // vertical and horizontal lines.
         // See http://stackoverflow.com/questions/7589650/drawing-grid-with-jquery-svg-produces-2px-lines-instead-of-1px
         Group g = new Group();
-        ArrayList<Element> children = svg.getChildren();
+        List<Element> children = svg.getChildren();
         while(!children.isEmpty()) {
             g.appendChild(children.remove(0));
         }
@@ -287,8 +287,8 @@ public abstract class Puzzle implements Exportable {
     }
 
     public static class Bucket<H> implements Comparable<Bucket<H>> {
-        private LinkedList<H> contents;
-        private int value;
+        private final LinkedList<H> contents;
+        private final int value;
         public Bucket(int value) {
             this.value = value;
             this.contents = new LinkedList<>();
@@ -311,7 +311,7 @@ public abstract class Puzzle implements Exportable {
         }
 
         public String toString() {
-            return "#: " + value + ": " + contents.toString();
+            return "#: " + value + ": " + contents;
         }
 
         @Override
@@ -330,7 +330,7 @@ public abstract class Puzzle implements Exportable {
     }
 
     public static class SortedBuckets<H> {
-        TreeSet<Bucket<H>> buckets;
+        private final TreeSet<Bucket<H>> buckets;
         public SortedBuckets() {
             buckets = new TreeSet<>();
         }
@@ -385,9 +385,9 @@ public abstract class Puzzle implements Exportable {
             return "";
         }
 
-        HashMap<PuzzleState, Integer> seenSolved = new HashMap<>();
+        Map<PuzzleState, Integer> seenSolved = new HashMap<>();
         SortedBuckets<PuzzleState> fringeSolved = new SortedBuckets<>();
-        HashMap<PuzzleState, Integer> seenScrambled = new HashMap<>();
+        Map<PuzzleState, Integer> seenScrambled = new HashMap<>();
         SortedBuckets<PuzzleState> fringeScrambled = new SortedBuckets<>();
 
         // We're only interested in solutions of cost <= n
@@ -431,9 +431,9 @@ public abstract class Puzzle implements Exportable {
             }
 
             // We are using references for a more concise code.
-            HashMap<PuzzleState, Integer> seenExtending;
+            Map<PuzzleState, Integer> seenExtending;
             SortedBuckets<PuzzleState> fringeExtending;
-            HashMap<PuzzleState, Integer> seenComparing;
+            Map<PuzzleState, Integer> seenComparing;
             SortedBuckets<PuzzleState> fringeComparing;
             int minExtendingFringe, minComparingFringe;
             if(extendSolved) {
@@ -480,7 +480,7 @@ public abstract class Puzzle implements Exportable {
             }
 
 
-            HashMap<? extends PuzzleState, String> movesByState = node.getCanonicalMovesByState();
+            Map<? extends PuzzleState, String> movesByState = node.getCanonicalMovesByState();
             for(PuzzleState next : movesByState.keySet()) {
                 int moveCost = node.getMoveCost(movesByState.get(next));
                 int nextDistance = distance + moveCost;
@@ -542,7 +542,7 @@ public abstract class Puzzle implements Exportable {
 
         // Step 2: bestIntersection <----- scrambled
 
-        AlgorithmBuilder solution = new AlgorithmBuilder(this, MergingMode.CANONICALIZE_MOVES, ps);
+        AlgorithmBuilder solution = new AlgorithmBuilder(MergingMode.CANONICALIZE_MOVES, ps);
         state = ps;
         distanceFromScrambled = 0;
 
@@ -621,12 +621,12 @@ public abstract class Puzzle implements Exportable {
          * @return A mapping of canonical PuzzleState's to the name of
          *         the move that gets you to them.
          */
-        public HashMap<? extends PuzzleState, String> getCanonicalMovesByState() {
-            LinkedHashMap<String, ? extends PuzzleState> successorsByName =
+        public Map<? extends PuzzleState, String> getCanonicalMovesByState() {
+            Map<String, ? extends PuzzleState> successorsByName =
                 getSuccessorsByName();
-            HashMap<PuzzleState, String> uniqueSuccessors =
+            Map<PuzzleState, String> uniqueSuccessors =
                 new HashMap<>();
-            HashSet<PuzzleState> statesSeenNormalized = new HashSet<>();
+            Set<PuzzleState> statesSeenNormalized = new HashSet<>();
             // We're not interested in any successor states are just a
             // rotation away.
             statesSeenNormalized.add(this.getNormalized());
@@ -696,7 +696,7 @@ public abstract class Puzzle implements Exportable {
          *         Preferred notations should appear earlier in the
          *         LinkedHashMap.
          */
-        public abstract LinkedHashMap<String, ? extends PuzzleState> getSuccessorsByName();
+        public abstract Map<String, ? extends PuzzleState> getSuccessorsByName();
 
         /**
          * By default, this method returns getSuccessorsByName(). Some
@@ -728,8 +728,8 @@ public abstract class Puzzle implements Exportable {
          * @return A HashMap mapping move Strings to resulting PuzzleStates.
          *         The move Strings may not contain spaces.
          */
-        public HashMap<String, ? extends PuzzleState> getScrambleSuccessors() {
-            HashMap<String, PuzzleState> reversed = new HashMap<>();
+        public Map<String, ? extends PuzzleState> getScrambleSuccessors() {
+            Map<String, PuzzleState> reversed = new HashMap<>();
 
             for (Map.Entry<? extends PuzzleState, String> entry : getCanonicalMovesByState().entrySet()) {
                 reversed.put(entry.getValue(), entry.getKey());
@@ -760,7 +760,7 @@ public abstract class Puzzle implements Exportable {
          * @param colorScheme The color scheme to use while drawing
          * @return An Svg instance representing this scramble.
          */
-        protected abstract Svg drawScramble(HashMap<String, Color> colorScheme);
+        protected abstract Svg drawScramble(Map<String, Color> colorScheme);
 
         public Puzzle getPuzzle() {
             return Puzzle.this;
@@ -778,7 +778,7 @@ public abstract class Puzzle implements Exportable {
          * @throws InvalidMoveException if the move is unrecognized.
          */
         public PuzzleState apply(String move) throws InvalidMoveException {
-            HashMap<String, ? extends PuzzleState> successors = getSuccessorsByName();
+            Map<String, ? extends PuzzleState> successors = getSuccessorsByName();
             if(!successors.containsKey(move)) {
                 throw new InvalidMoveException("Unrecognized turn " + move);
             }
@@ -840,7 +840,7 @@ public abstract class Puzzle implements Exportable {
         AlgorithmBuilder ab = new AlgorithmBuilder(
                 this, MergingMode.NO_MERGING);
         while(ab.getTotalCost() < getRandomMoveCount()) {
-            HashMap<String, ? extends PuzzleState> successors =
+            Map<String, ? extends PuzzleState> successors =
                 ab.getState().getScrambleSuccessors();
             String move;
             try {

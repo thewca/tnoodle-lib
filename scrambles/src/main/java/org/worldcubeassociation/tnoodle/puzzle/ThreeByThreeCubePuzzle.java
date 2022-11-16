@@ -36,7 +36,7 @@ public class ThreeByThreeCubePuzzle extends CubePuzzle {
 
     public String solveIn(PuzzleState ps, int n, String firstAxisRestriction, String lastAxisRestriction) {
         CubeState cs = (CubeState) ps;
-        if(this.equals(getSolvedState())) {
+        if(cs.equals(getSolvedState())) {
             // TODO - apparently min2phase can't solve the solved cube
             return "";
         }
