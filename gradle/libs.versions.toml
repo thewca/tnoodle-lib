@@ -1,8 +1,8 @@
 [versions]
-junit-jupiter = "5.5.2"
+junit-jupiter = "5.9.1"
 
 [libraries]
-logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.2.10" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.4" }
 gwt-exporter = { module = "org.timepedia.exporter:gwtexporter", version = "2.5.1" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
@@ -10,5 +10,5 @@ apache-commons-math3 = { module = "org.apache.commons:commons-math3", version = 
 
 [plugins]
 shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.2" }
-dependency-versions = { id = "com.github.ben-manes.versions", version = "0.42.0" }
+dependency-versions = { id = "com.github.ben-manes.versions", version = "0.44.0" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version = "1.1.0" }
