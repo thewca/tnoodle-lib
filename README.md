@@ -9,7 +9,7 @@ This repository hosts an independent build for the essential mechanics that gene
 
 If you are interested in the webserver part, look [here](https://github.com/thewca/tnoodle)
 
-[![Build Status](https://travis-ci.org/thewca/tnoodle-lib.svg?branch=master)](https://travis-ci.org/thewca/tnoodle-lib)
+[![Build Status](https://github.com/thewca/tnoodle-lib/actions/workflows/gradle.yml/badge.svg)](https://github.com/thewca/tnoodle-lib/actions/workflows/gradle.yml)
 
 ## WCA Scramble Program
 
@@ -55,7 +55,7 @@ To build a distributable `.jar` file, run:
     ./gradlew :scrambles:assemble
 
 You cannot run the resulting `.jar`, because it is conceived as a Maven artifact.
-We recommend using the online distribution [hosted at Bintray](https://bintray.com/thewca)
+We recommend using the online distribution [hosted at Maven Central](https://mvnrepository.com/artifact/org.worldcubeassociation.tnoodle)
 
 If you _really_ want to use a local build in your project, execute:
 
