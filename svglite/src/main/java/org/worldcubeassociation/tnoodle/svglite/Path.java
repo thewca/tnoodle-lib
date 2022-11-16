@@ -1,10 +1,11 @@
 package org.worldcubeassociation.tnoodle.svglite;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Path extends Element {
 
-    class Command {
+    static class Command {
         int type;
         double[] coords;
         public Command(int type, double[] coords) {
@@ -22,7 +23,7 @@ public class Path extends Element {
         }
     }
 
-    protected ArrayList<Command> commands = null;
+    protected List<Command> commands = null;
 
     public Path() {
         super("path");
@@ -31,7 +32,7 @@ public class Path extends Element {
     public Path(Path p) {
         super(p);
         if(p.commands != null) {
-            this.commands = new ArrayList<Command>(p.commands);
+            this.commands = new ArrayList<>(p.commands);
         }
     }
 
@@ -41,7 +42,7 @@ public class Path extends Element {
 
     public void moveTo(double x, double y) {
         if(commands == null) {
-            commands = new ArrayList<Command>();
+            commands = new ArrayList<>();
         }
 
         int type = PathIterator.SEG_MOVETO;
@@ -64,9 +65,8 @@ public class Path extends Element {
     public void closePath() {
         azzertMoveTo();
 
-        int type = PathIterator.SEG_CLOSE;
-        double[] coords = null;
-        commands.add(new Command(type, coords));
+        Command closeCommand = new Command(PathIterator.SEG_CLOSE, null);
+        commands.add(closeCommand);
     }
 
     public void translate(double x, double y) {
@@ -88,7 +88,7 @@ public class Path extends Element {
     public String getD() {
         StringBuilder sb = new StringBuilder();
         for(Command c : commands) {
-            sb.append(" " + c.toString());
+            sb.append(" ").append(c.toString());
         }
         if(sb.length() == 0) {
             return "";
@@ -102,6 +102,4 @@ public class Path extends Element {
         setAttribute("d", getD());
         super.buildString(sb, level);
     }
-
-
 }

@@ -6,10 +6,8 @@ import org.worldcubeassociation.tnoodle.svglite.Svg;
 import org.worldcubeassociation.tnoodle.svglite.Path;
 import org.worldcubeassociation.tnoodle.svglite.PathIterator;
 import org.worldcubeassociation.tnoodle.svglite.Point2D;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.worldcubeassociation.tnoodle.puzzle.PyraminxSolver.PyraminxSolverState;
@@ -26,7 +24,7 @@ public class PyraminxPuzzle extends Puzzle {
 
     private static final int MIN_SCRAMBLE_LENGTH = 11;
     private static final boolean SCRAMBLE_LENGTH_INCLUDES_TIPS = true;
-    private PyraminxSolver pyraminxSolver = null;
+    private final PyraminxSolver pyraminxSolver;
 
     public PyraminxPuzzle() {
         pyraminxSolver = new PyraminxSolver();
@@ -56,7 +54,7 @@ public class PyraminxPuzzle extends Puzzle {
     private static final int pieceSize = 30;
     private static final int gap = 5;
 
-    private static final HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("F", new Color(0x00FF00));
         defaultColorScheme.put("D", new Color(0xFFFF00));
@@ -64,8 +62,8 @@ public class PyraminxPuzzle extends Puzzle {
         defaultColorScheme.put("R", new Color(0x0000FF));
     }
     @Override
-    public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+    public Map<String, Color> getDefaultColorScheme() {
+        return new HashMap<>(defaultColorScheme);
     }
 
     @Override
@@ -442,8 +440,8 @@ public class PyraminxPuzzle extends Puzzle {
         }
 
         @Override
-        public LinkedHashMap<String, PuzzleState> getSuccessorsByName() {
-            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<String, PuzzleState>();
+        public Map<String, PuzzleState> getSuccessorsByName() {
+            Map<String, PuzzleState> successors = new LinkedHashMap<>();
 
             String axes = "ulrb";
             for(int axis = 0; axis < axes.length(); axis++) {
@@ -485,7 +483,7 @@ public class PyraminxPuzzle extends Puzzle {
         }
 
         @Override
-        protected Svg drawScramble(HashMap<String, Color> colorScheme) {
+        protected Svg drawScramble(Map<String, Color> colorScheme) {
             Dimension preferredSize = getPreferredSize();
             Svg svg = new Svg(preferredSize);
             svg.setStroke(2, 10, "round");

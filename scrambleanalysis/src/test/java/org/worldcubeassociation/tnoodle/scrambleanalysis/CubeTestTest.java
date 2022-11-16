@@ -27,7 +27,7 @@ public class CubeTestTest {
     }
 
     private List<String> randomMovesScrambles(int N) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             result.add(randomMovesScramble());
         }

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -105,7 +105,7 @@ public class HugeScrambleTest {
                 System.out.print("Scramble ["+(count+1)+"/"+SCRAMBLE_COUNT+"]: ");
                 Puzzle.PuzzleState state = scrambler.getSolvedState();
                 for(int i = 0; i < SCRAMBLE_LENGTH; i++){
-                    HashMap<String, ? extends Puzzle.PuzzleState> successors = state.getSuccessorsByName();
+                    Map<String, ? extends Puzzle.PuzzleState> successors = state.getSuccessorsByName();
                     String move = Puzzle.choose(r, successors.keySet());
                     System.out.print(" "+move);
                     state = successors.get(move);
@@ -153,15 +153,12 @@ public class HugeScrambleTest {
             System.out.println("Generating & drawing 2 sets of " + SCRAMBLE_COUNT + " scrambles simultaneously." +
                                 " This is meant to shake out threading problems in scramblers.");
             final Object[] o = new Object[0];
-            ScrambleCacherListener cacherStopper = new ScrambleCacherListener() {
-                @Override
-                public void scrambleCacheUpdated(ScrambleCacher src) {
-                    System.out.println(Thread.currentThread() + " " + src.getAvailableCount() + " / " + src.getCacheSize());
-                    if(src.getAvailableCount() == src.getCacheSize()) {
-                        src.stop();
-                        synchronized(o) {
-                            o.notify();
-                        }
+            ScrambleCacherListener cacherStopper = src -> {
+                System.out.println(Thread.currentThread() + " " + src.getAvailableCount() + " / " + src.getCacheSize());
+                if(src.getAvailableCount() == src.getCacheSize()) {
+                    src.stop();
+                    synchronized(o) {
+                        o.notify();
                     }
                 }
             };
@@ -321,7 +318,7 @@ public class HugeScrambleTest {
     @Test
     public void testTwosSolver() throws InvalidScrambleException {
         CubePuzzle twos = new CubePuzzle(2);
-        CubePuzzle.CubeState state = (CubePuzzle.CubeState) twos.getSolvedState();
+        CubePuzzle.CubeState state = twos.getSolvedState();
         String solution = state.solveIn(0);
         assertEquals(solution, "");
 

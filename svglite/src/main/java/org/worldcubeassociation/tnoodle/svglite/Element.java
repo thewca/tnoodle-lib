@@ -2,32 +2,34 @@ package org.worldcubeassociation.tnoodle.svglite;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Element {
 
     protected String tag;
-    protected HashMap<String, String> attributes;
-    protected HashMap<String, String> style;
-    protected ArrayList<Element> children;
+    protected Map<String, String> attributes;
+    protected Map<String, String> style;
+    protected List<Element> children;
     protected String content;
     public Element(String tag) {
         this.tag = tag;
-        this.children = new ArrayList<Element>();
-        this.attributes = new HashMap<String, String>();
-        this.style = new HashMap<String, String>();
+        this.children = new ArrayList<>();
+        this.attributes = new HashMap<>();
+        this.style = new HashMap<>();
         this.content = null;
     }
 
     public Element(Element e) {
         this.tag = e.tag;
-        this.attributes = new HashMap<String, String>(e.attributes);
-        this.style = new HashMap<String, String>(e.style);
+        this.attributes = new HashMap<>(e.attributes);
+        this.style = new HashMap<>(e.style);
         this.children = e.copyChildren();
-        this.content = content;
+        this.content = e.content;
     }
 
-    protected ArrayList<Element> copyChildren() {
-        ArrayList<Element> childrenCopy = new ArrayList<Element>();
+    protected List<Element> copyChildren() {
+        List<Element> childrenCopy = new ArrayList<>();
         for(Element child : children) {
             childrenCopy.add(new Element(child));
         }
@@ -42,7 +44,7 @@ public class Element {
         this.content = content;
     }
 
-    public ArrayList<Element> getChildren() {
+    public List<Element> getChildren() {
         return children;
     }
 
@@ -50,7 +52,7 @@ public class Element {
         children.add(child);
     }
 
-    public HashMap<String, String> getAttributes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
 
@@ -72,7 +74,7 @@ public class Element {
         return style.get(key);
     }
 
-    public HashMap<String, String> getStyle() {
+    public Map<String, String> getStyle() {
         return style;
     }
 

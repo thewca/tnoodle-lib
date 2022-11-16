@@ -20,10 +20,10 @@ public enum PuzzleRegistry {
     CLOCK(ClockPuzzle.class),
     SKEWB(SkewbPuzzle.class);
 
-    private LazySupplier<? extends Puzzle> puzzleSupplier;
+    private final LazySupplier<? extends Puzzle> puzzleSupplier;
 
     <T extends Puzzle> PuzzleRegistry(Class<T> suppliyingClass, Object... ctorArgs) {
-        this.puzzleSupplier = new LazySupplier<T>(suppliyingClass, ctorArgs);
+        this.puzzleSupplier = new LazySupplier<>(suppliyingClass, ctorArgs);
     }
 
     public Puzzle getScrambler() {

@@ -1,6 +1,6 @@
 package org.worldcubeassociation.tnoodle.svglite;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PathIterator {
     public static final int SEG_MOVETO = 0;
@@ -10,7 +10,7 @@ public class PathIterator {
     public static final String SVG_LANGUAGE_COMMANDS = "MLTCZ";
 
     private int index;
-    private ArrayList<Path.Command> commands;
+    private final List<Path.Command> commands;
     public PathIterator(Path p) {
         index = 0;
         commands = p.commands;

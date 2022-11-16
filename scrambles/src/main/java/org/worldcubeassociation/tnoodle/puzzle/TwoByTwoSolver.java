@@ -199,8 +199,8 @@ public class TwoByTwoSolver {
     /**
      * Fill the pruning tables for the permutation and orientation coordinates.
      */
-    private static int[] prunPerm = new int[N_PERM];
-    private static int[] prunOrient = new int[N_ORIENT];
+    private static final int[] prunPerm = new int[N_PERM];
+    private static final int[] prunOrient = new int[N_ORIENT];
     private static void initPrun(){
 
         for (int perm=0; perm<N_PERM; perm++) {

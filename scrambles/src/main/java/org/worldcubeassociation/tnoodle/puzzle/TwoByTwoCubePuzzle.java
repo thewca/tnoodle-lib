@@ -14,7 +14,7 @@ import org.timepedia.exporter.client.Export;
 public class TwoByTwoCubePuzzle extends CubePuzzle {
     private static final int TWO_BY_TWO_MIN_SCRAMBLE_LENGTH = 11;
 
-    private TwoByTwoSolver twoSolver = null;
+    private final TwoByTwoSolver twoSolver;
     public TwoByTwoCubePuzzle() {
         super(2);
         wcaMinScrambleDistance = 4;
@@ -38,7 +38,6 @@ public class TwoByTwoCubePuzzle extends CubePuzzle {
 
     protected String solveIn(PuzzleState ps, int n) {
         CubeState cs = (CubeState) ps;
-        String solution = twoSolver.solveIn(cs.toTwoByTwoState(), n);
-        return solution;
+        return twoSolver.solveIn(cs.toTwoByTwoState(), n);
     }
 }

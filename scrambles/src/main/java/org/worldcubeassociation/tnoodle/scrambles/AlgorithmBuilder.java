@@ -1,7 +1,8 @@
 package org.worldcubeassociation.tnoodle.scrambles;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.worldcubeassociation.tnoodle.scrambles.Puzzle.PuzzleState;
@@ -9,11 +10,11 @@ import org.worldcubeassociation.tnoodle.scrambles.Puzzle.PuzzleState;
 public class AlgorithmBuilder {
     private static final Logger l = Logger.getLogger(AlgorithmBuilder.class.getName());
 
-    private ArrayList<String> moves = new ArrayList<String>();
+    private final List<String> moves = new ArrayList<>();
     /**
      * states.get(i) = state achieved by applying moves[0]...moves[i-1]
      */
-    private ArrayList<PuzzleState> states = new ArrayList<PuzzleState>();
+    private final List<PuzzleState> states = new ArrayList<>();
     /**
      * If we are in CANONICALIZE_MOVES MergingMode, then something like
      * Uw Dw on a 4x4x4 will become Uw2. This means the state we end
@@ -24,14 +25,13 @@ public class AlgorithmBuilder {
      */
     private PuzzleState originalState, unNormalizedState;
     private int totalCost;
-    private MergingMode mergingMode = MergingMode.NO_MERGING;
-    private Puzzle puzzle;
+    private final MergingMode mergingMode;
+
     public AlgorithmBuilder(Puzzle puzzle, MergingMode mergingMode) {
-        this(puzzle, mergingMode, puzzle.getSolvedState());
+        this(mergingMode, puzzle.getSolvedState());
     }
 
-    public AlgorithmBuilder(Puzzle puzzle, MergingMode mergingMode, PuzzleState originalState) {
-        this.puzzle = puzzle;
+    public AlgorithmBuilder(MergingMode mergingMode, PuzzleState originalState) {
         this.mergingMode = mergingMode;
         resetToState(originalState);
     }
@@ -45,7 +45,7 @@ public class AlgorithmBuilder {
         states.add(unNormalizedState);
     }
 
-    public static enum MergingMode {
+    public enum MergingMode {
         // There are several degrees of manipulation we can choose to do
         // while building an algorithm. Here they are, ranging from least to
         // most aggressive. Examples are on a 3x3x3.
@@ -116,7 +116,7 @@ public class AlgorithmBuilder {
         }
         PuzzleState newNormalizedState = newUnNormalizedState.getNormalized();
 
-        HashMap<? extends PuzzleState, String> successors = getState().getCanonicalMovesByState();
+        Map<? extends PuzzleState, String> successors = getState().getCanonicalMovesByState();
         move = null;
         // Search for the right move to do to our current state in
         // order to match up with newNormalizedState.
@@ -202,7 +202,7 @@ public class AlgorithmBuilder {
     }
 
     public String popMove(int index) {
-        ArrayList<String> movesCopy = new ArrayList<String>(moves);
+        List<String> movesCopy = new ArrayList<>(moves);
         String poppedMove = movesCopy.remove(index);
 
         resetToState(originalState);

@@ -5,10 +5,8 @@ import org.worldcubeassociation.tnoodle.svglite.Svg;
 import org.worldcubeassociation.tnoodle.svglite.Dimension;
 import org.worldcubeassociation.tnoodle.svglite.Path;
 import org.worldcubeassociation.tnoodle.svglite.Transform;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.worldcubeassociation.tnoodle.puzzle.SkewbSolver.SkewbSolverState;
@@ -23,7 +21,7 @@ import org.timepedia.exporter.client.Export;
 public class SkewbPuzzle extends Puzzle {
     private static final int MIN_SCRAMBLE_LENGTH = 11;
     private static final Logger l = Logger.getLogger(SkewbPuzzle.class.getName());
-    private SkewbSolver skewbSolver = null;
+    private final SkewbSolver skewbSolver;
 
     private static final int pieceSize = 30;
     private static final int gap = 3;
@@ -55,7 +53,7 @@ public class SkewbPuzzle extends Puzzle {
      */
 
 
-    private static final HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("U", Color.WHITE);
         defaultColorScheme.put("R", Color.BLUE);
@@ -66,8 +64,8 @@ public class SkewbPuzzle extends Puzzle {
     }
 
     @Override
-    public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+    public Map<String, Color> getDefaultColorScheme() {
+        return new HashMap<>(defaultColorScheme);
     }
 
     private Transform[] getFaceTrans() {
@@ -126,7 +124,7 @@ public class SkewbPuzzle extends Puzzle {
          *           | 3     4 |
          *           +---------+
          */
-        private int[][] image = new int[6][5];
+        private final int[][] image = new int[6][5];
 
         SkewbState() {
             for (int i=0; i<6; i++) {
@@ -138,9 +136,7 @@ public class SkewbPuzzle extends Puzzle {
 
         SkewbState(int[][] _image) {
             for (int i=0; i<6; i++) {
-                for (int j=0; j<5; j++) {
-                    image[i][j] = _image[i][j];
-                }
+                System.arraycopy(_image[i], 0, image[i], 0, 5);
             }
         }
 
@@ -214,7 +210,8 @@ public class SkewbPuzzle extends Puzzle {
             return p;
         }
 
-        protected Svg drawScramble(HashMap<String, Color> colorScheme) {
+        @Override
+        protected Svg drawScramble(Map<String, Color> colorScheme) {
             Svg g = new Svg(getPreferredSize());
             Color[] scheme = new Color[6];
             for(int i = 0; i < scheme.length; i++) {
@@ -233,8 +230,9 @@ public class SkewbPuzzle extends Puzzle {
             return g;
         }
 
-        public LinkedHashMap<String, PuzzleState> getSuccessorsByName() {
-            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<String, PuzzleState>();
+        @Override
+        public Map<String, PuzzleState> getSuccessorsByName() {
+            Map<String, PuzzleState> successors = new LinkedHashMap<>();
             String axes = "RULB";
             for(int axis = 0; axis < axes.length(); axis++) {
                 char face = axes.charAt(axis);

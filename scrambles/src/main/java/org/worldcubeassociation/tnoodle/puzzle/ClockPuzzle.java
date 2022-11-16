@@ -2,10 +2,7 @@ package org.worldcubeassociation.tnoodle.puzzle;
 
 import org.worldcubeassociation.tnoodle.svglite.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
 import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
@@ -55,7 +52,7 @@ public class ClockPuzzle extends Puzzle {
         {1,1,1,1,1,1,1,1,1,  -1, 0,-1, 0, 0, 0,-1, 0,-1},// A
     };
 
-    private static HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("Front", new Color(0x3375b2));
         defaultColorScheme.put("Back", new Color(0x55ccff));
@@ -67,8 +64,8 @@ public class ClockPuzzle extends Puzzle {
         defaultColorScheme.put("PinDown", new Color(0x885500));
     }
     @Override
-    public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+    public Map<String, Color> getDefaultColorScheme() {
+        return new HashMap<>(defaultColorScheme);
     }
 
     @Override
@@ -94,20 +91,20 @@ public class ClockPuzzle extends Puzzle {
             int turn = r.nextInt(12)-5;
             boolean clockwise = ( turn >= 0 );
             turn = Math.abs(turn);
-            scramble.append( turns[x] + turn + (clockwise?"+":"-") + " ");
+            scramble.append(turns[x]).append(turn).append(clockwise ? "+" : "-").append(" ");
         }
         scramble.append( "y2 ");
         for(int x=4; x<9; x++) {
             int turn = r.nextInt(12)-5;
             boolean clockwise = ( turn >= 0 );
             turn = Math.abs(turn);
-            scramble.append( turns[x] + turn + (clockwise?"+":"-") + " ");
+            scramble.append(turns[x]).append(turn).append(clockwise ? "+" : "-").append(" ");
         }
 
         boolean isFirst = true;
         for(int x=0;x<4;x++) {
             if (r.nextInt(2) == 1) {
-                scramble.append((isFirst?"":" ")+turns[x]);
+                scramble.append(isFirst ? "" : " ").append(turns[x]);
                 isFirst = false;
             }
         }
@@ -125,9 +122,9 @@ public class ClockPuzzle extends Puzzle {
 
     public class ClockState extends PuzzleState {
 
-        private boolean[] pins;
-        private int[] posit;
-        private boolean rightSideUp;
+        private final boolean[] pins;
+        private final int[] posit;
+        private final boolean rightSideUp;
         public ClockState() {
             pins = new boolean[] {false, false, false, false};
             posit = new int[] {0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0};
@@ -141,8 +138,8 @@ public class ClockPuzzle extends Puzzle {
         }
 
         @Override
-        public LinkedHashMap<String, PuzzleState> getSuccessorsByName() {
-            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<String, PuzzleState>();
+        public Map<String, PuzzleState> getSuccessorsByName() {
+            Map<String, PuzzleState> successors = new LinkedHashMap<>();
 
             for(int turn = 0; turn < turns.length; turn++) {
                 for(int rot = 0; rot < 12; rot++) {
@@ -197,7 +194,7 @@ public class ClockPuzzle extends Puzzle {
         }
 
         @Override
-        protected Svg drawScramble(HashMap<String, Color> colorScheme) {
+        protected Svg drawScramble(Map<String, Color> colorScheme) {
             Svg svg = new Svg(getPreferredSize());
             svg.setStroke(STROKE_WIDTH, 10, "round");
             drawBackground(svg, colorScheme);
@@ -210,7 +207,7 @@ public class ClockPuzzle extends Puzzle {
             return svg;
         }
 
-        protected void drawBackground(Svg g, HashMap<String, Color> colorScheme) {
+        protected void drawBackground(Svg g, Map<String, Color> colorScheme) {
             String[] colorString;
             if(rightSideUp) {
                 colorString = new String[]{"Front", "Back"};
@@ -274,7 +271,7 @@ public class ClockPuzzle extends Puzzle {
             }
         }
 
-        protected void drawClock(Svg g, int clock, int position, HashMap<String, Color> colorScheme) {
+        protected void drawClock(Svg g, int clock, int position, Map<String, Color> colorScheme) {
             Transform t = new Transform();
             t.rotate(Math.toRadians(position*30));
             int netX = 0;
@@ -329,7 +326,7 @@ public class ClockPuzzle extends Puzzle {
             g.appendChild(handBase);
         }
 
-        protected void drawPins(Svg g, boolean[] pins, HashMap<String, Color> colorScheme) {
+        protected void drawPins(Svg g, boolean[] pins, Map<String, Color> colorScheme) {
             Transform t = new Transform();
             t.translate(radius + gap, radius + gap);
             int k = 0;
@@ -353,7 +350,7 @@ public class ClockPuzzle extends Puzzle {
             }
         }
 
-        protected void drawPin(Svg g, Transform t, boolean pinUp, HashMap<String, Color> colorScheme) {
+        protected void drawPin(Svg g, Transform t, boolean pinUp, Map<String, Color> colorScheme) {
             Circle pin = new Circle(0, 0, pinRadius);
             pin.setTransform(t);
             pin.setStroke(Color.BLACK);

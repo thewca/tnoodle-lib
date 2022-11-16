@@ -1,7 +1,6 @@
 package org.worldcubeassociation.tnoodle.scrambles;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 class LazySupplier<T> {
     private T instance;
@@ -27,13 +26,7 @@ class LazySupplier<T> {
             Class<?>[] classes = this.getCtorArgClasses();
             Constructor<T> constructor = this.supplyingClass.getConstructor(classes);
             return constructor.newInstance(this.ctorArgs);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
 
