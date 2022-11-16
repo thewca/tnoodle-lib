@@ -7,7 +7,7 @@ import org.worldcubeassociation.tnoodle.scrambles.PuzzleStateAndGenerator;
 import java.util.Random;
 import java.util.logging.Level;
 
-public class OuterRandomCubePuzzle extends CubePuzzle {
+public class LayeredRandomizationCubePuzzle extends CubePuzzle {
     private final ThreadLocal<ThreeByThreeCubePuzzle> threeScrambler;
     private final ThreadLocal<TwoByTwoCubePuzzle> twoScrambler;
 
@@ -17,7 +17,7 @@ public class OuterRandomCubePuzzle extends CubePuzzle {
     // to centers will be scrambled.
     private static final int EXCLUDE_OUTER_LAYERS = 1;
 
-    public OuterRandomCubePuzzle(int size) {
+    public LayeredRandomizationCubePuzzle(int size) {
         super(size);
 
         this.threeScrambler = ThreadLocal.withInitial(ThreeByThreeCubePuzzle::new);
@@ -26,12 +26,12 @@ public class OuterRandomCubePuzzle extends CubePuzzle {
 
     @Override
     public String getLongName() {
-        return super.getLongName() + " (outer-random)";
+        return super.getLongName() + " (layered randomization)";
     }
 
     @Override
     public String getShortName() {
-        return super.getShortName() + "or";
+        return super.getShortName() + "lrand";
     }
 
     @Override
