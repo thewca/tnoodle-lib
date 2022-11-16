@@ -9,11 +9,11 @@ import org.worldcubeassociation.tnoodle.scrambles.Puzzle.PuzzleState;
 public class AlgorithmBuilder {
     private static final Logger l = Logger.getLogger(AlgorithmBuilder.class.getName());
 
-    private ArrayList<String> moves = new ArrayList<String>();
+    private ArrayList<String> moves = new ArrayList<>();
     /**
      * states.get(i) = state achieved by applying moves[0]...moves[i-1]
      */
-    private ArrayList<PuzzleState> states = new ArrayList<PuzzleState>();
+    private ArrayList<PuzzleState> states = new ArrayList<>();
     /**
      * If we are in CANONICALIZE_MOVES MergingMode, then something like
      * Uw Dw on a 4x4x4 will become Uw2. This means the state we end
@@ -24,7 +24,7 @@ public class AlgorithmBuilder {
      */
     private PuzzleState originalState, unNormalizedState;
     private int totalCost;
-    private MergingMode mergingMode = MergingMode.NO_MERGING;
+    private final MergingMode mergingMode;
     private Puzzle puzzle;
     public AlgorithmBuilder(Puzzle puzzle, MergingMode mergingMode) {
         this(puzzle, mergingMode, puzzle.getSolvedState());
@@ -45,7 +45,7 @@ public class AlgorithmBuilder {
         states.add(unNormalizedState);
     }
 
-    public static enum MergingMode {
+    public enum MergingMode {
         // There are several degrees of manipulation we can choose to do
         // while building an algorithm. Here they are, ranging from least to
         // most aggressive. Examples are on a 3x3x3.
@@ -202,7 +202,7 @@ public class AlgorithmBuilder {
     }
 
     public String popMove(int index) {
-        ArrayList<String> movesCopy = new ArrayList<String>(moves);
+        ArrayList<String> movesCopy = new ArrayList<>(moves);
         String poppedMove = movesCopy.remove(index);
 
         resetToState(originalState);

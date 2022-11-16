@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class ScrambleProvider {
 
     public static List<String> getScrambles(String fileName) throws IOException {
-        List<String> scrambles = new ArrayList<String>();
+        List<String> scrambles = new ArrayList<>();
 
         // Read scrambles
         File file = new File(fileName);
@@ -37,7 +37,7 @@ public class ScrambleProvider {
 
     // This is the main test
     public static List<String> generateWcaScrambles(CubePuzzle cube, int N) {
-        List<String> scrambles = new ArrayList<String>(N);
+        List<String> scrambles = new ArrayList<>(N);
 
         for (int i = 0; i < N; i++) {
             // Give some status to the user
@@ -59,7 +59,7 @@ public class ScrambleProvider {
     }
 
     public static List<CubePuzzle.CubeState> convertToCubeStates(List<String> scrambles) throws InvalidScrambleException {
-        List<CubePuzzle.CubeState> cubeStates = new ArrayList<CubePuzzle.CubeState>(scrambles.size());
+        List<CubePuzzle.CubeState> cubeStates = new ArrayList<>(scrambles.size());
         CubePuzzle puzzle = new CubePuzzle(3);
 
         for (String scramble : scrambles) {

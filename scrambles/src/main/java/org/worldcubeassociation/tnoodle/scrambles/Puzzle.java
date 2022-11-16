@@ -183,7 +183,7 @@ public abstract class Puzzle implements Exportable {
      */
     @Export
     public String[] getFaceNames() {
-        ArrayList<String> faces = new ArrayList<String>(getDefaultColorScheme().keySet());
+        ArrayList<String> faces = new ArrayList<>(getDefaultColorScheme().keySet());
         Collections.sort(faces);
         return faces.toArray(new String[faces.size()]);
     }
@@ -291,7 +291,7 @@ public abstract class Puzzle implements Exportable {
         private int value;
         public Bucket(int value) {
             this.value = value;
-            this.contents = new LinkedList<H>();
+            this.contents = new LinkedList<>();
         }
 
         public int getValue() {
@@ -332,12 +332,12 @@ public abstract class Puzzle implements Exportable {
     public static class SortedBuckets<H> {
         TreeSet<Bucket<H>> buckets;
         public SortedBuckets() {
-            buckets = new TreeSet<Bucket<H>>();
+            buckets = new TreeSet<>();
         }
 
         public void add(H element, int value) {
             Bucket<H> bucket;
-            Bucket<H> searchBucket = new Bucket<H>(value);
+            Bucket<H> searchBucket = new Bucket<>(value);
             if(!buckets.contains(searchBucket)) {
                 // There is no bucket yet for value, so we create one.
                 bucket = searchBucket;
@@ -385,10 +385,10 @@ public abstract class Puzzle implements Exportable {
             return "";
         }
 
-        HashMap<PuzzleState, Integer> seenSolved = new HashMap<PuzzleState, Integer>();
-        SortedBuckets<PuzzleState> fringeSolved = new SortedBuckets<PuzzleState>();
-        HashMap<PuzzleState, Integer> seenScrambled = new HashMap<PuzzleState, Integer>();
-        SortedBuckets<PuzzleState> fringeScrambled = new SortedBuckets<PuzzleState>();
+        HashMap<PuzzleState, Integer> seenSolved = new HashMap<>();
+        SortedBuckets<PuzzleState> fringeSolved = new SortedBuckets<>();
+        HashMap<PuzzleState, Integer> seenScrambled = new HashMap<>();
+        SortedBuckets<PuzzleState> fringeScrambled = new SortedBuckets<>();
 
         // We're only interested in solutions of cost <= n
         int bestIntersectionCost = n + 1;
@@ -625,8 +625,8 @@ public abstract class Puzzle implements Exportable {
             LinkedHashMap<String, ? extends PuzzleState> successorsByName =
                 getSuccessorsByName();
             HashMap<PuzzleState, String> uniqueSuccessors =
-                new HashMap<PuzzleState, String>();
-            HashSet<PuzzleState> statesSeenNormalized = new HashSet<PuzzleState>();
+                new HashMap<>();
+            HashSet<PuzzleState> statesSeenNormalized = new HashSet<>();
             // We're not interested in any successor states are just a
             // rotation away.
             statesSeenNormalized.add(this.getNormalized());
@@ -729,7 +729,7 @@ public abstract class Puzzle implements Exportable {
          *         The move Strings may not contain spaces.
          */
         public HashMap<String, ? extends PuzzleState> getScrambleSuccessors() {
-            HashMap<String, PuzzleState> reversed = new HashMap<String, PuzzleState>();
+            HashMap<String, PuzzleState> reversed = new HashMap<>();
 
             for (Map.Entry<? extends PuzzleState, String> entry : getCanonicalMovesByState().entrySet()) {
                 reversed.put(entry.getValue(), entry.getKey());

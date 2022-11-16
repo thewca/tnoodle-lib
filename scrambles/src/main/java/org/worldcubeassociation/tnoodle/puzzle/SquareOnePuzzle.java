@@ -19,16 +19,12 @@ public class SquareOnePuzzle extends Puzzle {
 
     private static final int radius = 32;
 
-    private ThreadLocal<Search> twoPhaseSearcher;
+    private final ThreadLocal<Search> twoPhaseSearcher;
 
     public SquareOnePuzzle() {
         wcaMinScrambleDistance = 11;
 
-        twoPhaseSearcher = new ThreadLocal<Search>() {
-            protected Search initialValue() {
-                return new Search();
-            };
-        };
+        twoPhaseSearcher = ThreadLocal.withInitial(Search::new);
     }
 
     @Override
@@ -45,7 +41,7 @@ public class SquareOnePuzzle extends Puzzle {
         return new PuzzleStateAndGenerator(state, scramble);
     }
 
-    private static HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static HashMap<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("B", new Color(255, 128, 0)); //orange heraldic tincture
         defaultColorScheme.put("D", Color.WHITE);
@@ -56,7 +52,7 @@ public class SquareOnePuzzle extends Puzzle {
     }
     @Override
     public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+        return new HashMap<>(defaultColorScheme);
     }
 
     @Override
@@ -197,8 +193,8 @@ public class SquareOnePuzzle extends Puzzle {
         return 40;
     }
 
-    static HashMap<String, Integer> wcaCostsByMove = new HashMap<String, Integer>();
-    static HashMap<String, Integer> slashabilityCostsByMove = new HashMap<String, Integer>();
+    static HashMap<String, Integer> wcaCostsByMove = new HashMap<>();
+    static HashMap<String, Integer> slashabilityCostsByMove = new HashMap<>();
     static {
         for(int top = -5; top <= 6; top++) {
             for(int bottom = -5; bottom <= 6; bottom++) {
@@ -327,7 +323,7 @@ public class SquareOnePuzzle extends Puzzle {
 
         @Override
         public LinkedHashMap<String, SquareOneState> getSuccessorsByName() {
-            LinkedHashMap<String, SquareOneState> successors = new LinkedHashMap<String, SquareOneState>();
+            LinkedHashMap<String, SquareOneState> successors = new LinkedHashMap<>();
             for(int top = -5; top <= 6; top++) {
                 for(int bottom = -5; bottom <= 6; bottom++) {
                     if(top == 0 && bottom == 0) {

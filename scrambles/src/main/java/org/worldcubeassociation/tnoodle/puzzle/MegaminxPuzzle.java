@@ -20,7 +20,7 @@ import org.timepedia.exporter.client.Export;
 
 @Export
 public class MegaminxPuzzle extends Puzzle {
-    private static enum Face {
+    private enum Face {
         U, BL, BR, R, F, L, D, DR, DBR, B, DBL, DL;
 
         // TODO We could rename faces so we can just do +6 mod 12 here instead.
@@ -194,7 +194,7 @@ public class MegaminxPuzzle extends Puzzle {
 
     @Override
     public HashMap<String, Color> getDefaultColorScheme() {
-        HashMap<String, Color> colors = new HashMap<String, Color>();
+        HashMap<String, Color> colors = new HashMap<>();
         colors.put("U", new Color(0xffffff));
         colors.put("BL", new Color(0xffcc00));
         colors.put("BR", new Color(0x0000b3));
@@ -281,7 +281,7 @@ public class MegaminxPuzzle extends Puzzle {
     double shift = leftCenterX+magicShiftNumber;
 
     public HashMap<Face, Path> getFaceBoundaries() {
-        HashMap<Face, Path> faces = new HashMap<Face, Path>();
+        HashMap<Face, Path> faces = new HashMap<>();
         faces.put(Face.U,   getPentagon(leftCenterX  , leftCenterY  , true , minxRad));
         faces.put(Face.BL,  getPentagon(leftCenterX-c, leftCenterY-e, false, minxRad));
         faces.put(Face.BR,  getPentagon(leftCenterX+c, leftCenterY-e, false, minxRad));
@@ -463,7 +463,7 @@ public class MegaminxPuzzle extends Puzzle {
 
         @Override
         public LinkedHashMap<String, MegaminxState> getSuccessorsByName() {
-            LinkedHashMap<String, MegaminxState> successors = new LinkedHashMap<String, MegaminxState>();
+            LinkedHashMap<String, MegaminxState> successors = new LinkedHashMap<>();
 
             String[] prettyDir = new String[] { null, "", "2", "2'", "'" };
             for(Face face : Face.values()) {
@@ -478,7 +478,7 @@ public class MegaminxPuzzle extends Puzzle {
                 }
             }
 
-            HashMap<String, Face> pochmannFaceNames = new HashMap<String, Face>();
+            HashMap<String, Face> pochmannFaceNames = new HashMap<>();
             pochmannFaceNames.put("R", Face.DBR);
             pochmannFaceNames.put("D", Face.D);
             String[] prettyPochmannDir = new String[] { null, "+", "++", "--" , "-"};
@@ -498,7 +498,7 @@ public class MegaminxPuzzle extends Puzzle {
         @Override
         public HashMap<String, MegaminxState> getScrambleSuccessors() {
             HashMap<String, MegaminxState> successors = getSuccessorsByName();
-            HashMap<String, MegaminxState> scrambleSuccessors = new HashMap<String, MegaminxState>();
+            HashMap<String, MegaminxState> scrambleSuccessors = new HashMap<>();
             for(String turn : new String[] { "R++", "R--", "D++", "D--", "U", "U2", "U2'", "U'" }) {
                 scrambleSuccessors.put(turn, successors.get(turn));
             }

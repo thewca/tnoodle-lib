@@ -23,7 +23,7 @@ public enum PuzzleRegistry {
     private LazySupplier<? extends Puzzle> puzzleSupplier;
 
     <T extends Puzzle> PuzzleRegistry(Class<T> suppliyingClass, Object... ctorArgs) {
-        this.puzzleSupplier = new LazySupplier<T>(suppliyingClass, ctorArgs);
+        this.puzzleSupplier = new LazySupplier<>(suppliyingClass, ctorArgs);
     }
 
     public Puzzle getScrambler() {

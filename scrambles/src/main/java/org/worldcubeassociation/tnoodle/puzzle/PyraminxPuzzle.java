@@ -26,7 +26,7 @@ public class PyraminxPuzzle extends Puzzle {
 
     private static final int MIN_SCRAMBLE_LENGTH = 11;
     private static final boolean SCRAMBLE_LENGTH_INCLUDES_TIPS = true;
-    private PyraminxSolver pyraminxSolver = null;
+    private final PyraminxSolver pyraminxSolver;
 
     public PyraminxPuzzle() {
         pyraminxSolver = new PyraminxSolver();
@@ -56,7 +56,7 @@ public class PyraminxPuzzle extends Puzzle {
     private static final int pieceSize = 30;
     private static final int gap = 5;
 
-    private static final HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static final HashMap<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("F", new Color(0x00FF00));
         defaultColorScheme.put("D", new Color(0xFFFF00));
@@ -65,7 +65,7 @@ public class PyraminxPuzzle extends Puzzle {
     }
     @Override
     public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+        return new HashMap<>(defaultColorScheme);
     }
 
     @Override
@@ -443,7 +443,7 @@ public class PyraminxPuzzle extends Puzzle {
 
         @Override
         public LinkedHashMap<String, PuzzleState> getSuccessorsByName() {
-            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<String, PuzzleState>();
+            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<>();
 
             String axes = "ulrb";
             for(int axis = 0; axis < axes.length(); axis++) {

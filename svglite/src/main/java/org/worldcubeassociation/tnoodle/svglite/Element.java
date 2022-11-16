@@ -12,22 +12,22 @@ public class Element {
     protected String content;
     public Element(String tag) {
         this.tag = tag;
-        this.children = new ArrayList<Element>();
-        this.attributes = new HashMap<String, String>();
-        this.style = new HashMap<String, String>();
+        this.children = new ArrayList<>();
+        this.attributes = new HashMap<>();
+        this.style = new HashMap<>();
         this.content = null;
     }
 
     public Element(Element e) {
         this.tag = e.tag;
-        this.attributes = new HashMap<String, String>(e.attributes);
-        this.style = new HashMap<String, String>(e.style);
+        this.attributes = new HashMap<>(e.attributes);
+        this.style = new HashMap<>(e.style);
         this.children = e.copyChildren();
         this.content = content;
     }
 
     protected ArrayList<Element> copyChildren() {
-        ArrayList<Element> childrenCopy = new ArrayList<Element>();
+        ArrayList<Element> childrenCopy = new ArrayList<>();
         for(Element child : children) {
             childrenCopy.add(new Element(child));
         }

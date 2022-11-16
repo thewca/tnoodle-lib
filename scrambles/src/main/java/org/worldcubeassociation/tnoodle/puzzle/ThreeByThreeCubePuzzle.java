@@ -19,18 +19,14 @@ public class ThreeByThreeCubePuzzle extends CubePuzzle {
     private static final int THREE_BY_THREE_TIMEMIN = 200; //milliseconds
     private static final int THREE_BY_THREE_TIMEOUT = 60*1000; //milliseconds
 
-    private ThreadLocal<SearchWCA> twoPhaseSearcher = null;
+    private final ThreadLocal<SearchWCA> twoPhaseSearcher;
     public ThreeByThreeCubePuzzle() {
         super(3);
         String newMinDistance = System.getenv("TNOODLE_333_MIN_DISTANCE");
         if(newMinDistance != null) {
             wcaMinScrambleDistance = Integer.parseInt(newMinDistance);
         }
-        twoPhaseSearcher = new ThreadLocal<SearchWCA>() {
-            protected SearchWCA initialValue() {
-                return new SearchWCA();
-            };
-        };
+        twoPhaseSearcher = ThreadLocal.withInitial(SearchWCA::new);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class Path extends Element {
     public Path(Path p) {
         super(p);
         if(p.commands != null) {
-            this.commands = new ArrayList<Command>(p.commands);
+            this.commands = new ArrayList<>(p.commands);
         }
     }
 
@@ -41,7 +41,7 @@ public class Path extends Element {
 
     public void moveTo(double x, double y) {
         if(commands == null) {
-            commands = new ArrayList<Command>();
+            commands = new ArrayList<>();
         }
 
         int type = PathIterator.SEG_MOVETO;

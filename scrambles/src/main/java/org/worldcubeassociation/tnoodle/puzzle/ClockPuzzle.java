@@ -55,7 +55,7 @@ public class ClockPuzzle extends Puzzle {
         {1,1,1,1,1,1,1,1,1,  -1, 0,-1, 0, 0, 0,-1, 0,-1},// A
     };
 
-    private static HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static HashMap<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("Front", new Color(0x3375b2));
         defaultColorScheme.put("Back", new Color(0x55ccff));
@@ -68,7 +68,7 @@ public class ClockPuzzle extends Puzzle {
     }
     @Override
     public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+        return new HashMap<>(defaultColorScheme);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class ClockPuzzle extends Puzzle {
 
         @Override
         public LinkedHashMap<String, PuzzleState> getSuccessorsByName() {
-            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<String, PuzzleState>();
+            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<>();
 
             for(int turn = 0; turn < turns.length; turn++) {
                 for(int rot = 0; rot < 12; rot++) {

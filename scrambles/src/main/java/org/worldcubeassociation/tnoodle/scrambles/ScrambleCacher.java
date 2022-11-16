@@ -36,55 +36,51 @@ public class ScrambleCacher {
     public ScrambleCacher(final Puzzle puzzle, int cacheSize, final boolean drawScramble) {
         assert cacheSize > 0;
         scrambles = new String[cacheSize];
-        Thread t = new Thread() {
-            public void run() {
-                synchronized(puzzle.getClass()) {
-                    // This thread starts running while scrambler
-                    // is still initializing, we must wait until
-                    // it has finished before we attempt to generate
-                    // any scrambles.
-                }
-                for(;;) {
-                    String scramble = puzzle.generateWcaScramble(r);
-
-                    if(drawScramble) {
-                        // The drawScramble option exists so we can test out generating and drawing
-                        // a bunch of scrambles in 2 threads at the same time. See ScrambleTest.
-                        try {
-                            puzzle.drawScramble(scramble, null);
-                        } catch (InvalidScrambleException e1) {
-                            l.log(Level.SEVERE,
-                                  "Error drawing scramble we just created. ",
-                                  e1);
-                        }
-                    }
-
-                    synchronized(scrambles) {
-                        while(running && available == scrambles.length) {
-                            try {
-                                scrambles.wait();
-                            } catch(InterruptedException e) {}
-                        }
-                        if(!running) {
-                            return;
-                        }
-                        scrambles[(startBuf + available) % scrambles.length] = scramble;
-                        available++;
-                        scrambles.notifyAll();
-                    }
-                    fireScrambleCacheUpdated();
-                }
+        Thread t = new Thread(() -> {
+            synchronized(puzzle.getClass()) {
+                // This thread starts running while scrambler
+                // is still initializing, we must wait until
+                // it has finished before we attempt to generate
+                // any scrambles.
             }
-        };
-        t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            public void uncaughtException(Thread t, Throwable e) {
-                l.log(Level.SEVERE, "", e);
+            for(;;) {
+                String scramble = puzzle.generateWcaScramble(r);
 
-                // Let everyone waiting for a scramble know that we have crashed
-                exception = e;
+                if(drawScramble) {
+                    // The drawScramble option exists so we can test out generating and drawing
+                    // a bunch of scrambles in 2 threads at the same time. See ScrambleTest.
+                    try {
+                        puzzle.drawScramble(scramble, null);
+                    } catch (InvalidScrambleException e1) {
+                        l.log(Level.SEVERE,
+                              "Error drawing scramble we just created. ",
+                              e1);
+                    }
+                }
+
                 synchronized(scrambles) {
+                    while(running && available == scrambles.length) {
+                        try {
+                            scrambles.wait();
+                        } catch(InterruptedException e) {}
+                    }
+                    if(!running) {
+                        return;
+                    }
+                    scrambles[(startBuf + available) % scrambles.length] = scramble;
+                    available++;
                     scrambles.notifyAll();
                 }
+                fireScrambleCacheUpdated();
+            }
+        });
+        t.setUncaughtExceptionHandler((t1, e) -> {
+            l.log(Level.SEVERE, "", e);
+
+            // Let everyone waiting for a scramble know that we have crashed
+            exception = e;
+            synchronized(scrambles) {
+                scrambles.notifyAll();
             }
         });
         t.setDaemon(true);
@@ -103,7 +99,7 @@ public class ScrambleCacher {
         return running;
     }
 
-    private LinkedList<ScrambleCacherListener> ls = new LinkedList<ScrambleCacherListener>();
+    private LinkedList<ScrambleCacherListener> ls = new LinkedList<>();
     /**
      * This method will notify all listeners that the cache size has changed.
      * NOTE: Do NOT call this method while holding any monitors!

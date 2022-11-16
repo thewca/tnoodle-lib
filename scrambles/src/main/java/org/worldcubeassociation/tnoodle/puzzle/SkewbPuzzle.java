@@ -23,7 +23,7 @@ import org.timepedia.exporter.client.Export;
 public class SkewbPuzzle extends Puzzle {
     private static final int MIN_SCRAMBLE_LENGTH = 11;
     private static final Logger l = Logger.getLogger(SkewbPuzzle.class.getName());
-    private SkewbSolver skewbSolver = null;
+    private final SkewbSolver skewbSolver;
 
     private static final int pieceSize = 30;
     private static final int gap = 3;
@@ -55,7 +55,7 @@ public class SkewbPuzzle extends Puzzle {
      */
 
 
-    private static final HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static final HashMap<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("U", Color.WHITE);
         defaultColorScheme.put("R", Color.BLUE);
@@ -67,7 +67,7 @@ public class SkewbPuzzle extends Puzzle {
 
     @Override
     public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+        return new HashMap<>(defaultColorScheme);
     }
 
     private Transform[] getFaceTrans() {
@@ -234,7 +234,7 @@ public class SkewbPuzzle extends Puzzle {
         }
 
         public LinkedHashMap<String, PuzzleState> getSuccessorsByName() {
-            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<String, PuzzleState>();
+            LinkedHashMap<String, PuzzleState> successors = new LinkedHashMap<>();
             String axes = "RULB";
             for(int axis = 0; axis < axes.length(); axis++) {
                 char face = axes.charAt(axis);

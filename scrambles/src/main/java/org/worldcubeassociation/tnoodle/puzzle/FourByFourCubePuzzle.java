@@ -2,6 +2,8 @@ package org.worldcubeassociation.tnoodle.puzzle;
 
 import java.util.Random;
 
+import cs.threephase.Edge3;
+import cs.threephase.Search;
 import org.worldcubeassociation.tnoodle.scrambles.AlgorithmBuilder;
 import org.worldcubeassociation.tnoodle.scrambles.AlgorithmBuilder.MergingMode;
 import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
@@ -11,19 +13,15 @@ import org.timepedia.exporter.client.Export;
 
 @Export
 public class FourByFourCubePuzzle extends CubePuzzle {
-    private ThreadLocal<cs.threephase.Search> threePhaseSearcher = null;
+    private final ThreadLocal<Search> threePhaseSearcher;
 
     public FourByFourCubePuzzle() {
         super(4);
-        threePhaseSearcher = new ThreadLocal<cs.threephase.Search>() {
-            protected cs.threephase.Search initialValue() {
-                return new cs.threephase.Search();
-            };
-        };
+        threePhaseSearcher = ThreadLocal.withInitial(Search::new);
     }
 
     public double getInitializationStatus() {
-        return cs.threephase.Edge3.initStatus();
+        return Edge3.initStatus();
     }
 
     @Override

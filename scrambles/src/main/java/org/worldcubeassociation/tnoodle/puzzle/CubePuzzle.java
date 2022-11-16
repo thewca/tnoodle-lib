@@ -14,7 +14,7 @@ import org.timepedia.exporter.client.Export;
 @Export
 public class CubePuzzle extends Puzzle {
 
-    public static enum Face {
+    public enum Face {
         R, U, F, L, D, B;
 
         public Face oppositeFace() {
@@ -23,7 +23,7 @@ public class CubePuzzle extends Puzzle {
     }
 
     private static final String[] DIR_TO_STR = new String[] { null, "", "2", "'" };
-    private static HashMap<Face, String> faceRotationsByName = new HashMap<Face, String>();
+    private static HashMap<Face, String> faceRotationsByName = new HashMap<>();
     static {
         faceRotationsByName.put(Face.R, "x");
         faceRotationsByName.put(Face.U, "y");
@@ -96,7 +96,7 @@ public class CubePuzzle extends Puzzle {
         int i = 0;
         for(CubeMove randomUFaceMove : randomUFaceMoves) {
             for(CubeMove randomFFaceMove : randomFFaceMoves) {
-                ArrayList<CubeMove> moves = new ArrayList<CubeMove>();
+                ArrayList<CubeMove> moves = new ArrayList<>();
                 if(randomUFaceMove != null) {
                     moves.add(randomUFaceMove);
                 }
@@ -219,7 +219,7 @@ public class CubePuzzle extends Puzzle {
         }
     }
 
-    private static HashMap<String, Color> defaultColorScheme = new HashMap<String, Color>();
+    private static HashMap<String, Color> defaultColorScheme = new HashMap<>();
     static {
         defaultColorScheme.put("B", Color.BLUE);
         defaultColorScheme.put("D", Color.YELLOW);
@@ -230,7 +230,7 @@ public class CubePuzzle extends Puzzle {
     }
     @Override
     public HashMap<String, Color> getDefaultColorScheme() {
-        return new HashMap<String, Color>(defaultColorScheme);
+        return new HashMap<>(defaultColorScheme);
     }
 
     @Override
@@ -515,12 +515,12 @@ public class CubePuzzle extends Puzzle {
 
         @Override
         public HashMap<String, CubeState> getScrambleSuccessors() {
-            return getSuccessorsWithinSlice((int) (size / 2) - 1, false);
+            return getSuccessorsWithinSlice((size / 2) - 1, false);
         }
 
         @Override
         public HashMap<? extends PuzzleState, String> getCanonicalMovesByState() {
-            HashMap<PuzzleState, String> reversed = new HashMap<PuzzleState, String>();
+            HashMap<PuzzleState, String> reversed = new HashMap<>();
 
             for (Map.Entry<String, ? extends PuzzleState> entry : getScrambleSuccessors().entrySet()) {
                 reversed.put(entry.getValue(), entry.getKey());
@@ -530,7 +530,7 @@ public class CubePuzzle extends Puzzle {
         }
 
         private LinkedHashMap<String, CubeState> getSuccessorsWithinSlice(int maxSlice, boolean includeRedundant) {
-            LinkedHashMap<String, CubeState> successors = new LinkedHashMap<String, CubeState>();
+            LinkedHashMap<String, CubeState> successors = new LinkedHashMap<>();
             for(int innerSlice = 0; innerSlice <= maxSlice; innerSlice++) {
                 for(Face face : Face.values()) {
                     boolean halfOfEvenCube = size % 2 == 0 && (innerSlice == (size / 2) - 1);

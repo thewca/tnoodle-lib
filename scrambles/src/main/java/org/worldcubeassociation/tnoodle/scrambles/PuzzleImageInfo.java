@@ -15,13 +15,13 @@ public class PuzzleImageInfo {
     }
 
     public HashMap<String, Object> toJsonable() {
-        HashMap<String, Object> jsonable = new HashMap<String, Object>();
-        HashMap<String, Integer> dim = new HashMap<String, Integer>();
+        HashMap<String, Object> jsonable = new HashMap<>();
+        HashMap<String, Integer> dim = new HashMap<>();
         dim.put("width", size.width);
         dim.put("height", size.height);
         jsonable.put("size", dim);
 
-        HashMap<String, String> jsonColorScheme = new HashMap<String, String>();
+        HashMap<String, String> jsonColorScheme = new HashMap<>();
         for(String key : this.colorScheme.keySet()) {
             jsonColorScheme.put(key, this.colorScheme.get(key).toHex());
         }
