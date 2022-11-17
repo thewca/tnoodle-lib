@@ -64,22 +64,7 @@ public class LayeredRandomizationCubePuzzle extends CubePuzzle {
             }
         }
 
-        // we take a "classic" big cube scramble sequence as reference
-        // because there is currently no API to generate N random moves directly
-        // (and I am too lazy to write one if we already have something that comes close)
-        PuzzleStateAndGenerator randomMovesPsag = super.generateRandomMoves(r);
-        String[] randomMoves = AlgorithmBuilder.splitAlgorithm(randomMovesPsag.generator);
-
-        int remainingLength = this.getRandomMoveCount() - ab.getTotalCost();
-
-        for (int i = 0; i < remainingLength; i++) {
-            try {
-                ab.appendMove(randomMoves[i]);
-            } catch (InvalidMoveException e) {
-                l.log(Level.SEVERE, "", e);
-                throw new RuntimeException(e);
-            }
-        }
+        fillWithRandomMoves(ab, r, getRandomMoveCount());
 
         return ab.getStateAndGenerator();
     }

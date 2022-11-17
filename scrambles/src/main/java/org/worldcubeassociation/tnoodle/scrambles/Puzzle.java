@@ -837,26 +837,42 @@ public abstract class Puzzle implements Exportable {
      */
     @NoExport
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
-        AlgorithmBuilder ab = new AlgorithmBuilder(
-                this, MergingMode.NO_MERGING);
-        while(ab.getTotalCost() < getRandomMoveCount()) {
-            Map<String, ? extends PuzzleState> successors =
-                ab.getState().getScrambleSuccessors();
-            String move;
+        AlgorithmBuilder ab = new AlgorithmBuilder(this, MergingMode.NO_MERGING);
+        fillWithRandomMoves(ab, r, getRandomMoveCount());
+        return ab.getStateAndGenerator();
+    }
+
+    protected static void fillWithRandomMoves(AlgorithmBuilder ab, Random r, int targetCost) {
+        while(ab.getTotalCost() < targetCost) {
+            String move = chooseRandomSuccessorMove(ab, r);
             try {
-                do {
-                    move = choose(r, successors.keySet());
-                    // If this move happens to be redundant, there is no
-                    // reason to select this move again in vain.
-                    successors.remove(move);
-                } while(ab.isRedundant(move));
                 ab.appendMove(move);
             } catch(InvalidMoveException e) {
                 l.log(Level.SEVERE, "", e);
                 throw new RuntimeException(e);
             }
         }
-        return ab.getStateAndGenerator();
+    }
+
+    protected static String chooseRandomSuccessorMove(AlgorithmBuilder ab, Random r) {
+        Map<String, ? extends PuzzleState> successors =
+            ab.getState().getScrambleSuccessors();
+        Set<String> moveSet = successors.keySet();
+
+        String move;
+        try {
+            do {
+                move = choose(r, moveSet);
+                // If this move happens to be redundant, there is no
+                // reason to select this move again in vain.
+                successors.remove(move);
+            } while(ab.isRedundant(move));
+        } catch(InvalidMoveException e) {
+            l.log(Level.SEVERE, "", e);
+            throw new RuntimeException(e);
+        }
+
+        return move;
     }
 
     public static int[] cloneArr(int[] src) {
