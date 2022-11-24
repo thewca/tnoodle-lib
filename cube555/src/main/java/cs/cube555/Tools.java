@@ -4,40 +4,54 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static cs.cube555.Util.*;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
+
+import java.io.*;
 import java.util.Random;
 
 public class Tools {
     private static Logger logger = LoggerFactory.getLogger(Tools.class);
 
+    public static File pruningTableFolder = null;
+
 	static boolean SaveToFile(String filename, Object obj) {
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(filename)));
+        if (pruningTableFolder == null) {
+            return false;
+        }
+
+        if (!pruningTableFolder.exists() && !pruningTableFolder.mkdirs()) {
+            return false;
+        }
+
+        File pruningTable = new File(pruningTableFolder, filename);
+
+		try(ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(pruningTable)))) {
 			oos.writeObject(obj);
-			oos.close();
 		} catch (Exception e) {
 			logger.error("unable to save file", e);
 			return false;
 		}
+
 		return true;
 	}
 
 	static Object LoadFromFile(String filename) {
-		Object ret;
-		try {
-			ObjectInputStream oos = new ObjectInputStream(new BufferedInputStream(new FileInputStream(filename)));
-			ret = oos.readObject();
-			oos.close();
+        if (pruningTableFolder == null) {
+            return null;
+        }
+
+        File pruningTable = new File(pruningTableFolder, filename);
+
+        if (!pruningTable.exists()) {
+            return null;
+        }
+
+        try(ObjectInputStream oos = new ObjectInputStream(new BufferedInputStream(new FileInputStream(pruningTable)))) {
+            return oos.readObject();
 		} catch (Exception e) {
             logger.error("unable to load file", e);
-			return null;
 		}
-		return ret;
+
+		return null;
 	}
 
 	static Random gen = new Random();

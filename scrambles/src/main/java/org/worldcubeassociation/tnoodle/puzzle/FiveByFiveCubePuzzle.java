@@ -7,6 +7,7 @@ import org.timepedia.exporter.client.Export;
 import org.worldcubeassociation.tnoodle.scrambles.*;
 import org.worldcubeassociation.tnoodle.scrambles.AlgorithmBuilder.MergingMode;
 
+import java.io.File;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -73,5 +74,10 @@ public class FiveByFiveCubePuzzle extends CubePuzzle {
         }
 
         return ab.getStateAndGenerator();
+    }
+
+    public static void initPruningTables(File baseFolder) {
+        Tools.pruningTableFolder = baseFolder;
+        Search.init();
     }
 }
