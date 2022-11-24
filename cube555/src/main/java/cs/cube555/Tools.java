@@ -1,5 +1,8 @@
 package cs.cube555;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static cs.cube555.Util.*;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
@@ -10,6 +13,7 @@ import java.io.FileInputStream;
 import java.util.Random;
 
 public class Tools {
+    private static Logger logger = LoggerFactory.getLogger(Tools.class);
 
 	static boolean SaveToFile(String filename, Object obj) {
 		try {
@@ -17,7 +21,7 @@ public class Tools {
 			oos.writeObject(obj);
 			oos.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error("unable to save file", e);
 			return false;
 		}
 		return true;
@@ -30,7 +34,7 @@ public class Tools {
 			ret = oos.readObject();
 			oos.close();
 		} catch (Exception e) {
-			System.out.println(e);
+            logger.error("unable to load file", e);
 			return null;
 		}
 		return ret;

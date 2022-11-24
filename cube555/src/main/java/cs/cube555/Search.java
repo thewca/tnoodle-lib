@@ -1,9 +1,11 @@
 package cs.cube555;
 
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
-import static cs.cube555.Util.*;
 
 public class Search {
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(Search.class);
 
 	public static final int USE_SEPARATOR = 0x1;
 	public static final int INVERT_SOLUTION = 0x2;
@@ -24,11 +26,11 @@ public class Search {
 		}
 		static void logTime(int phase) {
 			cumPhaseT[phase] += System.nanoTime() - startTime;
-			System.out.println(String.format("Phase%d Finished in %d ms", phase + 1, (System.nanoTime() - startTime) / 1000000));
+			logger.info(String.format("Phase%d Finished in %d ms", phase + 1, (System.nanoTime() - startTime) / 1000000));
 			startTime = System.nanoTime();
 		}
 		public static void print(int div) {
-			System.out.println(
+			logger.debug(
 			    String.format(
 			        "AvgLen=%.2f P1T=%4dms P2T=%4dms P3T=%4dms P4T=%4dms P5T=%4dms TOT=%4dms",
 			        cumSolLen * 1.0 / div,
@@ -78,7 +80,7 @@ public class Search {
 		CubieCube cc = new CubieCube();
 		int verifyReduction = cc.fromFacelet(facelet);
 		if (verifyReduction != 0) {
-			System.out.println(verifyReduction);
+			logger.error("Reduction error " + verifyReduction);
 			return new String[] {"Error " + verifyReduction, null};
 		}
 		p1sols.clear();
@@ -88,7 +90,7 @@ public class Search {
 		p5sols.clear();
 
 		Logger.start();
-		System.out.println(cc);
+		logger.info(cc.toString());
 
 		SolvingCube sc = new SolvingCube(cc);
 
@@ -167,8 +169,8 @@ public class Search {
 		Logger.logTime(4);
 
 		sc = p5sols.get(0);
-		System.out.println(sc);
-		System.out.println("Reduction: " + sc.length());
+		logger.info(sc.toString());
+		logger.debug("Reduction: " + sc.length());
 		Logger.cumSolLen += sc.length();
 
 		cc.doMove(sc.getSolution());

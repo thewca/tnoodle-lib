@@ -1,8 +1,13 @@
 package cs.cube555;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 
 class Util {
+    private static Logger logger = LoggerFactory.getLogger(Tools.class);
+
 	static final int U1 = 0;
 	static final int U2 = 1;
 	static final int U3 = 2;
@@ -630,9 +635,9 @@ class Util {
 			long cumRealDone = cumDone;
 			long startTime = System.nanoTime();
 			do {
-				System.out.println(String.format("%s:%2d%,14d%,14d%,16d%,16d%10dms", filename,
-				                                 depth, done, cumDone, realDone, cumRealDone,
-				                                 (System.nanoTime() - startTime) / 1000000));
+				logger.debug(String.format("%s:%2d%,14d%,14d%,16d%,16d%10dms", filename,
+                    depth, done, cumDone, realDone, cumRealDone,
+                    (System.nanoTime() - startTime) / 1000000));
 				done = 0;
 				realDone = 0;
 				byte fill = (byte) (depth + 1);
@@ -671,9 +676,9 @@ class Util {
 				cumRealDone += realDone;
 				depth++;
 			} while (done > 0 && depth < maxl);
-			System.out.println(String.format("%s:%2d%,14d%,14d%,16d%,16d%10dms", filename,
-			                                 depth, done, cumDone, realDone, cumRealDone,
-			                                 (System.nanoTime() - startTime) / 1000000));
+			logger.debug(String.format("%s:%2d%,14d%,14d%,16d%,16d%10dms", filename,
+                depth, done, cumDone, realDone, cumRealDone,
+                (System.nanoTime() - startTime) / 1000000));
 
 			Prun = new int[TABLE_SIZE >> 3];
 			for (int i = 0; i < Prun.length; i++) {
@@ -693,7 +698,7 @@ class Util {
 			}
 			for (int i = 0; i < 16; i++) {
 				if (depthCnt[i] != 0) {
-					System.out.println(String.format("%s-%2d%,14d", filename, i, depthCnt[i]));
+					logger.debug(String.format("%s-%2d%,14d", filename, i, depthCnt[i]));
 				}
 			}
 			Tools.SaveToFile(filename + "Prun.jpdata", Prun);
@@ -728,9 +733,9 @@ class Util {
 			long cumRealDone = cumDone;
 			long startTime = System.nanoTime();
 			do {
-				System.out.println(String.format("%s:%2d%,14d%,14d%,16d%,16d%10dms", filename,
-				                                 depth, done, cumDone, realDone, cumRealDone,
-				                                 (System.nanoTime() - startTime) / 1000000));
+				logger.debug(String.format("%s:%2d%,14d%,14d%,16d%,16d%10dms", filename,
+                    depth, done, cumDone, realDone, cumRealDone,
+                    (System.nanoTime() - startTime) / 1000000));
 				done = 0;
 				realDone = 0;
 				boolean inv = cumDone > N_STATE / 2;
@@ -812,9 +817,9 @@ class Util {
 			long startTime = System.nanoTime();
 			int cumDone = done;
 			do {
-				System.out.println(String.format("%s:%2d%,14d%,14d%10dms", filename,
-				                                 depth, done, cumDone,
-				                                 (System.nanoTime() - startTime) / 1000000));
+				logger.debug(String.format("%s:%2d%,14d%,14d%10dms", filename,
+                    depth, done, cumDone,
+                    (System.nanoTime() - startTime) / 1000000));
 				done = 0;
 				boolean inv = cumDone > N_STATE / 2;
 				int select = inv ? 0xf : depth;
