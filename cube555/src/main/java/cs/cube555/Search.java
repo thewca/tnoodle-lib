@@ -6,6 +6,7 @@ import static cs.cube555.Util.*;
 public class Search {
 
 	public static final int USE_SEPARATOR = 0x1;
+	public static final int INVERT_SOLUTION = 0x2;
 
 	static int phase1SolsSize = 200;
 	static int phase2SolsSize = 500;
@@ -73,6 +74,7 @@ public class Search {
 	SolvingCube[] p5cc;
 
 	public synchronized String[] solveReduction(String facelet, int verbose) {
+        init();
 		CubieCube cc = new CubieCube();
 		int verifyReduction = cc.fromFacelet(facelet);
 		if (verifyReduction != 0) {

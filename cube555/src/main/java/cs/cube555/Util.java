@@ -1,5 +1,7 @@
 package cs.cube555;
 
+import java.util.HashMap;
+
 class Util {
 	static final int U1 = 0;
 	static final int U2 = 1;
@@ -190,10 +192,10 @@ class Util {
 	static final byte bx3 = 35;
 
 	static final String[] move2str = new String[] {
-	    "U ", "U2", "U'", "R ", "R2", "R'", "F ", "F2", "F'",
-	    "D ", "D2", "D'", "L ", "L2", "L'", "B ", "B2", "B'",
-	    "u ", "u2", "u'", "r ", "r2", "r'", "f ", "f2", "f'",
-	    "d ", "d2", "d'", "l ", "l2", "l'", "b ", "b2", "b'"
+	    "U", "U2", "U'", "R", "R2", "R'", "F", "F2", "F'",
+	    "D", "D2", "D'", "L", "L2", "L'", "B", "B2", "B'",
+	    "Uw", "Uw2", "Uw'", "Rw", "Rw2", "Rw'", "Fw", "Fw2", "Fw'",
+	    "Dw", "Dw2", "Dw'", "Lw", "Lw2", "Lw'", "Bw", "Bw2", "Bw'"
 	};
 
 	static int[][] Cnk = new int[25][25];
@@ -634,7 +636,7 @@ class Util {
 				done = 0;
 				realDone = 0;
 				byte fill = (byte) (depth + 1);
-				java.util.HashMap<Long, Byte> PrunPClone = (java.util.HashMap<Long, Byte>) PrunP.clone();
+				java.util.HashMap<Long, Byte> PrunPClone = new HashMap<>(PrunP);
 				for (java.util.Map.Entry<Long, Byte> entry : PrunPClone.entrySet()) {
 					if (entry.getValue() != depth) {
 						continue;

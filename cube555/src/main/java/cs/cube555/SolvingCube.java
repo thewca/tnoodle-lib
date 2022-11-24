@@ -1,6 +1,9 @@
 package cs.cube555;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static cs.cube555.Util.*;
 
 class SolvingCube extends CubieCube {
@@ -65,8 +68,35 @@ class SolvingCube extends CubieCube {
 		return moveCost;
 	}
 
+    List<Integer> getOrderedSolution(boolean reverse) {
+        List<Integer> tempSolution = new ArrayList<>(solution);
+
+        if (reverse) {
+            Collections.reverse(tempSolution);
+
+            for (int i = 0; i < tempSolution.size(); i++) {
+                int solMove = tempSolution.get(i);
+
+                if (solMove >= 0) {
+                    int moveBase = solMove / 3;
+                    int movePow = solMove % 3;
+
+                    int invBase = 3 * moveBase;
+                    int invPow = 2 - movePow;
+
+                    tempSolution.set(i, invBase + invPow);
+                }
+            }
+        }
+
+        return tempSolution;
+    }
+
 	String toSolutionString(int verbose) {
-		StringBuffer sb = new StringBuffer();
+        boolean invertSolution = (verbose & Search.INVERT_SOLUTION) != 0;
+        List<Integer> solution = getOrderedSolution(invertSolution);
+
+		StringBuilder sb = new StringBuilder();
 		for (int move : solution) {
 			if (move == -1) {
 				if ((verbose & Search.USE_SEPARATOR) != 0) {
@@ -81,7 +111,8 @@ class SolvingCube extends CubieCube {
 
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+        List<Integer> solution = getOrderedSolution(false);
+		StringBuilder sb = new StringBuilder();
 		int cnt = 0;
 		int cumcnt = 0;
 		for (int move : solution) {
