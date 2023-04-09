@@ -1,11 +1,9 @@
 package configurations
 
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 
 object Languages {
@@ -17,7 +15,9 @@ object Languages {
 
     fun Project.configureJava() {
         configure<JavaPluginExtension> {
-            sourceCompatibility = JavaVersion.VERSION_1_8
+            toolchain {
+                languageVersion.set(JavaLanguageVersion.of(11))
+            }
 
             withJavadocJar()
             withSourcesJar()
