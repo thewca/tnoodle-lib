@@ -613,20 +613,33 @@ public class MegaminxPuzzle extends Puzzle {
             if(label != null) {
                 double centerX = 0;
                 double centerY = 0;
+                double minHeight = Double.MAX_VALUE;
+                double maxHeight = Double.MIN_VALUE;
                 for(Point2D.Double pt : intpent) {
                     centerX += pt.x;
                     centerY += pt.y;
+
+                    if (pt.y < minHeight) {
+                        minHeight = pt.y;
+                    }
+
+                    if (pt.y > maxHeight) {
+                        maxHeight = pt.y;
+                    }
                 }
                 centerX /= intpent.length;
                 centerY /= intpent.length;
                 Text labelText = new Text(label, centerX, centerY);
-                // Vertically and horizontally center text
+                labelText.setStyle("font-family", "sans-serif");
+                // Horizontally center text
                 labelText.setAttribute("text-anchor", "middle");
-                // dominant-baseline works great on Chrome, but
-                // unfortunately isn't supported by androidsvg.
-                // See http://stackoverflow.com/q/56402 for workaround.
-                //labelText.setStyle("dominant-baseline", "central");
-                labelText.setAttribute("dy", "0.7ex");
+                // Vertically center text. Baseline adjustment is not supported by most SVG frameworks
+                // (most notable for TNoodle: AndroidSVG, iText7) so we resort to computing the offset ourselves.
+                double pentagonHeight = Math.abs(maxHeight - minHeight);
+                // shifting down by 20% centers the text in CSS default font size "medium" (16px)
+                // which works for most rendering engines. Change this if we ever manually override font size!
+                double verticalShiftPx = Math.round(pentagonHeight * 0.2);
+                labelText.setAttribute("dy", verticalShiftPx + "px");
                 g.appendChild(labelText);
             }
         }
