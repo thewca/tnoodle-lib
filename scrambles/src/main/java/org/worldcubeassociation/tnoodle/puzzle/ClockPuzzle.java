@@ -101,14 +101,6 @@ public class ClockPuzzle extends Puzzle {
             scramble.append(turns[x]).append(turn).append(clockwise ? "+" : "-").append(" ");
         }
 
-        boolean isFirst = true;
-        for(int x=0;x<4;x++) {
-            if (r.nextInt(2) == 1) {
-                scramble.append(isFirst ? "" : " ").append(turns[x]);
-                isFirst = false;
-            }
-        }
-
         String scrambleStr = scramble.toString().trim();
 
         PuzzleState state = getSolvedState();
