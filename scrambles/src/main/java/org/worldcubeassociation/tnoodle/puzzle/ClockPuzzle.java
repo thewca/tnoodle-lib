@@ -17,15 +17,16 @@ public class ClockPuzzle extends Puzzle {
 
     private static final String[] turns={"UR","DR","DL","UL","U","R","D","L","ALL"};
     private static final int STROKE_WIDTH = 2;
+    private static final int FACE_STROKE_WIDTH = 1;
     private static final int radius = 70;
     private static final int clockRadius = 14;
-    private static final int clockOuterRadius = 20;
+    private static final int clockOuterRadius = 21;
     private static final int pointRadius = (clockRadius + clockOuterRadius) / 2;
     private static final int tickMarkRadius = 1;
+    private static final int topTickMarkRadius = 2;
     private static final int arrowHeight = 10;
     private static final int arrowRadius = 2;
     private static final int pinRadius = 4;
-    private static final int pinUpOffset = 6;
     private static final double arrowAngle = Math.PI / 2 - Math.acos( (double)arrowRadius / (double)arrowHeight );
 
     private static final int gap = 5;
@@ -54,13 +55,21 @@ public class ClockPuzzle extends Puzzle {
 
     private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
-        defaultColorScheme.put("Front", new Color(0x3375b2));
-        defaultColorScheme.put("Back", new Color(0x55ccff));
-        defaultColorScheme.put("FrontClock", new Color(0x55ccff));
-        defaultColorScheme.put("BackClock", new Color(0x3375b2));
-        defaultColorScheme.put("Hand", Color.YELLOW);
-        defaultColorScheme.put("HandBorder", Color.RED);
-        defaultColorScheme.put("PinDown", new Color(0x885500));
+        Color bright = new Color(0xccddee);
+        Color dark = new Color(0x113366);
+
+        defaultColorScheme.put("Front", dark);
+        defaultColorScheme.put("FrontClock", bright);
+        defaultColorScheme.put("FrontTopClock", new Color(0xffcc44));
+        defaultColorScheme.put("FrontHand", dark);
+        defaultColorScheme.put("FrontHandBorder", dark);
+        defaultColorScheme.put("FrontPin", new Color(0x88aacc));
+        defaultColorScheme.put("Back", bright);
+        defaultColorScheme.put("BackClock", dark);
+        defaultColorScheme.put("BackTopClock", new Color(0xcc6600));
+        defaultColorScheme.put("BackHand", bright);
+        defaultColorScheme.put("BackHandBorder", bright);
+        defaultColorScheme.put("BackPin", new Color(0x446699));
     }
     @Override
     public Map<String, Color> getDefaultColorScheme() {
@@ -210,7 +219,7 @@ public class ClockPuzzle extends Puzzle {
                     for(int centerY : new int[] { -2*clockOuterRadius, 2*clockOuterRadius }) {
                         // We don't want to clobber part of our nice
                         // thick outer border.
-                        int innerClockOuterRadius = clockOuterRadius - STROKE_WIDTH/2;
+                        float innerClockOuterRadius = clockOuterRadius - STROKE_WIDTH/2f;
                         Circle c = new Circle(centerX, centerY, innerClockOuterRadius);
                         c.setTransform(t);
                         c.setFill(colorScheme.get(colorString[s]));
@@ -224,15 +233,17 @@ public class ClockPuzzle extends Puzzle {
                         Transform tCopy = new Transform(t);
                         tCopy.translate(2*i*clockOuterRadius, 2*j*clockOuterRadius);
 
+
                         Circle clockFace = new Circle(0, 0, clockRadius);
+                        clockFace.setStroke(FACE_STROKE_WIDTH, 10, "round");
                         clockFace.setStroke(Color.BLACK);
                         clockFace.setFill(colorScheme.get(colorString[s]+ "Clock"));
                         clockFace.setTransform(tCopy);
                         g.appendChild(clockFace);
 
                         for(int k = 0; k < 12; k++) {
-                            Circle tickMark = new Circle(0, -pointRadius, tickMarkRadius);
-                            tickMark.setFill(colorScheme.get(colorString[s] + "Clock"));
+                            Circle tickMark = new Circle(0, -pointRadius, k == 0 ? topTickMarkRadius : tickMarkRadius);
+                            tickMark.setFill(colorScheme.get(colorString[s] + (k == 0 ? "Top" : "") +  "Clock"));
                             tickMark.rotate(Math.toRadians(30*k));
                             tickMark.transform(tCopy);
                             g.appendChild(tickMark);
@@ -249,6 +260,7 @@ public class ClockPuzzle extends Puzzle {
             int netX = 0;
             int netY = 0;
             int deltaX, deltaY;
+            String sidePrefix = ((clock < 9) ^ (rightSideUp)) ? "Back" : "Front";
             if(clock < 9) {
                 deltaX = radius + gap;
                 deltaY = radius + gap;
@@ -276,23 +288,23 @@ public class ClockPuzzle extends Puzzle {
             arrow.lineTo(0, -arrowHeight);
             arrow.lineTo(-arrowRadius*Math.cos( arrowAngle ), -arrowRadius*Math.sin(arrowAngle));
             arrow.closePath();
-            arrow.setStroke(colorScheme.get("HandBorder"));
+            arrow.setStroke(colorScheme.get(sidePrefix + "HandBorder"));
             arrow.setTransform(t);
             g.appendChild(arrow);
 
             Circle handBase = new Circle(0, 0, arrowRadius);
-            handBase.setStroke(colorScheme.get("HandBorder"));
+            handBase.setStroke(colorScheme.get(sidePrefix + "HandBorder"));
             handBase.setTransform(t);
             g.appendChild(handBase);
 
             arrow = new Path(arrow);
-            arrow.setFill(colorScheme.get("Hand"));
+            arrow.setFill(colorScheme.get(sidePrefix + "Hand"));
             arrow.setStroke(null);
             arrow.setTransform(t);
             g.appendChild(arrow);
 
             handBase = new Circle(handBase);
-            handBase.setFill(colorScheme.get("Hand"));
+            handBase.setFill(colorScheme.get(sidePrefix + "Hand"));
             handBase.setStroke(null);
             handBase.setTransform(t);
             g.appendChild(handBase);
@@ -301,32 +313,28 @@ public class ClockPuzzle extends Puzzle {
         protected void drawPins(Svg g, Map<String, Color> colorScheme) {
             Transform t = new Transform();
             t.translate(radius + gap, radius + gap);
-            int k = 0;
             for(int i = -1; i <= 1; i += 2) {
                 for(int j = -1; j <= 1; j += 2) {
                     Transform tt = new Transform(t);
                     tt.translate(j*clockOuterRadius, i*clockOuterRadius);
-                    drawPin(g, tt, colorScheme);
+                    drawPin(g, tt, colorScheme.get( rightSideUp ? "BackPin" : "FrontPin" ));
                 }
             }
 
             t.translate(2*(radius + gap), 0);
-            k = 1;
             for(int i = -1; i <= 1; i += 2) {
                 for(int j = -1; j <= 1; j += 2) {
                     Transform tt = new Transform(t);
                     tt.translate(j*clockOuterRadius, i*clockOuterRadius);
-                    drawPin(g, tt, colorScheme);
+                    drawPin(g, tt, colorScheme.get(rightSideUp ? "FrontPin" :  "BackPin" ));
                 }
-                k = 3;
             }
         }
 
-        protected void drawPin(Svg g, Transform t, Map<String, Color> colorScheme) {
+        protected void drawPin(Svg g, Transform t, Color color) {
             Circle pin = new Circle(0, 0, pinRadius);
             pin.setTransform(t);
-            pin.setStroke(Color.BLACK);
-            pin.setFill(colorScheme.get( "PinDown" ));
+            pin.setFill(color);
             g.appendChild(pin);
         }
 
