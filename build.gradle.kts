@@ -1,6 +1,6 @@
 allprojects {
     group = "org.worldcubeassociation.tnoodle"
-    version = "0.18.1"
+    version = "0.19.0"
 }
 
 plugins {
