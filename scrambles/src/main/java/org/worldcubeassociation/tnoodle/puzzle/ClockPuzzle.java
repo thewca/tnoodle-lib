@@ -60,7 +60,6 @@ public class ClockPuzzle extends Puzzle {
         defaultColorScheme.put("BackClock", new Color(0x3375b2));
         defaultColorScheme.put("Hand", Color.YELLOW);
         defaultColorScheme.put("HandBorder", Color.RED);
-        defaultColorScheme.put("PinUp", Color.YELLOW);
         defaultColorScheme.put("PinDown", new Color(0x885500));
     }
     @Override
@@ -101,14 +100,6 @@ public class ClockPuzzle extends Puzzle {
             scramble.append(turns[x]).append(turn).append(clockwise ? "+" : "-").append(" ");
         }
 
-        boolean isFirst = true;
-        for(int x=0;x<4;x++) {
-            if (r.nextInt(2) == 1) {
-                scramble.append(isFirst ? "" : " ").append(turns[x]);
-                isFirst = false;
-            }
-        }
-
         String scrambleStr = scramble.toString().trim();
 
         PuzzleState state = getSolvedState();
@@ -122,17 +113,14 @@ public class ClockPuzzle extends Puzzle {
 
     public class ClockState extends PuzzleState {
 
-        private final boolean[] pins;
         private final int[] posit;
         private final boolean rightSideUp;
         public ClockState() {
-            pins = new boolean[] {false, false, false, false};
             posit = new int[] {0,0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,0};
             rightSideUp = true;
         }
 
-        public ClockState(boolean[] pins, int[] posit, boolean rightSideUp) {
-            this.pins = pins;
+        public ClockState(int[] posit, boolean rightSideUp) {
             this.posit = posit;
             this.rightSideUp = rightSideUp;
         }
@@ -145,39 +133,23 @@ public class ClockPuzzle extends Puzzle {
                 for(int rot = 0; rot < 12; rot++) {
                     // Apply the move
                     int[] positCopy = new int[18];
-                    boolean[] pinsCopy = new boolean[4];
                     for( int p=0; p<18; p++) {
                         positCopy[p] = (posit[p] + rot*moves[turn][p] + 12)%12;
                     }
-                    System.arraycopy(pins, 0, pinsCopy, 0, 4);
 
                     // Build the move string
                     boolean clockwise = ( rot < 7 );
                     String move = turns[turn] + (clockwise?(rot+"+"):((12-rot)+"-"));
 
-                    successors.put(move, new ClockState(pinsCopy, positCopy, rightSideUp));
+                    successors.put(move, new ClockState( positCopy, rightSideUp));
                 }
             }
 
             // Still y2 to implement
             int[] positCopy = new int[18];
-            boolean[] pinsCopy = new boolean[4];
             System.arraycopy(posit, 0, positCopy, 9, 9);
             System.arraycopy(posit, 9, positCopy, 0, 9);
-            System.arraycopy(pins, 0, pinsCopy, 0, 4);
-            successors.put("y2", new ClockState(pinsCopy, positCopy, !rightSideUp));
-
-            // Pins position moves
-            for(int pin = 0; pin < 4; pin++) {
-                int[] positC = new int[18];
-                boolean[] pinsC = new boolean[4];
-                System.arraycopy(posit, 0, positC, 0, 18);
-                System.arraycopy(pins, 0, pinsC, 0, 4);
-                int pinI = (pin==0?1:(pin==1?3:(pin==2?2:0)));
-                pinsC[pinI] = true;
-
-                successors.put(turns[pin], new ClockState(pinsC, positC, rightSideUp));
-            }
+            successors.put("y2", new ClockState(positCopy, !rightSideUp));
 
             return successors;
         }
@@ -203,7 +175,7 @@ public class ClockPuzzle extends Puzzle {
                 drawClock(svg, i, posit[i], colorScheme);
             }
 
-            drawPins(svg, pins, colorScheme);
+            drawPins(svg, colorScheme);
             return svg;
         }
 
@@ -326,7 +298,7 @@ public class ClockPuzzle extends Puzzle {
             g.appendChild(handBase);
         }
 
-        protected void drawPins(Svg g, boolean[] pins, Map<String, Color> colorScheme) {
+        protected void drawPins(Svg g, Map<String, Color> colorScheme) {
             Transform t = new Transform();
             t.translate(radius + gap, radius + gap);
             int k = 0;
@@ -334,7 +306,7 @@ public class ClockPuzzle extends Puzzle {
                 for(int j = -1; j <= 1; j += 2) {
                     Transform tt = new Transform(t);
                     tt.translate(j*clockOuterRadius, i*clockOuterRadius);
-                    drawPin(g, tt, pins[k++], colorScheme);
+                    drawPin(g, tt, colorScheme);
                 }
             }
 
@@ -344,62 +316,18 @@ public class ClockPuzzle extends Puzzle {
                 for(int j = -1; j <= 1; j += 2) {
                     Transform tt = new Transform(t);
                     tt.translate(j*clockOuterRadius, i*clockOuterRadius);
-                    drawPin(g, tt, !pins[k--], colorScheme);
+                    drawPin(g, tt, colorScheme);
                 }
                 k = 3;
             }
         }
 
-        protected void drawPin(Svg g, Transform t, boolean pinUp, Map<String, Color> colorScheme) {
+        protected void drawPin(Svg g, Transform t, Map<String, Color> colorScheme) {
             Circle pin = new Circle(0, 0, pinRadius);
             pin.setTransform(t);
             pin.setStroke(Color.BLACK);
-            pin.setFill(colorScheme.get( pinUp ? "PinUp" : "PinDown" ));
+            pin.setFill(colorScheme.get( "PinDown" ));
             g.appendChild(pin);
-
-            // there have been problems in the past with clock pin states being "inverted",
-            // see https://github.com/thewca/tnoodle/issues/423 for details.
-            if (pinUp) {
-                Transform bodyTransform = new Transform(t);
-                // pin circle transform relates to the circle *center*. Since it is two
-                // radii wide, we only move *one* radius to the right.
-                bodyTransform.translate(-pinRadius, -pinUpOffset);
-
-                Rectangle cylinderBody = new Rectangle(0, 0, 2 * pinRadius, pinUpOffset);
-                cylinderBody.setTransform(bodyTransform);
-                cylinderBody.setStroke(null);
-                cylinderBody.setFill(colorScheme.get( "PinUp" ));
-                g.appendChild(cylinderBody);
-
-                // We are NOT using the rectangle stroke, because those border strokes would cross through
-                // the bottom circle (ie cylinder "foot"). Drawing paths left and right is less cumbersome
-                // than drawing a stroked rectangle and overlaying it yet again with a stroke-less circle
-                Path cylinderWalls = new Path();
-
-                // left border
-                cylinderWalls.moveTo(0, 0);
-                cylinderWalls.lineTo(0, pinUpOffset);
-
-                // right border
-                cylinderWalls.moveTo(2 * pinRadius, 0);
-                cylinderWalls.lineTo(2 * pinRadius, pinUpOffset);
-
-                cylinderWalls.closePath();
-                cylinderWalls.setStroke(Color.BLACK);
-                cylinderWalls.setTransform(bodyTransform);
-                g.appendChild(cylinderWalls);
-
-                // Cylinder top "lid". Basically just a second pin circle
-                // that is lifted `pinRadius` pixels high.
-                Transform headTransform = new Transform(t);
-                headTransform.translate(0, -pinUpOffset);
-
-                Circle cylinderHead = new Circle(0, 0, pinRadius);
-                cylinderHead.setTransform(headTransform);
-                cylinderHead.setStroke(Color.BLACK);
-                cylinderHead.setFill(colorScheme.get( "PinUp" ));
-                g.appendChild(cylinderHead);
-            }
         }
 
     }
