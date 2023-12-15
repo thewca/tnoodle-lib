@@ -150,7 +150,7 @@ public class ClockPuzzle extends Puzzle {
                     boolean clockwise = ( rot < 7 );
                     String move = turns[turn] + (clockwise?(rot+"+"):((12-rot)+"-"));
 
-                    successors.put(move, new ClockState( positCopy, rightSideUp));
+                    successors.put(move, new ClockState(positCopy, rightSideUp));
                 }
             }
 
@@ -317,7 +317,7 @@ public class ClockPuzzle extends Puzzle {
                 for(int j = -1; j <= 1; j += 2) {
                     Transform tt = new Transform(t);
                     tt.translate(j*clockOuterRadius, i*clockOuterRadius);
-                    drawPin(g, tt, colorScheme.get( rightSideUp ? "BackPin" : "FrontPin" ));
+                    drawPin(g, tt, colorScheme.get(rightSideUp ? "BackPin" : "FrontPin"));
                 }
             }
 
