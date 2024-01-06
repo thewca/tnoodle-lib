@@ -28,6 +28,7 @@ dependencies {
     implementation(project(":min2phase"))
     implementation(project(":threephase"))
     implementation(project(":sq12phase"))
+    implementation(project(":cube555"))
 
     api(libs.gwt.exporter)
 }
