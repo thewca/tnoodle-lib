@@ -17,6 +17,6 @@ nexusPublishing {
     }
 }
 
-tasks.create("generateDebugRelease") {
+tasks.register("generateDebugRelease") {
     dependsOn(":scrambles:shadowJar")
 }
