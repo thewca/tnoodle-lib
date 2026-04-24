@@ -91,7 +91,7 @@ public abstract class Puzzle implements Exportable {
         PuzzleStateAndGenerator psag;
         do {
             psag = generateRandomMoves(r);
-        } while(psag.state.solveIn(wcaMinScrambleDistance - 1) != null);
+        } while(psag.state.solveIn(wcaMinScrambleDistance - 1, r) != null);
         return psag.generator;
     }
 
@@ -380,7 +380,7 @@ public abstract class Puzzle implements Exportable {
         }
     }
 
-    protected String solveIn(PuzzleState ps, int n) {
+    protected String solveIn(PuzzleState ps, int n, Random randomizeMoves) {
         if(ps.isSolved()) {
             return "";
         }
@@ -785,8 +785,8 @@ public abstract class Puzzle implements Exportable {
             return successors.get(move);
         }
 
-        public String solveIn(int n) {
-            return getPuzzle().solveIn(this, n);
+        public String solveIn(int n, Random randomizeMoves) {
+            return getPuzzle().solveIn(this, n, randomizeMoves);
         }
 
         /**
