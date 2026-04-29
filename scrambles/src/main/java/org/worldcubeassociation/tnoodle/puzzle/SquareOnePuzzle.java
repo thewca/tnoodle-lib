@@ -48,7 +48,7 @@ public class SquareOnePuzzle extends Puzzle {
         defaultColorScheme.put("F", Color.RED);
         defaultColorScheme.put("L", Color.BLUE);
         defaultColorScheme.put("R", Color.GREEN);
-        defaultColorScheme.put("U", Color.YELLOW);
+        defaultColorScheme.put("U", new Color(64, 64, 64));
     }
     @Override
     public Map<String, Color> getDefaultColorScheme() {
