@@ -1,14 +1,15 @@
 [versions]
-junit-jupiter = "5.10.1"
+junit-jupiter = "5.14.4"
 
 [libraries]
-slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.10" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.17" }
 gwt-exporter = { module = "org.timepedia.exporter:gwtexporter", version = "2.5.1" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.14.4" }
 apache-commons-math3 = { module = "org.apache.commons:commons-math3", version = "3.6.1" }
 
 [plugins]
-shadow = { id = "com.gradleup.shadow", version = "9.2.2" }
-dependency-versions = { id = "com.github.ben-manes.versions", version = "0.53.0" }
+shadow = { id = "com.gradleup.shadow", version = "9.4.1" }
+dependency-versions = { id = "com.github.ben-manes.versions", version = "0.54.0" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
