@@ -15,9 +15,9 @@ import org.timepedia.exporter.client.Export;
 @Export
 public class ThreeByThreeCubePuzzle extends CubePuzzle {
     private static final Logger l = Logger.getLogger(ThreeByThreeCubePuzzle.class.getName());
-    private static final int THREE_BY_THREE_MAX_SCRAMBLE_LENGTH = 21;
-    private static final int THREE_BY_THREE_TIMEMIN = 200; //milliseconds
-    private static final int THREE_BY_THREE_TIMEOUT = 60*1000; //milliseconds
+    public static final int THREE_BY_THREE_MAX_SCRAMBLE_LENGTH = 21;
+    public static final int THREE_BY_THREE_TIMEMIN = 200; //milliseconds
+    public static final int THREE_BY_THREE_TIMEOUT = 60*1000; //milliseconds
 
     private final ThreadLocal<SearchWCA> twoPhaseSearcher;
     public ThreeByThreeCubePuzzle() {
