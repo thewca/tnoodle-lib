@@ -8,6 +8,7 @@ public enum PuzzleRegistry {
     FOUR(FourByFourCubePuzzle.class),
     FOUR_FAST(FourByFourRandomTurnsCubePuzzle.class),
     FIVE(CubePuzzle.class, 5),
+    FIVE_RS(FiveByFiveCubePuzzle.class),
     SIX(CubePuzzle.class, 6),
     SEVEN(CubePuzzle.class, 7),
     THREE_NI(NoInspectionThreeByThreeCubePuzzle.class),
