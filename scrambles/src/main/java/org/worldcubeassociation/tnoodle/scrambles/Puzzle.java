@@ -142,6 +142,7 @@ public abstract class Puzzle implements Exportable {
     public final String generateSeededScramble(String seed) {
         return generateSeededScramble(seed.getBytes());
     }
+
     @Export
     public final String[] generateSeededScrambles(String seed, int count) {
         return generateSeededScrambles(seed.getBytes(), count);

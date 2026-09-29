@@ -410,7 +410,7 @@ public class HugeScrambleTest {
             final String puzzle = lazyScrambler.getKey();
             final Puzzle scrambler = lazyScrambler.getScrambler();
 
-            l.info("Are " + THREE_BY_THREE_SCRAMBLE_COUNT + " " + puzzle + " more than one move away from solved?");
+            l.info("Are " + SCRAMBLE_COUNT + " " + puzzle + " more than one move away from solved?");
             startMillis = System.currentTimeMillis();
             Puzzle.PuzzleState solved = scrambler.getSolvedState();
             for(int count = 0; count < SCRAMBLE_COUNT; count++){
@@ -422,6 +422,27 @@ public class HugeScrambleTest {
             }
             endMillis = System.currentTimeMillis();
             l.info("Finished after " + (endMillis - startMillis) + "ms");
+        }
+    }
+
+    @Test
+    public void testSeededScrambleConsistency() {
+        for(PuzzleRegistry lazyScrambler : PuzzleRegistry.values()) {
+            final String puzzle = lazyScrambler.getKey();
+            final Puzzle scrambler = lazyScrambler.getScrambler();
+
+            // Poor man's version of "generate a random string that is somewhat human-readable (ie alphanumeric)"
+            String pzlSeed = Long.toHexString(r.nextLong());
+
+            l.info("Are " + puzzle + " scrambles constant under the same seed? [" + pzlSeed + "]");
+            String firstScramble = scrambler.generateSeededScramble(pzlSeed);
+            String secondScramble = scrambler.generateSeededScramble(pzlSeed);
+            assertEquals(firstScramble, secondScramble);
+
+            l.info("Are " + puzzle + " scrambles different under different seeds? [" + pzlSeed + "]");
+            String someRandomScramble = scrambler.generateSeededScramble("SomeSeed");
+            String differentRandomScramble = scrambler.generateSeededScramble("DefinitelyAnotherSeed");
+            assertNotEquals(someRandomScramble, differentRandomScramble);
         }
     }
 }
