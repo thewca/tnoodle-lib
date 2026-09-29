@@ -385,6 +385,10 @@ public abstract class Puzzle implements Exportable {
             return "";
         }
 
+        if (this.getWcaMinScrambleDistance() > 2) {
+            throw new RuntimeException("The generic fringe solver should not be used for minimum distance " + this.getWcaMinScrambleDistance() + " greater than 2. Please implement a custom solver!");
+        }
+
         Map<PuzzleState, Integer> seenSolved = new HashMap<>();
         SortedBuckets<PuzzleState> fringeSolved = new SortedBuckets<>();
         Map<PuzzleState, Integer> seenScrambled = new HashMap<>();
