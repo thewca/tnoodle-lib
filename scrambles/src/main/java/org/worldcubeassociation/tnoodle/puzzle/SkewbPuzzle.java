@@ -36,7 +36,7 @@ public class SkewbPuzzle extends Puzzle {
     @Override
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
         SkewbSolverState state = skewbSolver.randomState(r);
-        String scramble = skewbSolver.generateExactly(state, MIN_SCRAMBLE_LENGTH, r);
+        String scramble = skewbSolver.generateExactly(state, MIN_SCRAMBLE_LENGTH);
         assert scramble.split(" ").length == MIN_SCRAMBLE_LENGTH;
 
         PuzzleState pState;
@@ -108,6 +108,40 @@ public class SkewbPuzzle extends Puzzle {
     }
 
     public class SkewbState extends PuzzleState {
+        private final int ORIENTATION_U = 0;
+        private final int ORIENTATION_D = 3;
+
+        // This maps our solver's faces (index) to the face/sticker color
+        //   used in the Jaap solver (value)
+        private final int[] COLOR_TO_SOLVER = new int[] { 0, 3, 1, 5, 2, 4 };
+
+        // This describes the changes to the internal `image` stickering schema
+        //   when performing a z2 rotation (the spatial axis right between the two corners facing you)
+        private final int[] Z2 = new int[] { 3, 5, 4, 0, 2, 1 };
+
+        // Reusable coordinate maps for {Face, Sticker}
+        private final int[][][] FIXED_CORNER_COORDS = {
+            {{0, 4}, {1, 1}, {2, 2}}, // U-FR-BR
+            {{0, 1}, {4, 1}, {5, 2}}, // U-FL-BL
+            {{3, 1}, {4, 4}, {2, 3}}, // D-FL-FR
+            {{3, 4}, {1, 4}, {5, 3}}  // D-BL-BR
+        };
+
+        private final int[][][] FREE_CORNER_COORDS = {
+            {{0, 3}, {2, 1}, {4, 2}}, // U-FR-FL (Front)
+            {{0, 2}, {5, 1}, {1, 2}}, // U-BL-BR (Back)
+            {{3, 2}, {2, 4}, {1, 3}}, // D-FR-BR (Right-Down)
+            {{3, 3}, {5, 4}, {4, 3}}  // D-FL-BL (Left-Down)
+        };
+
+        private final int[][] CENTER_COORDS = {
+            {0, 0}, {2, 0}, {4, 0}, {1, 0}, {5, 0}, {3, 0}
+        };
+
+        // The four corners in the FCN orbit (the Jaap "free" orbit) can be uniquely identified
+        //   by the sum of their stickers in the stickering schema of the internal solver.
+        //   So this array maps the sums (index) to the solver's permutation index.
+        private final int[] FREE_PERM_MAP = { -1, -1, -1, 0, -1, -1, -1, 1, -1, 2, -1, 3 };
 
         /**
          *           +---------+
@@ -135,9 +169,7 @@ public class SkewbPuzzle extends Puzzle {
         }
 
         SkewbState(int[][] _image) {
-            for (int i=0; i<6; i++) {
-                System.arraycopy(_image[i], 0, image[i], 0, 5);
-            }
+            deepCopy(_image, image);
         }
 
         private void turn(int axis, int pow, int[][] image) {
@@ -185,6 +217,13 @@ public class SkewbPuzzle extends Puzzle {
             image[f3][s3] = temp;
         }
 
+        private void cycle(int f1, int f2, int f3, int[] schema) {
+            int temp = schema[f1];
+            schema[f1] = schema[f2];
+            schema[f2] = schema[f3];
+            schema[f3] = temp;
+        }
+
         /**
          * return a square skewb face. whose 4 corners are (-1, -1), (1, -1), (1, 1), (-1, 1). It will be transformed later.
          */
@@ -228,6 +267,118 @@ public class SkewbPuzzle extends Puzzle {
                 }
             }
             return g;
+        }
+
+        public SkewbSolverState toSkewbSolverState() {
+            // The internal solver is written in Jaap notation,
+            //   but WCA FCN and Jaap notation have misaligned reference frames:
+            // - In FCN, the "Holy Corner" (UFR) is fixed.
+            // - Jaap's solver relies on its four notation corners L, R, D and B to be fixed.
+            // The WCA FCN corner (UFR) is in the opposite orbit of the four Jaap corners,
+            //   and so are the FCN R, L and U corners as well.
+            // But the FCN B corner is in the "Jaap orbit", so because of that
+            //   the orientation of the four Jaap corners might be off if our scramble contained B moves.
+            //
+            // Because the FCN B corner is in this "Jaap orbit" already, even when holding the Skewb
+            //   in standard WCA scramble orientation (FCN), we can immediately use the Jaap orbit as a reference.
+            // Note that at this point, we do not know whether the B corner is actually in the B slot
+            //   (because any amount of FCN U, R and L moves may have permuted it). But no matter the current permutation,
+            //   it will never leave its orbit (because of Skewb mathematical properties) and that's what we care about:
+            // This next for-loop is only interested in determining the orientation of each corner in the B (aka Jaap) orbit.
+            //   It does not matter at this point in time how these four orbit corners are permuted. It only matters that
+            //   they are all in the same orbit, and we don't (yet) care which exact corner we're looking at
+            //   within the orbit. We only care about that it's in this orbit and that it has an orientation w.r.t. white/yellow faces.
+            // For every B move that was applied, the sum of orientations on that orbit will have shifted by 1 (mod 3).
+            //   So we need to rotate our entire Skewb (later) according to this shifted reference frame.
+            int fcnBOrbitOrientation = 0;
+            for (int i = 0; i < 4; i++) {
+                int[][] coords = FIXED_CORNER_COORDS[i];
+                int orient = 0;
+
+                while (this.image[coords[orient][0]][coords[orient][1]] != ORIENTATION_U &&
+                    this.image[coords[orient][0]][coords[orient][1]] != ORIENTATION_D) {
+                    orient++;
+                    assert orient < 3;
+                }
+
+                fcnBOrbitOrientation += orient;
+            }
+
+            // The most trivial way to "swap" the two orbits of corners on a Skewb is by performing z2.
+            // This is also what the internal solver does when converting between Jaap and FCN notation,
+            //   see SkewbSolver#getSolution for details.
+            int[] jaapCorrection = cloneArr(Z2);
+
+            // The integer values passed to the `cycle` method calls in this next block
+            //   are describing the six faces of the Skewb int[][] representation.
+            //   See the Skewb ASCII-art further above for a visual mapping.
+            for (int i = 0; i < fcnBOrbitOrientation % 3; i++) {
+                // Rotate the three centers/colors around the FCN "holy corner" clockwise
+                cycle(0, 4, 2, jaapCorrection);
+                // Rotate the three centers/colors around FCN B counter-clockwise
+                cycle(1, 5, 3, jaapCorrection);
+            }
+
+            // Our B-move restickering contains an implicit z2 rotation, so instead of just applying it
+            //   to every element of `image`, we must also rotate our whole Skewb physically back by a z2.
+            int[][] jaapImage = new int[][] {
+                { jaapCorrection[image[3][0]], jaapCorrection[image[3][2]], jaapCorrection[image[3][4]], jaapCorrection[image[3][1]], jaapCorrection[image[3][3]] },
+                { jaapCorrection[image[5][0]], jaapCorrection[image[5][4]], jaapCorrection[image[5][3]], jaapCorrection[image[5][2]], jaapCorrection[image[5][1]] },
+                { jaapCorrection[image[4][0]], jaapCorrection[image[4][4]], jaapCorrection[image[4][3]], jaapCorrection[image[4][2]], jaapCorrection[image[4][1]] },
+                { jaapCorrection[image[0][0]], jaapCorrection[image[0][3]], jaapCorrection[image[0][1]], jaapCorrection[image[0][4]], jaapCorrection[image[0][2]] },
+                { jaapCorrection[image[2][0]], jaapCorrection[image[2][4]], jaapCorrection[image[2][3]], jaapCorrection[image[2][2]], jaapCorrection[image[2][1]] },
+                { jaapCorrection[image[1][0]], jaapCorrection[image[1][4]], jaapCorrection[image[1][3]], jaapCorrection[image[1][2]], jaapCorrection[image[1][1]] }
+            };
+
+            // Now we know the Skewb state in the Jaap reference frame.
+            // Everything below, all the way until the final `return` statement,
+            //   is simply about re-formatting the int[][] state into something
+            //   that the Jaap solver actually understands (aka packed Lehmer codes).
+            int[] centerPerm = new int[6];
+            for (int i = 0; i < 6; i++) {
+                int[] coords = CENTER_COORDS[i];
+                centerPerm[i] = COLOR_TO_SOLVER[jaapImage[coords[0]][coords[1]]];
+            }
+
+            int[] fixedTwist = new int[4];
+            for (int i = 0; i < 4; i++) {
+                int[][] coords = FIXED_CORNER_COORDS[i];
+                while (jaapImage[coords[fixedTwist[i]][0]][coords[fixedTwist[i]][1]] != ORIENTATION_U &&
+                    jaapImage[coords[fixedTwist[i]][0]][coords[fixedTwist[i]][1]] != ORIENTATION_D) {
+                    fixedTwist[i]++;
+                    assert fixedTwist[i] < 3;
+                }
+            }
+
+            int[] currentFreePerm = new int[4];
+            int[] freeTwist = new int[4];
+            for (int i = 0; i < 4; i++) {
+                int[][] coords = FREE_CORNER_COORDS[i];
+
+                int s0 = COLOR_TO_SOLVER[jaapImage[coords[0][0]][coords[0][1]]];
+                int s1 = COLOR_TO_SOLVER[jaapImage[coords[1][0]][coords[1][1]]];
+                int s2 = COLOR_TO_SOLVER[jaapImage[coords[2][0]][coords[2][1]]];
+
+                currentFreePerm[i] = FREE_PERM_MAP[s0 + s1 + s2];
+                assert currentFreePerm[i] != -1;
+
+                while (jaapImage[coords[freeTwist[i]][0]][coords[freeTwist[i]][1]] != ORIENTATION_U &&
+                    jaapImage[coords[freeTwist[i]][0]][coords[freeTwist[i]][1]] != ORIENTATION_D) {
+                    freeTwist[i]++;
+                    assert freeTwist[i] < 3;
+                }
+            }
+
+            SkewbSolverState state = new SkewbSolverState();
+            state.perm = SkewbSolver.packCenterPerm(centerPerm) * SkewbSolver.FREE_CORNER_PERM + SkewbSolver.packCornerPerm(currentFreePerm);
+            state.twst = SkewbSolver.packCornerOrient(freeTwist, fixedTwist);
+
+            return state;
+        }
+
+        @Override
+        public String solveIn(int n) {
+            return skewbSolver.solveIn(toSkewbSolverState(), n);
         }
 
         @Override
