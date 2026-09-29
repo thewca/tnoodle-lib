@@ -1,12 +1,17 @@
 package org.worldcubeassociation.tnoodle.puzzle;
 
+import levigibson.fto3phase.FtoCubie;
+import levigibson.fto3phase.Search;
 import org.timepedia.exporter.client.Export;
+import org.worldcubeassociation.tnoodle.scrambles.InvalidScrambleException;
 import org.worldcubeassociation.tnoodle.scrambles.Puzzle;
+import org.worldcubeassociation.tnoodle.scrambles.PuzzleStateAndGenerator;
 import org.worldcubeassociation.tnoodle.svglite.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Export
 public class FaceTurningOctahedronPuzzle extends Puzzle {
@@ -19,6 +24,12 @@ public class FaceTurningOctahedronPuzzle extends Puzzle {
     @Override
     public String getLongName() {
         return "Face Turning Octahedron";
+    }
+
+    private final ThreadLocal<Search> threePhaseSearcher;
+
+    public FaceTurningOctahedronPuzzle() {
+        threePhaseSearcher = ThreadLocal.withInitial(Search::new);
     }
 
     @Override
@@ -45,6 +56,20 @@ public class FaceTurningOctahedronPuzzle extends Puzzle {
     private static final int MARGIN = 5;
 
     private static final String[] MOVE_NAMES = {"U", "R", "F", "L", "B", "BL", "D", "BR", "U'", "R'", "F'", "L'", "B'", "BL'", "D'", "BR'"};
+
+    @Override
+    public PuzzleStateAndGenerator generateRandomMoves(Random r) {
+        FtoCubie randomState = FtoCubie.randomCube(r);
+
+        String scramble = threePhaseSearcher.get().solution(randomState).trim();
+        PuzzleState state;
+        try {
+            state = getSolvedState().applyAlgorithm(scramble);
+        } catch (InvalidScrambleException e) {
+            throw new RuntimeException(e);
+        }
+        return new PuzzleStateAndGenerator(state, scramble);
+    }
 
     public class FaceTurningOctahedronState extends PuzzleState {
 
