@@ -81,7 +81,7 @@ public class HugeScrambleTest {
 
                 Puzzle.PuzzleState state = scrambler.getSolvedState().applyAlgorithm(scramble);
 
-                assertSame(state.solveIn(scrambler.getWcaMinScrambleDistance() - 1), null);
+                assertSame(state.solveIn(scrambler.getWcaMinScrambleDistance() - 1, r), null);
             }
         }
     }
@@ -98,7 +98,7 @@ public class HugeScrambleTest {
             System.out.println("Testing " + puzzle);
 
             // Test solving the solved state
-            String solution = scrambler.getSolvedState().solveIn(0);
+            String solution = scrambler.getSolvedState().solveIn(0, r);
             assertEquals("", solution);
 
             for(int count = 0; count < SCRAMBLE_COUNT; count++) {
@@ -111,7 +111,7 @@ public class HugeScrambleTest {
                     state = successors.get(move);
                 }
                 System.out.print("...");
-                solution = state.solveIn(SCRAMBLE_LENGTH);
+                solution = state.solveIn(SCRAMBLE_LENGTH, r);
                 assertNotNull(solution, "Puzzle "+scrambler.getShortName()+" solveIn method failed!");
                 System.out.println("Found: "+solution);
                 state = state.applyAlgorithm(solution);
@@ -208,7 +208,7 @@ public class HugeScrambleTest {
         ClockPuzzle clock = new ClockPuzzle();
         ClockPuzzle.ClockState state = (ClockPuzzle.ClockState)clock.getSolvedState();
         state = (ClockPuzzle.ClockState)state.applyAlgorithm("ALL2+ y2 ALL1-"); // This scramble is breaking the solveIn method...
-        String solution = state.solveIn(3);
+        String solution = state.solveIn(3, r);
         if(solution == null) {
             System.out.println("No solution");
         } else {
@@ -306,7 +306,7 @@ public class HugeScrambleTest {
         assertEquals(twoByTwoState.permutation, permute);
 
         TwoByTwoSolver twoByTwoSolver = new TwoByTwoSolver();
-        assertEquals(twoByTwoSolver.solveIn(twoByTwoState, 1), "R'");
+        assertEquals(twoByTwoSolver.solveIn(twoByTwoState, 1, r), "R'");
 
         int MOVE_R_PRIME = 5;
         orient = TwoByTwoSolver.moveOrient[orient][MOVE_R_PRIME];
@@ -319,11 +319,11 @@ public class HugeScrambleTest {
     public void testTwosSolver() throws InvalidScrambleException {
         CubePuzzle twos = new CubePuzzle(2);
         CubePuzzle.CubeState state = twos.getSolvedState();
-        String solution = state.solveIn(0);
+        String solution = state.solveIn(0, r);
         assertEquals(solution, "");
 
         state = (CubePuzzle.CubeState) state.applyAlgorithm("R2 B2 F2");
-        solution = state.solveIn(1);
+        solution = state.solveIn(1, r);
         assertNotEquals(solution, null);
         state = (CubePuzzle.CubeState) state.applyAlgorithm(solution);
         assertTrue(state.isSolved());
@@ -417,7 +417,7 @@ public class HugeScrambleTest {
                 String scramble = scrambler.generateWcaScramble(r);
                 System.out.println("Searching for solution in <= 1 move to " + scramble);
                 Puzzle.PuzzleState state = solved.applyAlgorithm(scramble);
-                String solution = state.solveIn(1);
+                String solution = state.solveIn(1, r);
                 assertEquals(solution, null);
             }
             endMillis = System.currentTimeMillis();
@@ -439,7 +439,7 @@ public class HugeScrambleTest {
             String secondScramble = scrambler.generateSeededScramble(pzlSeed);
             assertEquals(firstScramble, secondScramble);
 
-            l.info("Are " + puzzle + " scrambles different under different seeds? [" + pzlSeed + "]");
+            l.info("Are " + puzzle + " scrambles different under different seeds?");
             String someRandomScramble = scrambler.generateSeededScramble("SomeSeed");
             String differentRandomScramble = scrambler.generateSeededScramble("DefinitelyAnotherSeed");
             assertNotEquals(someRandomScramble, differentRandomScramble);

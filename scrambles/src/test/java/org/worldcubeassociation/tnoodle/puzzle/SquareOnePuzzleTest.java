@@ -5,10 +5,14 @@ import org.worldcubeassociation.tnoodle.scrambles.InvalidMoveException;
 import org.worldcubeassociation.tnoodle.scrambles.Puzzle;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SquareOnePuzzleTest {
+    protected static final Random r = Puzzle.getSecureRandom();
+
     @Test
     public void testMergingMode() throws InvalidMoveException {
         Puzzle sq1 = new SquareOnePuzzle();
@@ -33,10 +37,10 @@ public class SquareOnePuzzleTest {
 
         Puzzle.PuzzleState state = ab.getState();
 
-        String solution = state.solveIn(1);
+        String solution = state.solveIn(1, r);
         assertEquals(solution, "(-3,1)");
 
-        solution = state.solveIn(2);
+        solution = state.solveIn(2, r);
         assertEquals(solution, "(-3,1)");
     }
 
@@ -61,6 +65,6 @@ public class SquareOnePuzzleTest {
         AlgorithmBuilder ab = new AlgorithmBuilder(puzzle, AlgorithmBuilder.MergingMode.CANONICALIZE_MOVES);
         ab.appendAlgorithm(scramble);
 
-        return ab.getState().solveIn(n);
+        return ab.getState().solveIn(n, r);
     }
 }
