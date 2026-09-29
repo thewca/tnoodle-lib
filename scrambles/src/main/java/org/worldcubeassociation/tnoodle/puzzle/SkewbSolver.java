@@ -269,16 +269,15 @@ public class SkewbSolver {
         return state;
     }
 
-    public String solveIn(SkewbSolverState state, int length) {
-        return solve(state, length, false, false);
+    public String solveIn(SkewbSolverState state, int length, Random r) {
+        return solve(state, length, r, false, false);
     }
 
-    public String generateExactly(SkewbSolverState state, int length) {
-        return solve(state, length, true, true);
+    public String generateExactly(SkewbSolverState state, int length, Random r) {
+        return solve(state, length, r, true, true);
     }
 
-    private String solve(SkewbSolverState state, int desiredLength, boolean exactLength, boolean inverse) {
-        Random r = new Random();
+    private String solve(SkewbSolverState state, int desiredLength, Random r, boolean exactLength, boolean inverse) {
         int[] sol = new int[MAX_SOLUTION_LENGTH];
 
         int solutionLength = -1;

@@ -258,7 +258,7 @@ public class TwoByTwoSolver {
      * @param last_move  what was the last move done (first called with an int >= 9)
      * @param solution   the array containing the current moves done.
      */
-    private boolean search(int perm, int orient, int depth, int length, int last_move, int[] solution, int[] best_solution){
+    private boolean search(int perm, int orient, int depth, int length, int last_move, int[] solution, int[] best_solution, Random randomizeMoves){
         /* If there are no moves left to try (length=0), check if the current position is solved */
         if( length == 0 ) {
             if (( perm == 0 ) && ( orient == 0 )){
@@ -287,19 +287,21 @@ public class TwoByTwoSolver {
          * and the updated parameters (depth -> depth+1; length -> length-1; last_move -> move)
          * We don't need to try a move of the same face as the last move.
          */
+        int randomOffset = randomizeMoves.nextInt(N_MOVES);
         boolean solutionFound = false;
         for( int move=0; move<N_MOVES; move++){
+            int randomMove = ( move + randomOffset ) % N_MOVES;
             // Check if the tested move is of the same face as the previous move (last_move).
-            if(( move / 3 ) == ( last_move / 3 )) {
+            if(( randomMove / 3 ) == ( last_move / 3 )) {
                 continue;
             }
             // Apply the move
-            int newPerm = movePerm[perm][move];
-            int newOrient = moveOrient[orient][move];
+            int newPerm = movePerm[perm][randomMove];
+            int newOrient = moveOrient[orient][randomMove];
             // Store the move
-            solution[depth] = move;
+            solution[depth] = randomMove;
             // Call the recursive function
-            solutionFound |= search( newPerm, newOrient, depth+1, length-1, move, solution, best_solution );
+            solutionFound |= search( newPerm, newOrient, depth+1, length-1, randomMove, solution, best_solution, randomizeMoves );
         }
         return solutionFound;
     }
@@ -326,8 +328,8 @@ public class TwoByTwoSolver {
      * @param length    length of the desired solution
      * @return          a string representing the solution or the scramble of a random position
      */
-    public String solveIn(TwoByTwoState state, int length) {
-        return solve(state, length, false, false);
+    public String solveIn(TwoByTwoState state, int length, Random randomizeMoves) {
+        return solve(state, length, false, false, randomizeMoves);
     }
 
     /**
@@ -337,18 +339,18 @@ public class TwoByTwoSolver {
      * @param length    length of the desired solution
      * @return          a string representing the solution or the scramble of a random position
      */
-    public String generateExactly(TwoByTwoState state, int length) {
-        return solve(state, length, true, true);
+    public String generateExactly(TwoByTwoState state, int length, Random randomizeMoves) {
+        return solve(state, length, true, true, randomizeMoves);
     }
 
-    private String solve(TwoByTwoState state, int desiredLength, boolean exactLength, boolean inverse) {
+    private String solve(TwoByTwoState state, int desiredLength, boolean exactLength, boolean inverse, Random randomizeMoves) {
         int[] solution = new int[MAX_LENGTH];
         int[] best_solution = new int[MAX_LENGTH+1];
         boolean foundSolution = false;
         int length = exactLength ? desiredLength : 0;
         while(length <= desiredLength) {
             best_solution[length] = 42424242;
-            if(search(state.permutation, state.orientation, 0, length, 42, solution, best_solution)) {
+            if(search(state.permutation, state.orientation, 0, length, 42, solution, best_solution, randomizeMoves)) {
                 foundSolution = true;
                 break;
             }

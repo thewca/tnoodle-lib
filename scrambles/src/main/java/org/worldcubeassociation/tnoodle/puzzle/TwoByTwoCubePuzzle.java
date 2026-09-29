@@ -24,7 +24,7 @@ public class TwoByTwoCubePuzzle extends CubePuzzle {
     @Override
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
         TwoByTwoState state = twoSolver.randomState(r);
-        String scramble = twoSolver.generateExactly(state, TWO_BY_TWO_MIN_SCRAMBLE_LENGTH);
+        String scramble = twoSolver.generateExactly(state, TWO_BY_TWO_MIN_SCRAMBLE_LENGTH, r);
         assert scramble.split(" ").length == TWO_BY_TWO_MIN_SCRAMBLE_LENGTH;
 
         AlgorithmBuilder ab = new AlgorithmBuilder(this, MergingMode.CANONICALIZE_MOVES);
@@ -36,8 +36,8 @@ public class TwoByTwoCubePuzzle extends CubePuzzle {
         return ab.getStateAndGenerator();
     }
 
-    protected String solveIn(PuzzleState ps, int n) {
+    protected String solveIn(PuzzleState ps, int n, Random randomizeMoves) {
         CubeState cs = (CubeState) ps;
-        return twoSolver.solveIn(cs.toTwoByTwoState(), n);
+        return twoSolver.solveIn(cs.toTwoByTwoState(), n, randomizeMoves);
     }
 }
