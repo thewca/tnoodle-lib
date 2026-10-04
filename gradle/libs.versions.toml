@@ -6,7 +6,7 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.20" }
 gwt-exporter = { module = "org.timepedia.exporter:gwtexporter", version = "2.5.1" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.14.4" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "6.1.3" }
 apache-commons-math3 = { module = "org.apache.commons:commons-math3", version = "3.6.1" }
 
 [plugins]
