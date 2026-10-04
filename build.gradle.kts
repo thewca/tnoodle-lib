@@ -4,7 +4,6 @@ allprojects {
 }
 
 plugins {
-    alias(libs.plugins.dependency.versions)
     alias(libs.plugins.nexus.publish)
 }
 
