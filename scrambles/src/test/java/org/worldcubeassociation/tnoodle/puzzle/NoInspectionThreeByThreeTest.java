@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class NoInspectionThreeByThreeTest {
     protected static final Map<String, String> OPPOSITE_FACES = new HashMap<>();
 
+    protected static final Random r = Puzzle.getSecureRandom();
+
     @BeforeAll
     public static void loadOppositeMoves() {
         String faces = "URFDLB";
@@ -61,7 +63,7 @@ public class NoInspectionThreeByThreeTest {
         }
 
         Puzzle.PuzzleState scrambled = solved.applyAlgorithm("L' R2 U D2 L2");
-        String solution = threes.solveIn(scrambled, 20, "L", null);
+        String solution = threes.solveIn(scrambled, 20, r, "L", null);
 
         assertFalse(solution.startsWith("L"));
         assertTrue(scrambled.applyAlgorithm(solution).isSolved());
@@ -71,7 +73,7 @@ public class NoInspectionThreeByThreeTest {
         // min2phase handles this correctly. This particular
         // scramble and restriction caused tickled this behavior originally.
         scrambled = solved.applyAlgorithm("F D B L' U L' F D' L2 D L' B2 D F2 U B2 R2 U D2 L2");
-        solution = threes.solveIn(scrambled, 20, "L", null);
+        solution = threes.solveIn(scrambled, 20, r, "L", null);
 
         assertFalse(solution.startsWith("L"));
         assertFalse(solution.startsWith("R"));
@@ -91,7 +93,7 @@ public class NoInspectionThreeByThreeTest {
         Puzzle.PuzzleState solved = threeNi.getSolvedState();
 
         Puzzle.PuzzleState u = solved.apply(scramble);
-        String solution = threeNi.solveIn(u, 20, axisRestriction, null);
+        String solution = threeNi.solveIn(u, 20, r, axisRestriction, null);
 
         System.out.println(String.format("Solution to %s (restriction %s): %s", scramble, axisRestriction, solution));
 

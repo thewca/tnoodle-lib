@@ -338,7 +338,7 @@ public class SquareOnePuzzle extends Puzzle {
         }
 
         @Override
-        public String solveIn(int n) {
+        public String solveIn(int n, Random randomizeMoves) {
             // apparently sq12phase can neither represent nor solve "unslashable" squares
             if (!this.canSlash()) {
                 // getScrambleSuccessors automatically filters for slashability
@@ -369,7 +369,7 @@ public class SquareOnePuzzle extends Puzzle {
                     String slashabilitySetupMove = bestSlashable.getKey();
                     SquareOneState slashableState = bestSlashable.getValue();
 
-                    return slashableState.solveWithSlashabilityIn(n, slashabilitySetupMove, this, n - 1);
+                    return slashableState.solveWithSlashabilityIn(n, randomizeMoves, slashabilitySetupMove, this, n - 1);
                 } catch (InvalidMoveException e) {
                     throw new RuntimeException(e);
                 }
@@ -380,7 +380,7 @@ public class SquareOnePuzzle extends Puzzle {
             return scramble == null ? null : scramble.trim();
         }
 
-        private String solveWithSlashabilityIn(int n, String slashabilityMove, SquareOneState preSlashabilityState, int lowerThreshold) throws InvalidMoveException {
+        private String solveWithSlashabilityIn(int n, Random randomizeMoves, String slashabilityMove, SquareOneState preSlashabilityState, int lowerThreshold) throws InvalidMoveException {
             if (!this.canSlash()) {
                 // nice try.
                 return null;
@@ -393,7 +393,7 @@ public class SquareOnePuzzle extends Puzzle {
 
             // despite already having "wasted" one move for slashability, we do NOT search for n-1 here
             // because doing so would remove one degree of freedom that could potentially cancel into our setup move
-            String nextBestSolution = this.solveIn(n);
+            String nextBestSolution = this.solveIn(n, randomizeMoves);
 
             if (nextBestSolution == null) {
                 // we cannot even solve the slashable state in n moves, give up
@@ -408,7 +408,7 @@ public class SquareOnePuzzle extends Puzzle {
 
             if (ab.getTotalCost() > n) {
                 // slashability move did not cancel with the n-move solution, try shorter solution
-                return this.solveWithSlashabilityIn(n - 1, slashabilityMove, preSlashabilityState, lowerThreshold);
+                return this.solveWithSlashabilityIn(n - 1, randomizeMoves, slashabilityMove, preSlashabilityState, lowerThreshold);
             }
 
             // if we reach here, the total cost is implicitly <= n

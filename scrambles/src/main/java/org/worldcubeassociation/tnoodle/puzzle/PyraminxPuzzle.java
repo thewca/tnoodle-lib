@@ -34,7 +34,7 @@ public class PyraminxPuzzle extends Puzzle {
     @Override
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
         PyraminxSolverState state = pyraminxSolver.randomState(r);
-        String scramble = pyraminxSolver.generateExactly(state, MIN_SCRAMBLE_LENGTH, false);
+        String scramble = pyraminxSolver.generateExactly(state, MIN_SCRAMBLE_LENGTH, false, r);
         assert scramble.split(" ").length == MIN_SCRAMBLE_LENGTH + state.unsolvedTips();
 
         PuzzleState pState;
@@ -435,8 +435,8 @@ public class PyraminxPuzzle extends Puzzle {
         }
 
         @Override
-        public String solveIn(int n) {
-            return pyraminxSolver.solveIn(toPyraminxSolverState(), n, SCRAMBLE_LENGTH_INCLUDES_TIPS);
+        public String solveIn(int n, Random randomizeMoves) {
+            return pyraminxSolver.solveIn(toPyraminxSolverState(), n, SCRAMBLE_LENGTH_INCLUDES_TIPS, randomizeMoves);
         }
 
         @Override

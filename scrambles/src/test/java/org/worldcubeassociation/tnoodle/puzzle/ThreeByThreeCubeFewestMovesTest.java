@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ThreeByThreeCubeFewestMovesTest {
     protected static final Map<String, String> OPPOSITE_FACES = new HashMap<>();
 
+    protected static final Random r = Puzzle.getSecureRandom();
+
     @BeforeAll
     public static void loadOppositeMoves() {
         String faces = "URFDLB";
@@ -58,12 +60,12 @@ public class ThreeByThreeCubeFewestMovesTest {
         }
 
         Puzzle.PuzzleState scrambled = solved.applyAlgorithm("L' R2 U D2 L2");
-        String solution = threeFm.solveIn(scrambled, 20, "L", "L");
+        String solution = threeFm.solveIn(scrambled, 20, r, "L", "L");
 
         assertTrue(scrambled.applyAlgorithm(solution).isSolved());
 
         scrambled = solved.applyAlgorithm("L' R2 U D2 L2");
-        solution = threeFm.solveIn(scrambled, 20, "L", "L");
+        solution = threeFm.solveIn(scrambled, 20, r, "L", "L");
         assertTrue(scrambled.applyAlgorithm(solution).isSolved());
 
         String[] moves = solution.split(" ");
@@ -98,7 +100,7 @@ public class ThreeByThreeCubeFewestMovesTest {
         Puzzle.PuzzleState solved = threeFm.getSolvedState();
 
         Puzzle.PuzzleState u = solved.apply(scramble);
-        String solution = threeFm.solveIn(u, 20, firstAxisRestriction, lastAxisRestriction);
+        String solution = threeFm.solveIn(u, 20, r, firstAxisRestriction, lastAxisRestriction);
 
         System.out.println(String.format("Solution to %s (solution may not start with %s axis and may not end with %s axis): %s", scramble, firstAxisRestriction, lastAxisRestriction, solution));
 

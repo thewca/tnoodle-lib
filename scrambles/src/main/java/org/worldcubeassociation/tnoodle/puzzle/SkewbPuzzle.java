@@ -36,7 +36,7 @@ public class SkewbPuzzle extends Puzzle {
     @Override
     public PuzzleStateAndGenerator generateRandomMoves(Random r) {
         SkewbSolverState state = skewbSolver.randomState(r);
-        String scramble = skewbSolver.generateExactly(state, MIN_SCRAMBLE_LENGTH);
+        String scramble = skewbSolver.generateExactly(state, MIN_SCRAMBLE_LENGTH, r);
         assert scramble.split(" ").length == MIN_SCRAMBLE_LENGTH;
 
         PuzzleState pState;
@@ -45,13 +45,13 @@ public class SkewbPuzzle extends Puzzle {
         } catch (InvalidScrambleException e) {
             throw new RuntimeException(e);
         }
+
         return new PuzzleStateAndGenerator(pState, scramble);
     }
 
     /*************************************************************
      * Functions to display the puzzle
      */
-
 
     private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
@@ -377,8 +377,8 @@ public class SkewbPuzzle extends Puzzle {
         }
 
         @Override
-        public String solveIn(int n) {
-            return skewbSolver.solveIn(toSkewbSolverState(), n);
+        public String solveIn(int n, Random randomizeMoves) {
+            return skewbSolver.solveIn(toSkewbSolverState(), n, randomizeMoves);
         }
 
         @Override
