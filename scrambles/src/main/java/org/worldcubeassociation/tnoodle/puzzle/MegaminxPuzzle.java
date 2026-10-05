@@ -192,18 +192,18 @@ public class MegaminxPuzzle extends Puzzle {
 
     private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
-        defaultColorScheme.put("U", new Color(0xffffff));
-        defaultColorScheme.put("BL", new Color(0xffcc00));
-        defaultColorScheme.put("BR", new Color(0x0000b3));
-        defaultColorScheme.put("R", new Color(0xdd0000));
-        defaultColorScheme.put("F", new Color(0x006600));
-        defaultColorScheme.put("L", new Color(0x8a1aff));
-        defaultColorScheme.put("D", new Color(0x999999));
-        defaultColorScheme.put("DR", new Color(0xffffb3));
-        defaultColorScheme.put("DBR", new Color(0xff99ff));
-        defaultColorScheme.put("B", new Color(0x71e600));
-        defaultColorScheme.put("DBL", new Color(0xff8433));
-        defaultColorScheme.put("DL", new Color(0x88ddff));
+        defaultColorScheme.put("U", Color.WHITE);
+        defaultColorScheme.put("BL", Color.YELLOW_GOLD);
+        defaultColorScheme.put("BR", Color.BLUE_NAVY);
+        defaultColorScheme.put("R", Color.RED_VERMILION);
+        defaultColorScheme.put("F", Color.GREEN_DARK);
+        defaultColorScheme.put("L", Color.PURPLE_ORCHID);
+        defaultColorScheme.put("D", Color.GRAY_MEDIUM);
+        defaultColorScheme.put("DR", Color.YELLOW_CREAM);
+        defaultColorScheme.put("DBR", Color.PINK);
+        defaultColorScheme.put("B", Color.GREEN_LIME);
+        defaultColorScheme.put("DBL", Color.ORANGE_TANGERINE);
+        defaultColorScheme.put("DL", Color.BLUE_SKY);
     }
     @Override
     public Map<String, Color> getDefaultColorScheme() {

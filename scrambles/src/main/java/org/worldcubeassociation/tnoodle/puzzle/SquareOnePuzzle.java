@@ -43,7 +43,7 @@ public class SquareOnePuzzle extends Puzzle {
 
     private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
-        defaultColorScheme.put("B", new Color(255, 128, 0)); //orange heraldic tincture
+        defaultColorScheme.put("B", Color.ORANGE);
         defaultColorScheme.put("D", Color.WHITE);
         defaultColorScheme.put("F", Color.RED);
         defaultColorScheme.put("L", Color.BLUE);

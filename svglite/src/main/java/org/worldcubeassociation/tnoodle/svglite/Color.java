@@ -8,6 +8,27 @@ public class Color {
     public static final Color BLACK = new Color(0, 0, 0);
     public static final Color GRAY = new Color(128, 128, 128);
     public final static Color YELLOW = new Color(255, 255, 0);
+    public final static Color ORANGE = new Color(255, 128, 0);
+    public final static Color PURPLE = new Color(124, 2, 158);
+    // Megaminx MF8 scheme
+    public final static Color YELLOW_GOLD = new Color(255, 204, 0);
+    public final static Color BLUE_NAVY = new Color(0, 0, 179);
+    public final static Color RED_VERMILION = new Color(221, 0, 0);
+    public final static Color GREEN_DARK = new Color(0, 102, 0);
+    public final static Color PURPLE_ORCHID = new Color(138, 26, 255);
+    public final static Color GRAY_MEDIUM = new Color(153, 153, 153);
+    public final static Color YELLOW_CREAM = new Color(255, 255, 179);
+    public final static Color PINK = new Color(255, 153, 255);
+    public final static Color GREEN_LIME = new Color(113, 230, 0);
+    public final static Color ORANGE_TANGERINE = new Color(255, 132, 51);
+    public final static Color BLUE_SKY = new Color(136, 221, 255);
+    // Clock contrast colors
+    public final static Color BLUE_DEEP = new Color(17, 51, 102);
+    public final static Color BLUE_BRIGHT = new Color(204, 221, 238);
+    public final static Color BLUE_ICE = new Color(136, 170, 204);
+    public final static Color BLUE_ASPHALT = new Color(68, 102, 153);
+    public final static Color YELLOW_SUNFLOWER = new Color(255, 204, 68);
+    public final static Color ORANGE_BRONZE = new Color(204, 102, 0);
 
     private int r, g, b, a;
     public Color(int r, int g, int b, int a) {

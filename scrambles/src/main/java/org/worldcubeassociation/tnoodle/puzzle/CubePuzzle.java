@@ -224,7 +224,7 @@ public class CubePuzzle extends Puzzle {
         defaultColorScheme.put("B", Color.BLUE);
         defaultColorScheme.put("D", Color.YELLOW);
         defaultColorScheme.put("F", Color.GREEN);
-        defaultColorScheme.put("L", new Color(255, 128, 0)); //orange heraldic tincture
+        defaultColorScheme.put("L", Color.ORANGE);
         defaultColorScheme.put("R", Color.RED);
         defaultColorScheme.put("U", Color.WHITE);
     }

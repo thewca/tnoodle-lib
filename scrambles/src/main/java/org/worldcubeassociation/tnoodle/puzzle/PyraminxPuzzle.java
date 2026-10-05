@@ -56,10 +56,10 @@ public class PyraminxPuzzle extends Puzzle {
 
     private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
-        defaultColorScheme.put("F", new Color(0x00FF00));
-        defaultColorScheme.put("D", new Color(0xFFFF00));
-        defaultColorScheme.put("L", new Color(0xFF0000));
-        defaultColorScheme.put("R", new Color(0x0000FF));
+        defaultColorScheme.put("F", Color.GREEN);
+        defaultColorScheme.put("D", Color.YELLOW);
+        defaultColorScheme.put("L", Color.RED);
+        defaultColorScheme.put("R", Color.BLUE);
     }
     @Override
     public Map<String, Color> getDefaultColorScheme() {

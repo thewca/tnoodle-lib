@@ -55,21 +55,18 @@ public class ClockPuzzle extends Puzzle {
 
     private static final Map<String, Color> defaultColorScheme = new HashMap<>();
     static {
-        Color bright = new Color(0xccddee);
-        Color dark = new Color(0x113366);
-
-        defaultColorScheme.put("Front", dark);
-        defaultColorScheme.put("FrontClock", bright);
-        defaultColorScheme.put("FrontTopClock", new Color(0xffcc44));
-        defaultColorScheme.put("FrontHand", dark);
-        defaultColorScheme.put("FrontHandBorder", dark);
-        defaultColorScheme.put("FrontPin", new Color(0x88aacc));
-        defaultColorScheme.put("Back", bright);
-        defaultColorScheme.put("BackClock", dark);
-        defaultColorScheme.put("BackTopClock", new Color(0xcc6600));
-        defaultColorScheme.put("BackHand", bright);
-        defaultColorScheme.put("BackHandBorder", bright);
-        defaultColorScheme.put("BackPin", new Color(0x446699));
+        defaultColorScheme.put("Front", Color.BLUE_DEEP);
+        defaultColorScheme.put("FrontClock", Color.BLUE_BRIGHT);
+        defaultColorScheme.put("FrontTopClock", Color.YELLOW_SUNFLOWER);
+        defaultColorScheme.put("FrontHand", Color.BLUE_DEEP);
+        defaultColorScheme.put("FrontHandBorder", Color.BLUE_DEEP);
+        defaultColorScheme.put("FrontPin", Color.BLUE_ICE);
+        defaultColorScheme.put("Back", Color.BLUE_BRIGHT);
+        defaultColorScheme.put("BackClock", Color.BLUE_DEEP);
+        defaultColorScheme.put("BackTopClock", Color.ORANGE_BRONZE);
+        defaultColorScheme.put("BackHand", Color.BLUE_BRIGHT);
+        defaultColorScheme.put("BackHandBorder", Color.BLUE_BRIGHT);
+        defaultColorScheme.put("BackPin", Color.BLUE_ASPHALT);
     }
     @Override
     public Map<String, Color> getDefaultColorScheme() {

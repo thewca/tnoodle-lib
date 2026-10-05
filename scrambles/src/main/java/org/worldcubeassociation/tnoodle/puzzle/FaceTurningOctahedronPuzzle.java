@@ -43,10 +43,10 @@ public class FaceTurningOctahedronPuzzle extends Puzzle {
         defaultColorScheme.put("B", Color.BLUE);
         defaultColorScheme.put("D", Color.YELLOW);
         defaultColorScheme.put("F", Color.GREEN);
-        defaultColorScheme.put("L", new Color(124, 2, 158)); // Purple
+        defaultColorScheme.put("L", Color.PURPLE); // Purple
         defaultColorScheme.put("R", Color.RED);
         defaultColorScheme.put("U", Color.WHITE);
-        defaultColorScheme.put("BL", new Color(255, 128, 0)); // Orange
+        defaultColorScheme.put("BL", Color.ORANGE);
         defaultColorScheme.put("BR", Color.GRAY);
     }
 

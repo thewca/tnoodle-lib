@@ -60,7 +60,7 @@ public class SkewbPuzzle extends Puzzle {
         defaultColorScheme.put("F", Color.RED);
         defaultColorScheme.put("D", Color.YELLOW);
         defaultColorScheme.put("L", Color.GREEN);
-        defaultColorScheme.put("B", new Color(0xFF8000));
+        defaultColorScheme.put("B", Color.ORANGE);
     }
 
     @Override
