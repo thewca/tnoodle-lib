@@ -408,8 +408,8 @@ public class PyraminxSolver {
      * @param includingTips do we want to include tips in the solution lenght ?
      * @return              a string representing the solution or the scramble of a random position
      */
-    public String solveIn(PyraminxSolverState state, int length, boolean includingTips) {
-        return solve(state, length, false, false, includingTips);
+    public String solveIn(PyraminxSolverState state, int length, boolean includingTips, Random randomizeMoves) {
+        return solve(state, length, false, false, includingTips, randomizeMoves);
     }
 
     /**
@@ -420,12 +420,11 @@ public class PyraminxSolver {
      * @param includingTips do we want to include tips in the solution lenght ?
      * @return              a string representing the solution or the scramble of a random position
      */
-    public String generateExactly(PyraminxSolverState state, int length, boolean includingTips) {
-        return solve(state, length, true, true, includingTips);
+    public String generateExactly(PyraminxSolverState state, int length, boolean includingTips, Random randomizeMoves) {
+        return solve(state, length, true, true, includingTips, randomizeMoves);
     }
 
-    private String solve(PyraminxSolverState state, int desiredLength, boolean exactLength, boolean inverse, boolean includingTips) {
-        Random r = new Random();
+    private String solve(PyraminxSolverState state, int desiredLength, boolean exactLength, boolean inverse, boolean includingTips, Random randomizeMoves) {
         int[] solution = new int[MAX_LENGTH];
         boolean foundSolution = false;
 
@@ -436,7 +435,7 @@ public class PyraminxSolver {
         int length = exactLength ? desiredLength : 0;
 
         while(length <= desiredLength) {
-            if(search(state.edgePerm, state.edgeOrient, state.cornerOrient, 0, length, 42, solution, r)) {
+            if(search(state.edgePerm, state.edgeOrient, state.cornerOrient, 0, length, 42, solution, randomizeMoves)) {
                 foundSolution = true;
                 break;
             }

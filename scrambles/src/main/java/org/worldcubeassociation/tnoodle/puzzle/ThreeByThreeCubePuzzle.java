@@ -30,11 +30,11 @@ public class ThreeByThreeCubePuzzle extends CubePuzzle {
     }
 
     @Override
-    protected String solveIn(PuzzleState ps, int n) {
-        return solveIn(ps, n, null, null);
+    protected String solveIn(PuzzleState ps, int n, Random randomizeMoves) {
+        return solveIn(ps, n, randomizeMoves, null, null);
     }
 
-    public String solveIn(PuzzleState ps, int n, String firstAxisRestriction, String lastAxisRestriction) {
+    public String solveIn(PuzzleState ps, int n, Random randomizeMoves, String firstAxisRestriction, String lastAxisRestriction) {
         CubeState cs = (CubeState) ps;
         if(cs.equals(getSolvedState())) {
             // TODO - apparently min2phase can't solve the solved cube
